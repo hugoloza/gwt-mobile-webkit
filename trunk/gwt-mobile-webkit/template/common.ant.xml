@@ -57,10 +57,6 @@
 
 	<!-- Global Properties -->
 	<property environment="env" />
-	<condition property="gwt.version" value="${env.GWT_VERSION}"
-		else="0.0.0">
-		<isset property="env.GWT_VERSION" />
-	</condition>
 	<condition property="gwt.tools.check" value="${env.GWT_TOOLS}"
 		else="${gwt.root}/../tools">
 		<isset property="env.GWT_TOOLS" />
@@ -169,7 +165,7 @@
 	<presetdef name="gwt.ant">
 		<ant inheritall="false" target="${target}">
 			<propertyset>
-				<propertyref name="gwt.version" />
+				<propertyref name="api.version" />
 				<propertyref name="gwt.junit.port" />
 				<propertyref name="gwt.remote.browsers" />
 			</propertyset>
