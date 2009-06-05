@@ -1,0 +1,4 @@
+1. Copy 'template' directory to a new project directory (e.g. 'database')
+2. Edit, in new project directory, script 'set-project-valus.sh' and change the 'TEMPLATE_' variable declarations
+3. CD to new project directory and execute ./set-project-values.sh
+4. Add your code.
