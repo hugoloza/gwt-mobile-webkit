@@ -1,0 +1,5 @@
+Mobile ApplicationCache API Library for GWT @GWT_VERSION@
+(c) Copyright Bart Guijt, 2009.  All rights reserved.
+Visit Google Code (http://code.google.com/p/gwt-mobile-webkit).
+
+For source availability and license information see COPYING.
