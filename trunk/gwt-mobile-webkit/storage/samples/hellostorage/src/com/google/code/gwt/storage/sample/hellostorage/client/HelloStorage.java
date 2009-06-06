@@ -50,7 +50,7 @@ public class HelloStorage implements EntryPoint {
     
     StorageEventHandler handler = new StorageEventHandler() {
       public void onStorageChange(StorageEvent event) {
-        eventLabel.setText("StorageEvent: key=" + event.getKey() + ", oldValue=" + event.getOldValue() + ", newValue=" + event.getNewValue());
+        eventLabel.setText("StorageEvent: key=" + event.getKey() + ", oldValue=" + event.getOldValue() + ", newValue=" + event.getNewValue() + ", url=" + event.getUrl());
       }
     };
     
