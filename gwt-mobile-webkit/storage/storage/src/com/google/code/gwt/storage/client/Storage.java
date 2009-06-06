@@ -77,11 +77,11 @@ public final class Storage extends JavaScriptObject {
    * 
    * @see <a href="http://www.w3.org/TR/webstorage/#the-storage-event">W3C Web
    *      Storage - the storage event</a>
-   * @param listener
+   * @param handler
    */
   public native void addStorageEventHandler(StorageEventHandler handler) /*-{
     $doc.body.addEventListener(
-      'storage',
+      "storage",
       function(event) {
         @com.google.code.gwt.storage.client.Storage::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEventHandler;Lcom/google/code/gwt/storage/client/StorageEvent;) (handler, event);
       },

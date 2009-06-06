@@ -34,6 +34,9 @@ import com.google.gwt.user.client.Window;
  * @see StorageEventHandler
  * @see <a href="http://www.w3.org/TR/webstorage/#event-definition">W3C Web
  *      Storage - StorageEvent</a>
+ * @see <a
+ *      href="https://developer.apple.com/safari/library/documentation/AppleApplications/Reference/WebKitDOMRef/StorageEvent_idl/Classes/StorageEvent/index.html">Safari
+ *      StorageEvent reference</a>
  */
 public class StorageEvent extends JavaScriptObject {
 
@@ -83,7 +86,7 @@ public class StorageEvent extends JavaScriptObject {
    *      Web Storage - StorageEvent.url</a>
    */
   public final native String getUrl() /*-{
-    return this.url;
+    return this.url;  // Mobile Safari: 'uri' ?
   }-*/;
 
   /**
