@@ -15,14 +15,22 @@
  */
 package com.google.code.gwt.storage.sample.hellostorage.client;
 
+import com.google.code.gwt.storage.client.Storage;
+import com.google.code.gwt.storage.client.StorageEvent;
+import com.google.code.gwt.storage.client.StorageEventHandler;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -33,43 +41,90 @@ public class HelloStorage implements EntryPoint {
    * This is the entry point method.
    */
   public void onModuleLoad() {
-    Image img = new Image("http://code.google.com/webtoolkit/logo-185x175.png");
-    Button button = new Button("Click me");
-
-    VerticalPanel vPanel = new VerticalPanel();
-    // We can add style names.
-    vPanel.addStyleName("widePanel");
-    vPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-    vPanel.add(img);
-    vPanel.add(button);
-
-    // Add image and button to the RootPanel
-    RootPanel.get().add(vPanel);
-
-    // Create the dialog box
-    final DialogBox dialogBox = new DialogBox();
-    dialogBox.setText("Welcome to GWT Storage Demo!");
-    dialogBox.setAnimationEnabled(true);
-    Button closeButton = new Button("close");
-    VerticalPanel dialogVPanel = new VerticalPanel();
-    dialogVPanel.setWidth("100%");
-    dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
-    dialogVPanel.add(closeButton);
-
-    closeButton.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        dialogBox.hide();
+    VerticalPanel main = new VerticalPanel();
+    RootPanel.get().add(main);
+    RootPanel.get().setWidgetPosition(main, 10, 10);
+    
+    final Label eventLabel = new Label("[StorageEvent info]");
+    main.add(eventLabel);
+    
+    StorageEventHandler handler = new StorageEventHandler() {
+      public void onStorageChange(StorageEvent event) {
+        eventLabel.setText("StorageEvent: key=" + event.getKey() + ", oldValue=" + event.getOldValue() + ", newValue=" + event.getNewValue());
       }
-    });
+    };
+    
+    Storage local = Storage.getLocalStorage();
+    local.addStorageEventHandler(handler);
+    
+    Storage session = Storage.getSessionStorage();
+    session.addStorageEventHandler(handler);
+    
+    TabPanel tabs = new TabPanel();
+    main.add(tabs);
+    tabs.add(createStorageTab(local), "localStorage");
+    tabs.add(createStorageTab(session), "sessionStorage");
+    tabs.selectTab(0);
+  }
 
-    // Set the contents of the Widget
-    dialogBox.setWidget(dialogVPanel);
+  private Widget createStorageTab(final Storage storage) {
+    final Grid grid = new Grid();
+    grid.setCellPadding(5);
+    grid.setBorderWidth(1);
+    renderGrid(grid, storage);
+    
+    VerticalPanel p = new VerticalPanel();
+    
+    HorizontalPanel hp = new HorizontalPanel();
+    p.add(hp);
+    hp.add(new Label("key:"));
+    final TextBox keyInput = new TextBox();
+    hp.add(keyInput);
+    hp.add(new Label("data:"));
+    final TextBox dataInput = new TextBox();
+    hp.add(dataInput);
 
-    button.addClickHandler(new ClickHandler() {
+    hp.add(new Button("Put in storage", new ClickHandler() {
       public void onClick(ClickEvent event) {
-        dialogBox.center();
-        dialogBox.show();
+        storage.setItem(keyInput.getText(), dataInput.getText());
+        renderGrid(grid, storage);
       }
-    });
+    }));
+
+    p.add(grid);
+    
+    return p;
+  }
+  
+  private static void renderGrid(Grid grid, Storage storage) {
+    grid.clear();
+    grid.resize(storage.getLength() + 1, 3);
+    grid.setWidget(0, 0, new HTML("<b>Key</b>"));
+    grid.setWidget(0, 1, new HTML("<b>Data</b>"));
+    for (int i=1; i<=storage.getLength(); i++) {
+      String key = storage.key(i-1);
+      grid.setWidget(i, 0, new Label(key));
+      grid.setWidget(i, 1, new Label(storage.getItem(key)));
+      grid.setWidget(i, 2, new DeleteButton(storage, key, grid));
+    }
+  }
+
+  static class DeleteButton extends Button implements ClickHandler {
+    private Storage s;
+    private String key;
+    private Grid grid;
+    
+    DeleteButton(Storage s, String key, Grid grid) {
+      this.s = s;
+      this.key = key;
+      this.grid = grid;
+      setText("Delete");
+      addClickHandler(this);
+    }
+
+    public void onClick(ClickEvent event) {
+      s.removeItem(key);
+      renderGrid(grid, s);
+    }
   }
 }
