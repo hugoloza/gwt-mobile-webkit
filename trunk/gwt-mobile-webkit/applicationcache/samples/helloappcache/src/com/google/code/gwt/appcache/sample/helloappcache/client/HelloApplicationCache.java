@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.google.code.gwt.appcache.sample.helloappcache.client;
 
 import com.google.gwt.core.client.EntryPoint;
