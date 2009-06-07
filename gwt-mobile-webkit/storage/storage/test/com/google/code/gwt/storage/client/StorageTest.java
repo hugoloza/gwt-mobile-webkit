@@ -21,6 +21,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 /**
  * Tests the Storage class.
  */
+@SuppressWarnings("deprecation")
 public class StorageTest extends GWTTestCase {
 
   @Override
