@@ -16,7 +16,7 @@
 package com.google.code.gwt.template.client;
 
 /**
- * Template file for a Google API wrapper for the Google Web Toolkit(GWT)
+ * Represents a Template
  */
 public class Template {
   public Template () {
