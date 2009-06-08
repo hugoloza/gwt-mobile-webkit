@@ -20,6 +20,6 @@
     <when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
   </generate-with>
   
-  <define-linker name="cache-manifest-linker" class="com.google.code.gwt.appcache.linker.ApplicationCacheManifestLinker" />
-  <add-linker name="cache-manifest-linker" />
+  <define-linker name="cachemanifest" class="com.google.code.gwt.appcache.linker.ApplicationCacheManifestLinker" />
+  <add-linker name="cachemanifest" />
 </module>

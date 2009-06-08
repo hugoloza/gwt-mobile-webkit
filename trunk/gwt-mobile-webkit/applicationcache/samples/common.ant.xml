@@ -43,8 +43,10 @@
 				<java dir="${sample.build}" classname="com.google.gwt.dev.Compiler" classpath="src:${gwt.user.jar}:${gwt.dev.jar}:${mobile.webkit.api.jar}" fork="yes" failonerror="true" maxmemory="128m">
 					<arg value="-war" />
 					<arg file="${sample.build}/www" />
-          <arg value="-style" />
-          <arg value="PRETTY" />
+				    <arg value="-style" />
+				    <arg value="PRETTY" />
+                    <arg value="-logLevel" />
+                    <arg value="INFO" />
 					<arg value="com.google.code.gwt.${sample.api}.sample.${sample.package}.${sample.module}" />
 				</java>
 			</sequential>

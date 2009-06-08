@@ -17,8 +17,10 @@
 package com.google.code.gwt.appcache.sample.helloappcache.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Image;
@@ -68,8 +70,20 @@ public class HelloApplicationCache implements EntryPoint {
 
     button.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
-        dialogBox.center();
-        dialogBox.show();
+        // Invoke service:
+        HelloServiceAsync service = GWT.create(HelloService.class);
+        service.sayHello("Bart", new AsyncCallback<String>() {
+          public void onFailure(Throwable caught) {
+            dialogBox.setText("Could not invoke 'sayHello' service: " + caught);
+            dialogBox.center();
+            dialogBox.show();
+          }
+          public void onSuccess(String result) {
+            dialogBox.setText(result + "! Welcome to GWT ApplicationCache Demo!");
+            dialogBox.center();
+            dialogBox.show();
+          }
+        });
       }
     });
   }

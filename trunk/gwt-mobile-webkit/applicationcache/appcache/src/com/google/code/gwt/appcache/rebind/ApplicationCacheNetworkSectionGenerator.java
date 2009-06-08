@@ -16,7 +16,6 @@
 
 package com.google.code.gwt.appcache.rebind;
 
-import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -24,33 +23,39 @@ import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.rebind.rpc.ServiceInterfaceProxyGenerator;
 
 /**
- * Generates the 'Network' section in for the Application Cache manifest.
+ * Generates the entries in the 'Network' section in the Application Cache manifest.
  * 
  * @author bguijt
+ * @see com.google.code.gwt.appcache.linker.ApplicationCacheManifestLinker
  */
-public class ApplicationCacheNetworkSectionGenerator extends Generator {
+public class ApplicationCacheNetworkSectionGenerator extends ServiceInterfaceProxyGenerator {
 
-    @Override
-    public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
-        TypeOracle typeOracle = context.getTypeOracle();
-        assert (typeOracle != null);
+  @Override
+  public String generate(TreeLogger logger, GeneratorContext context,
+      String typeName) throws UnableToCompleteException {
+    
+    // Invoke the regular RPC generator:
+    String result = super.generate(logger, context, typeName);
+    
+    TypeOracle typeOracle = context.getTypeOracle();
+    JClassType remoteService = typeOracle.findType(typeName);
+    RemoteServiceRelativePath moduleRelativeUrl = remoteService.getAnnotation(RemoteServiceRelativePath.class);
 
-        JClassType remoteService = typeOracle.findType(typeName);
-        RemoteServiceRelativePath moduleRelativeUrl = remoteService.getAnnotation(RemoteServiceRelativePath.class);
-        
-        if (moduleRelativeUrl != null) {
-            // add URL to network section:
-            if (logger.isLoggable(Type.INFO)) {
-                logger.log(Type.INFO, "Found URL for NETWORK: section in cache-manifest: '" + moduleRelativeUrl.value() + "'");
-            }
-            NetworkSectionArtifact artifact = new NetworkSectionArtifact(moduleRelativeUrl.value());
-            context.commitArtifact(logger, artifact);
-        }
-        
-        // Use the requested type itself - let the RPC generater take care of that:
-        return null;
+    if (moduleRelativeUrl != null) {
+      // add URL to network section:
+      if (logger.isLoggable(Type.INFO)) {
+        logger.log(Type.INFO,
+            "Found URL for NETWORK: section in cache-manifest: '"
+                + moduleRelativeUrl.value() + "'");
+      }
+      NetworkSectionArtifact artifact = new NetworkSectionArtifact(
+          moduleRelativeUrl.value());
+      context.commitArtifact(logger, artifact);
     }
 
+    return result;
+  }
 }
