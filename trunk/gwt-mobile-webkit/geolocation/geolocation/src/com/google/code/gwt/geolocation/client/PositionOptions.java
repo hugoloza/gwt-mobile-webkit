@@ -52,14 +52,27 @@ public class PositionOptions extends JavaScriptObject {
       maximumAge: maximumAge};
   }-*/;
 
+  /**
+   * @return a hint that the application would like to receive the best possible
+   *         results
+   */
   public final native boolean isEnableHighAccuracy() /*-{
     return this.enableHighAccuracy;
   }-*/;
 
+  /**
+   * @return the maximum length of time (expressed in milliseconds) that is
+   *         allowed to pass from the the call to getCurrentPosition() or
+   *         watchPosition() until the corresponding PositionCallback is invoked
+   */
   public final native int getTimeout() /*-{
     return this.timeout;
   }-*/;
 
+  /**
+   * @return the age in milliseconds of a cached position that the application
+   *         is willing to accept
+   */
   public final native int getMaximumAge() /*-{
     return this.maximumAge;
   }-*/;
