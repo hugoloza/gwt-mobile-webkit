@@ -1,0 +1,6 @@
+<project name="database" default="build" basedir=".">
+	<property name="sample.api" value="geolocation" />
+	<property name="sample.root" value="hellogeolocation" />
+	<property name="sample.module" value="HelloGeolocation" />
+	<import file="../common.ant.xml" />
+</project>
