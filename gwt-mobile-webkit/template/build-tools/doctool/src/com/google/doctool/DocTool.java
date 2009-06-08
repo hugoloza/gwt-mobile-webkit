@@ -370,8 +370,8 @@ public class DocTool {
     return false;
   }
 
-  private Set findSourcePackages() {
-    Set results = new HashSet();
+  private Set<String> findSourcePackages() {
+    Set<String> results = new HashSet<String>();
     for (int i = 0, n = sourcePath.length; i < n; ++i) {
       File srcDir = sourcePath[i];
       findSourcePackages(results, srcDir, "");
@@ -379,7 +379,7 @@ public class DocTool {
     return results;
   }
 
-  private void findSourcePackages(Set results, File dir, String parentPackage) {
+  private void findSourcePackages(Set<String> results, File dir, String parentPackage) {
     File[] children = dir.listFiles();
     if (children != null) {
       for (int i = 0, n = children.length; i < n; ++i) {
@@ -460,7 +460,7 @@ public class DocTool {
     if (!mergedHtmlsFile.exists() || lastModifiedHtmls < lastModifiedTopics) {
       String xsltHtmls = getFileFromClassPath("topics-htmls.xslt");
 
-      Map params = new HashMap();
+      Map<String, String> params = new HashMap<String, String>();
       params.put("title", title);
 
       transform(xsltHtmls, mergedTopicsFile, mergedHtmlsFile, params);
@@ -521,7 +521,7 @@ public class DocTool {
 
   private boolean mergeTopics(File mergedTopicsFile) {
     try {
-      List args = new ArrayList();
+      List<String> args = new ArrayList<String>();
       args.add("join"); // what to do
       args.add("topics"); // the outer element is <topics>
       args.add(mergedTopicsFile.getAbsolutePath());
@@ -587,13 +587,13 @@ public class DocTool {
   private boolean runBooklet(File bkoutFile) {
     // Write out the list of packages that can be found on the source path.
     out.println("Creating " + bkoutFile.getAbsolutePath());
-    Set srcPackages = findSourcePackages();
+    Set<String> srcPackages = findSourcePackages();
     if (srcPackages.isEmpty()) {
       err.println("No input files found");
       return false;
     }
 
-    List args = new ArrayList();
+    List<String> args = new ArrayList<String>();
 
     // For now, harded-coded, but could be passed through
     args.add("-source");
@@ -651,7 +651,7 @@ public class DocTool {
 
   private boolean splitHtmls(File mergedHtmlsFile) {
     try {
-      List args = new ArrayList();
+      List<String> args = new ArrayList<String>();
       args.add("split"); // what to do
       args.add(mergedHtmlsFile.getAbsolutePath());
       String[] argArray = (String[]) args.toArray(new String[0]);
@@ -674,7 +674,7 @@ public class DocTool {
     out.println();
   }
 
-  private void transform(String xslt, File inFile, File outFile, Map params) {
+  private void transform(String xslt, File inFile, File outFile, Map<String, String> params) {
     Throwable caught = null;
     try {
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -688,9 +688,9 @@ public class DocTool {
           "{http://xml.apache.org/xslt}indent-amount", "4");
 
       if (params != null) {
-        for (Iterator iter = params.entrySet().iterator(); iter.hasNext();) {
-          Map.Entry entry = (Map.Entry) iter.next();
-          transformer.setParameter((String) entry.getKey(), entry.getValue());
+        for (Iterator<Map.Entry<String, String>> iter = params.entrySet().iterator(); iter.hasNext();) {
+          Map.Entry<String, String> entry = iter.next();
+          transformer.setParameter(entry.getKey(), entry.getValue());
         }
       }
 

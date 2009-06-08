@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class TipTaglet implements Taglet {
 
-  public static void register(Map tagletMap) {
+  public static void register(Map<String, TipTaglet> tagletMap) {
     TipTaglet tag = new TipTaglet();
     Taglet t = (Taglet) tagletMap.get(tag.getName());
     if (t != null) {
