@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class DocToolFactory {
 
-  private final List classPathEntries = new ArrayList();
+  private final List<File> classPathEntries = new ArrayList<File>();
 
   private String fileBase;
 
@@ -33,17 +33,17 @@ public class DocToolFactory {
 
   private boolean generateHtml;
 
-  private final List htmlFileBases = new ArrayList();
+  private final List<String> htmlFileBases = new ArrayList<String>();
 
-  private final List imagePathEntries = new ArrayList();
+  private final List<File> imagePathEntries = new ArrayList<File>();
 
   private File outDir;
 
   private File overviewFile;
 
-  private final List packageNameEntries = new ArrayList();
+  private final List<String> packageNameEntries = new ArrayList<String>();
 
-  private final List srcPathEntries = new ArrayList();
+  private final List<File> srcPathEntries = new ArrayList<File>();
 
   private String title;
 
@@ -99,9 +99,9 @@ public class DocToolFactory {
       // err.println("</body></html>");
       // return null;
       // }
-      classPath = (File[]) classPathEntries.toArray(new File[0]);
-      sourcePath = (File[]) srcPathEntries.toArray(new File[0]);
-      packageNames = (String[]) packageNameEntries.toArray(new String[0]);
+      classPath = classPathEntries.toArray(new File[0]);
+      sourcePath = srcPathEntries.toArray(new File[0]);
+      packageNames = packageNameEntries.toArray(new String[0]);
     }
 
     if (generateHtml) {
@@ -116,17 +116,17 @@ public class DocToolFactory {
       }
     }
 
-    String[] htmlFileBaseArray = (String[]) htmlFileBases.toArray(new String[0]);
+    String[] htmlFileBaseArray = htmlFileBases.toArray(new String[0]);
 
     // Handle -imagepath
     //
-    List localImagePathEntries = new ArrayList(imagePathEntries);
+    List<File> localImagePathEntries = new ArrayList<File>(imagePathEntries);
     if (localImagePathEntries.isEmpty()) {
       out.println("No image path specified; using only the output dir");
     }
 
     localImagePathEntries.add(localOutDir);
-    File[] imagePath = (File[]) imagePathEntries.toArray(new File[0]);
+    File[] imagePath = imagePathEntries.toArray(new File[0]);
 
     return new DocTool(out, err, localOutDir, generateHtml, title,
         htmlFileBaseArray, fileType, fileBase, overviewFile, sourcePath,

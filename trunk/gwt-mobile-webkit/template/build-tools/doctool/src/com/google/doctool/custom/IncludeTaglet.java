@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class IncludeTaglet implements Taglet {
 
-  public static void register(Map tagletMap) {
+  public static void register(Map<String, IncludeTaglet> tagletMap) {
     IncludeTaglet tag = new IncludeTaglet();
     Taglet t = (Taglet) tagletMap.get(tag.getName());
     if (t != null) {

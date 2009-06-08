@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class ExampleTaglet implements Taglet {
 
-  public static void register(Map tagletMap) {
+  public static void register(Map<String, ExampleTaglet> tagletMap) {
     ExampleTaglet tag = new ExampleTaglet();
     Taglet t = (Taglet) tagletMap.get(tag.getName());
     if (t != null) {

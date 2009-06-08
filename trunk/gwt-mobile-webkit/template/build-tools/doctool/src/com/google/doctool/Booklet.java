@@ -153,7 +153,7 @@ public class Booklet {
 
   private String outputPath;
 
-  private HashSet packagesToGenerate;
+  private HashSet<String> packagesToGenerate;
 
   private RootDoc initialRootDoc;
 
@@ -161,9 +161,9 @@ public class Booklet {
 
   private boolean showCode;
 
-  private HashSet standardTagKinds = new HashSet();
+  private HashSet<String> standardTagKinds = new HashSet<String>();
 
-  private Stack tagStack = new Stack();
+  private Stack<String> tagStack = new Stack<String>();
 
   private PrintWriter pw;
 
@@ -183,7 +183,7 @@ public class Booklet {
         outputPath = options[i][1];
       } else if (options[i][0].equals(OPT_BKDOCPKG)) {
         String[] packages = options[i][1].split(";");
-        packagesToGenerate = new HashSet();
+        packagesToGenerate = new HashSet<String>();
         for (int packageIndex = 0; packageIndex < packages.length; ++packageIndex) {
           packagesToGenerate.add(packages[packageIndex]);
         }
@@ -837,7 +837,7 @@ public class Booklet {
 
       // Create a list of the packages to iterate over.
       //
-      HashSet packageNames = new HashSet();
+      HashSet<String> packageNames = new HashSet<String>();
       ClassDoc[] cda = initialRootDoc.classes();
       for (int i = 0; i < cda.length; i++) {
         ClassDoc cd = cda[i];
@@ -850,8 +850,8 @@ public class Booklet {
 
       // Packages
       //
-      for (Iterator iter = packageNames.iterator(); iter.hasNext();) {
-        String packageName = (String) iter.next();
+      for (Iterator<String> iter = packageNames.iterator(); iter.hasNext();) {
+        String packageName = iter.next();
 
         // Only process this package if either no "docpkg" is set, or it is
         // included.
