@@ -19,6 +19,15 @@ package com.google.code.gwt.appcache.rebind;
 import com.google.code.gwt.appcache.linker.ApplicationCacheManifestLinker;
 import com.google.gwt.core.ext.linker.Artifact;
 
+/**
+ * Represents a simple NETWORK: entry in the cache manifest.
+ * 
+ * <p>If multiple NetworkSectionArtifacts are created with the same URL,
+ * only one is added to the Linker.</p>
+ * 
+ * @author bguijt
+ * @see <a href="http://www.w3.org/TR/html5/offline.html">W3C HTML5 - Offline Web Applications</a>
+ */
 public class NetworkSectionArtifact extends Artifact<NetworkSectionArtifact> {
 
   private static final long serialVersionUID = 7853420166235727586L;
