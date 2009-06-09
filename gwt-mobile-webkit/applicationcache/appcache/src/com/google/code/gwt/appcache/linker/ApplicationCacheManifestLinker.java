@@ -171,14 +171,14 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
   }
 
   private String emitPaths(String sectionName, SortedSet<String> paths) {
-    if (paths.size() > 0) {
-      StringBuilder sb = new StringBuilder();
-      for (String p : paths) {
-        sb.append(p).append('\n');
+    StringBuilder sb = new StringBuilder();
+    for (String p : paths) {
+      if (sb.length() > 0) {
+        sb.append('\n');
       }
-      return sb.toString();
+      sb.append(p);
     }
-    return "";
+    return sb.toString();
   }
 
   private void checkCacheable(String path, SortedSet<String> cachePaths) {
