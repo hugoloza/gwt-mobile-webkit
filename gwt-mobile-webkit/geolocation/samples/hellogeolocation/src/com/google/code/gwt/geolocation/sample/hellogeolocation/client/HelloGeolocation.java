@@ -15,6 +15,7 @@
  */
 package com.google.code.gwt.geolocation.sample.hellogeolocation.client;
 
+import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.code.gwt.geolocation.client.Position;
 import com.google.code.gwt.geolocation.client.PositionCallback;
@@ -35,7 +36,7 @@ public class HelloGeolocation implements EntryPoint {
   public void onModuleLoad() {
     final VerticalPanel main = new VerticalPanel();
     RootPanel.get().add(main);
-    
+
     Label l1 = new Label("Obtaining Geolocation...");
     main.add(l1);
     Geolocation geo = Geolocation.getGeolocation();
@@ -44,27 +45,42 @@ public class HelloGeolocation implements EntryPoint {
       return;
     }
     l1.setText("Obtaining Geolocation... DONE!");
-    
+
     final Label l2 = new Label("Obtaining position...");
     main.add(l2);
     geo.getCurrentPosition(new PositionCallback() {
       public void onFailure(PositionError error) {
         String message = "";
         switch (error.getCode()) {
-          case PositionError.UNKNOWN_ERROR: message = "Unknown Error"; break;
-          case PositionError.PERMISSION_DENIED: message = "Permission Denied"; break;
-          case PositionError.POSITION_UNAVAILABLE: message = "Position Unavailable"; break;
-          case PositionError.TIMEOUT: message = "Time-out"; break;
-          default: message = "Unknown error code.";
+          case PositionError.UNKNOWN_ERROR:
+            message = "Unknown Error";
+            break;
+          case PositionError.PERMISSION_DENIED:
+            message = "Permission Denied";
+            break;
+          case PositionError.POSITION_UNAVAILABLE:
+            message = "Position Unavailable";
+            break;
+          case PositionError.TIMEOUT:
+            message = "Time-out";
+            break;
+          default:
+            message = "Unknown error code.";
         }
-        l2.setText("Obtaining position... FAILED! Message: '" + error.getMessage() + "', code: " + error.getCode() + " (" + message + ")");
+        l2.setText("Obtaining position... FAILED! Message: '"
+            + error.getMessage() + "', code: " + error.getCode() + " ("
+            + message + ")");
       }
+
       public void onSuccess(Position position) {
         l2.setText("Obtaining position... DONE:");
-        main.add(new Label("lat, lon: " + position.getLatitude() + ", " + position.getLongitude()));
-        main.add(new Label("Accuracy (in meters): " + position.getAccuracy()));
-        main.add(new Label("Height: " + position.getAltitude()));
-        main.add(new Label("Height accuracy (in meters): " + position.getAltitudeAccuracy()));
+        Coordinates c = position.getCoords();
+        main.add(new Label("lat, lon: " + c.getLatitude() + ", "
+            + c.getLongitude()));
+        main.add(new Label("Accuracy (in meters): " + c.getAccuracy()));
+        main.add(new Label("Height: " + c.getAltitude()));
+        main.add(new Label("Height accuracy (in meters): "
+            + c.getAltitudeAccuracy()));
       }
     });
   }

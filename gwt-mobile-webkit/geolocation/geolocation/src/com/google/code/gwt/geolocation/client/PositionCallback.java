@@ -20,8 +20,10 @@ package com.google.code.gwt.geolocation.client;
  * Represents the Position callback interface.
  * 
  * @author bguijt
- * @see <a href="http://www.w3.org/TR/geolocation-API/#position-callback">W3C Geolocation API - PositionCallback interface</a>
- * @see <a href="http://www.w3.org/TR/geolocation-API/#error-callback">W3C Geolocation API - PositionErrorCallback interface</a>
+ * @see <a href="http://www.w3.org/TR/geolocation-API/#position-callback">W3C
+ *      Geolocation API - PositionCallback interface</a>
+ * @see <a href="http://www.w3.org/TR/geolocation-API/#error-callback">W3C
+ *      Geolocation API - PositionErrorCallback interface</a>
  */
 public interface PositionCallback {
 
@@ -31,7 +33,7 @@ public interface PositionCallback {
    * @param position the (current) position of the hosting device
    */
   void onSuccess(Position position);
-  
+
   /**
    * Invoked when asking for the (current) position fails.
    * 
