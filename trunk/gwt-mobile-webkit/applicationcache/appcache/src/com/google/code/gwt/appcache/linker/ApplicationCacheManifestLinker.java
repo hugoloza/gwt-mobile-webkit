@@ -49,7 +49,8 @@ import com.google.gwt.core.linker.IFrameLinker;
  * <pre>
  * CACHE MANIFEST
  * 
- * # You can add any comment on lines starting with a hash symbol anywhere in the template.
+ * # You can add any comment on lines starting with a hash symbol
+ * # anywhere in the template.
  * 
  * CACHE:
  * # Use @CACHE_ENTRIES@ as a placeholder for generated cachable URLs:
