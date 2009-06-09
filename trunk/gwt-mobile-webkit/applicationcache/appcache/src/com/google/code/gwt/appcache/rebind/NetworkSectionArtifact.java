@@ -26,6 +26,8 @@ import com.google.gwt.core.ext.linker.Artifact;
  * only one is added to the Linker.</p>
  * 
  * @author bguijt
+ * @see ApplicationCacheNetworkSectionGenerator
+ * @see ApplicationCacheManifestLinker
  * @see <a href="http://www.w3.org/TR/html5/offline.html">W3C HTML5 - Offline Web Applications</a>
  */
 public class NetworkSectionArtifact extends Artifact<NetworkSectionArtifact> {
