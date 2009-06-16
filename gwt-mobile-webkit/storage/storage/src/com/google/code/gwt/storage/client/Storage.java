@@ -28,6 +28,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @see <a href="http://www.w3.org/TR/webstorage/#storage-0">W3C Web Storage -
  *      Storage</a>
+ * @see <a href="http://devworld.apple.com/safari/library/documentation/iPhone/Conceptual/SafariJSDatabaseGuide/Name-ValueStorage/Name-ValueStorage.html">Safari Client-Side Storage and Offline Applications Programming Guide - Key-Value Storage</a>
  * @author bguijt
  */
 public final class Storage extends JavaScriptObject {
