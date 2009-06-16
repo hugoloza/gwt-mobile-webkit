@@ -116,8 +116,12 @@ public class LatestTimeJar extends Jar {
     @Override
     public void addToZip(ZipOutputStream out, String path) throws IOException {
       FileInputStream inStream = new FileInputStream(tmpFile);
-      doZipFile(inStream, out, path, timestamp, archive, mode);
-      tmpFile.delete();
+      try {
+        doZipFile(inStream, out, path, timestamp, archive, mode);
+        tmpFile.delete();
+      } finally {
+        inStream.close();
+      }
     }
   }
 
@@ -134,7 +138,8 @@ public class LatestTimeJar extends Jar {
   }
 
   @Override
-  protected void zipDir(File dir, ZipOutputStream out, String path, int mode,
+  protected void zipDir(File dir,
+      @SuppressWarnings("unused") ZipOutputStream out, String path, int mode,
       ZipExtraField[] extra) throws IOException {
     long thisTouchTime = (dir == null ? 0L : dir.lastModified());
     String dirName = (dir == null ? "<null>" : dir.getAbsolutePath());
@@ -151,7 +156,8 @@ public class LatestTimeJar extends Jar {
   }
 
   @Override
-  protected void zipFile(InputStream in, ZipOutputStream out, String path,
+  protected void zipFile(InputStream in,
+      @SuppressWarnings("unused") ZipOutputStream out, String path,
       long lastModified, File fromArchive, int mode) throws IOException {
 
     String desc = (fromArchive == null ? "file" : "file from "
