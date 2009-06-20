@@ -16,35 +16,26 @@
 
 package com.google.code.gwt.storage.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-
 /**
- * Implements the HTML5 Storage interface.
+ * This is the HTML5 Storage implementation according to the <a
+ * href="http://www.w3.org/TR/webstorage/#storage-0">standard
+ * recommendation</a>.
  * 
  * <p>
- * You can obtain a Storage by either invoking {@link #getLocalStorage()} or
- * {@link #getSessionStorage()}.
+ * Never use this class directly, instead use {@link Storage}.
  * </p>
  * 
  * @see <a href="http://www.w3.org/TR/webstorage/#storage-0">W3C Web Storage -
  *      Storage</a>
- * @see <a
- *      href="http://devworld.apple.com/safari/library/documentation/iPhone/Conceptual/SafariJSDatabaseGuide/Name-ValueStorage/Name-ValueStorage.html">Safari
- *      Client-Side Storage and Offline Applications Programming Guide -
- *      Key-Value Storage</a>
- * @see <a href="http://quirksmode.org/dom/html5.html#t00">Quirksmode.org -
- *      HTML5 Compatibility - Storage</a>
+ * 
  * @author bguijt
  */
-public final class Storage extends JavaScriptObject {
-
-  private static final StorageImpl impl = GWT.create(StorageImpl.class);
+public class StorageImpl {
 
   /**
    * This class can never be instantiated by itself.
    */
-  protected Storage() {
+  protected StorageImpl() {
   }
 
   /**
@@ -60,9 +51,9 @@ public final class Storage extends JavaScriptObject {
    *      Storage - localStorage</a>
    * @return the localStorage instance.
    */
-  public static Storage getLocalStorage() {
-    return impl.getLocalStorage();
-  };
+  public native Storage getLocalStorage() /*-{
+    return $wnd.localStorage;
+  }-*/;
 
   /**
    * Returns a Session Storage.
@@ -77,9 +68,9 @@ public final class Storage extends JavaScriptObject {
    *      Storage - sessionStorage</a>
    * @return the sessionStorage instance.
    */
-  public static Storage getSessionStorage() {
-    return impl.getSessionStorage();
-  }
+  public native Storage getSessionStorage() /*-{
+    return $wnd.sessionStorage;
+  }-*/;
 
   /**
    * Registers an event handler for StorageEvents.
@@ -88,8 +79,20 @@ public final class Storage extends JavaScriptObject {
    *      Storage - the storage event</a>
    * @param handler
    */
-  public static void addStorageEventHandler(StorageEventHandler handler) {
-    impl.addStorageEventHandler(handler);
+  public native void addStorageEventHandler(StorageEventHandler handler) /*-{
+    $doc.body.addEventListener(
+      "storage",
+      function(event) {
+        @com.google.code.gwt.storage.client.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEventHandler;Lcom/google/code/gwt/storage/client/StorageEvent;) (handler, event);
+      },
+      false
+    );
+  }-*/;
+
+  @SuppressWarnings("unused")
+  private static final void handleStorageEvent(StorageEventHandler handler,
+      StorageEvent event) {
+    handler.onStorageChange(event);
   }
 
   /**
@@ -99,9 +102,9 @@ public final class Storage extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-l">W3C Web
    *      Storage - Storage.length()</a>
    */
-  public int getLength() {
-    return impl.getLength(this);
-  }
+  public native int getLength(Storage storage) /*-{
+    return storage.length;
+  }-*/;
 
   /**
    * Returns the key at the specified index.
@@ -111,9 +114,9 @@ public final class Storage extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-key">W3C Web
    *      Storage - Storage.key(n)</a>
    */
-  public String key(int index) {
-    return impl.key(this, index);
-  }
+  public native String key(Storage storage, int index) /*-{
+    return storage.key(index);
+  }-*/;
 
   /**
    * Returns the item in the Storage associated with the specified key.
@@ -123,9 +126,9 @@ public final class Storage extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-getitem">W3C Web
    *      Storage - Storage.getItem(k)</a>
    */
-  public String getItem(String key) {
-    return impl.getItem(this, key);
-  }
+  public native String getItem(Storage storage, String key) /*-{
+    return storage.getItem(key);
+  }-*/;
 
   /**
    * Sets the value in the Storage associated with the specified key to the
@@ -136,9 +139,9 @@ public final class Storage extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-setitem">W3C Web
    *      Storage - Storage.setItem(k,v)</a>
    */
-  public void setItem(String key, String data) {
-    impl.setItem(this, key, data);
-  }
+  public native void setItem(Storage storage, String key, String data) /*-{
+    storage.setItem(key, data);
+  }-*/;
 
   /**
    * Removes the item in the Storage associated with the specified key.
@@ -147,9 +150,9 @@ public final class Storage extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-removeitem">W3C
    *      Web Storage - Storage.removeItem(k)</a>
    */
-  public void removeItem(String key) {
-    impl.removeItem(this, key);
-  };
+  public native void removeItem(Storage storage, String key) /*-{
+    storage.removeItem(key);
+  }-*/;
 
   /**
    * Removes all items in the Storage.
@@ -157,7 +160,7 @@ public final class Storage extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-clear">W3C Web
    *      Storage - Storage.clear()</a>
    */
-  public void clear() {
-    impl.clear(this);
-  }
+  public native void clear(Storage storage) /*-{
+    storage.clear();
+  }-*/;
 }

@@ -16,33 +16,19 @@
 
 package com.google.code.gwt.storage.client;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * Represent a Storage Event.
- * 
- * <p>
- * A Storage Event is fired when a storage area changes, as described in these
- * two sections (for <a
- * href="http://www.w3.org/TR/webstorage/#sessionStorageEvent">session
- * storage</a>, for <a
- * href="http://www.w3.org/TR/webstorage/#localStorageEvent">local storage</a>).
- * </p>
+ * Sefault implementation of a StorageEvent according to W3C spec.
  * 
  * @author bguijt
- * @see StorageEventHandler
- * @see <a href="http://www.w3.org/TR/webstorage/#event-definition">W3C Web
- *      Storage - StorageEvent</a>
- * @see <a
- *      href="https://developer.apple.com/safari/library/documentation/AppleApplications/Reference/WebKitDOMRef/StorageEvent_idl/Classes/StorageEvent/index.html">Safari
- *      StorageEvent reference</a>
+ * 
+ * @see <a href="http://quirksmode.org/dom/html5.html#t10">Quirksmode.org -
+ *      HTML5 Storage</a>
  */
-public final class StorageEvent extends JavaScriptObject {
+public class StorageEventImpl {
 
-  private static final StorageEventImpl impl = GWT.create(StorageEventImpl.class);
-
-  protected StorageEvent() {
+  protected StorageEventImpl() {
   }
 
   /**
@@ -52,9 +38,9 @@ public final class StorageEvent extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storageevent-key">W3C
    *      Web Storage - StorageEvent.key</a>
    */
-  public final String getKey() {
-    return impl.getKey(this);
-  }
+  public native String getKey(StorageEvent se) /*-{
+    return se.key;
+  }-*/;
 
   /**
    * Returns the old value of the key being changed.
@@ -64,9 +50,9 @@ public final class StorageEvent extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-storageevent-oldvalue">W3C
    *      Web Storage - StorageEvent.oldValue</a>
    */
-  public final String getOldValue() {
-    return impl.getOldValue(this);
-  }
+  public native String getOldValue(StorageEvent se) /*-{
+    return se.oldValue;
+  }-*/;
 
   /**
    * Returns the new value of the key being changed.
@@ -76,9 +62,9 @@ public final class StorageEvent extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-storageevent-newvalue">W3C
    *      Web Storage - StorageEvent.newValue</a>
    */
-  public final String getNewValue() {
-    return impl.getNewValue(this);
-  }
+  public native String getNewValue(StorageEvent se) /*-{
+    return se.newValue;
+  }-*/;
 
   /**
    * Returns the address of the document whose key changed.
@@ -87,9 +73,9 @@ public final class StorageEvent extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storageevent-url">W3C
    *      Web Storage - StorageEvent.url</a>
    */
-  public final String getUrl() {
-    return impl.getUrl(this);
-  }
+  public native String getUrl(StorageEvent se) /*-{
+    return se.url;
+  }-*/;
 
   /**
    * Returns the WindowProxy object of the browsing context of the document
@@ -100,9 +86,9 @@ public final class StorageEvent extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storageevent-source">W3C
    *      Web Storage - StorageEvent.source</a>
    */
-  public JavaScriptObject getSource() {
-    return impl.getSource(this);
-  }
+  public native JavaScriptObject getSource(StorageEvent se) /*-{
+    return se.source;
+  }-*/;
 
   /**
    * Returns the {@link Storage} object that was affected.
@@ -112,7 +98,7 @@ public final class StorageEvent extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-storageevent-storagearea">W3C
    *      Web Storage - StorageEvent.storageArea</a>
    */
-  public final Storage getStorageArea() {
-    return impl.getStorageArea(this);
-  }
+  public native Storage getStorageArea(StorageEvent se) /*-{
+    return se.storageArea;
+  }-*/;
 }

@@ -15,6 +15,8 @@
  */
 package com.google.code.gwt.storage.sample.hellostorage.client;
 
+import java.util.Date;
+
 import com.google.code.gwt.storage.client.Storage;
 import com.google.code.gwt.storage.client.StorageEvent;
 import com.google.code.gwt.storage.client.StorageEventHandler;
@@ -50,15 +52,15 @@ public class HelloStorage implements EntryPoint {
     
     StorageEventHandler handler = new StorageEventHandler() {
       public void onStorageChange(StorageEvent event) {
-        eventLabel.setText("StorageEvent: key=" + event.getKey() + ", oldValue=" + event.getOldValue() + ", newValue=" + event.getNewValue() + ", url=" + event.getUrl());
+        eventLabel.setText("StorageEvent: key=" + event.getKey() + ", oldValue=" + event.getOldValue() + ", newValue=" + event.getNewValue() + ", url=" + event.getUrl() + ", timestamp=" + new Date());
       }
     };
     
     Storage local = Storage.getLocalStorage();
-    local.addStorageEventHandler(handler);
+    Storage.addStorageEventHandler(handler);
     
     Storage session = Storage.getSessionStorage();
-    session.addStorageEventHandler(handler);
+    Storage.addStorageEventHandler(handler);
     
     TabPanel tabs = new TabPanel();
     main.add(tabs);
@@ -91,6 +93,13 @@ public class HelloStorage implements EntryPoint {
       }
     }));
 
+    p.add(new Button("Clear storage", new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        storage.clear();
+        renderGrid(grid, storage);
+      }
+    }));
+    
     p.add(grid);
     
     return p;
