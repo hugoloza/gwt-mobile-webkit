@@ -57,7 +57,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  *      Client-Side Storage - SQL Basics</a>
  * @author bguijt
  */
-public class Database extends JavaScriptObject {
+public final class Database extends JavaScriptObject {
 
   private static final DatabaseImpl impl = GWT.create(DatabaseImpl.class);
 
@@ -77,7 +77,7 @@ public class Database extends JavaScriptObject {
    * @throws DatabaseException if the User Agent disallows Database access, or
    *           if the version is incorrect
    */
-  public final static Database openDatabase(String shortName, String version,
+  public static Database openDatabase(String shortName, String version,
       String displayName, int maxSizeBytes) throws DatabaseException {
     return impl.openDatabase(shortName, version, displayName, maxSizeBytes);
   }
@@ -91,7 +91,7 @@ public class Database extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-database-transaction">W3C
    *      Web Storage - transaction</a>
    */
-  public final void transaction(TransactionCallback callback) {
+  public void transaction(TransactionCallback callback) {
     impl.transaction(this, callback);
   }
 
@@ -104,7 +104,7 @@ public class Database extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-database-readtransaction">W3C
    *      Web Storage - readTransaction</a>
    */
-  public final void readTransaction(TransactionCallback callback) {
+  public void readTransaction(TransactionCallback callback) {
     impl.readTransaction(this, callback);
   }
 
@@ -115,7 +115,7 @@ public class Database extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-database-changeversion">W3C
    *      Web Storage - changeVersion</a>
    */
-  public final void changeVersion(String oldVersion, String newVersion,
+  public void changeVersion(String oldVersion, String newVersion,
       TransactionCallback callback) {
     impl.changeVersion(this, oldVersion, newVersion, callback);
   }
@@ -126,7 +126,7 @@ public class Database extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-database-version">W3C
    *      Web Storage - getVersion</a>
    */
-  public final String getVersion() {
+  public String getVersion() {
     return impl.getVersion(this);
   }
 }
