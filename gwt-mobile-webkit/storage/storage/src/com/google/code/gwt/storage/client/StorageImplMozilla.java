@@ -16,11 +16,13 @@
 
 package com.google.code.gwt.storage.client;
 
-
 /**
  * Mozilla-specific implementation of a Storage.
  * 
- * <p>Implementation of StorageEvents is incomplete for Mozilla. This class implements it consistent with Safari's behavior.</p>
+ * <p>
+ * Implementation of StorageEvents is incomplete for Mozilla. This class
+ * implements it consistent with Safari's behavior.
+ * </p>
  * 
  * @author bguijt
  */
@@ -32,14 +34,14 @@ public class StorageImplMozilla extends StorageImpl {
     storage.setItem(key, data);
     @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, data, storage);
   }-*/;
-  
+
   @Override
   public native void removeItem(Storage storage, String key) /*-{
     var oldValue = storage[key];
     storage.removeItem(key);
     @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, null, storage);
   }-*/;
-  
+
   @Override
   public native void clear(Storage storage) /*-{
     storage.clear();
@@ -47,14 +49,16 @@ public class StorageImplMozilla extends StorageImpl {
   }-*/;
 
   @SuppressWarnings("unused")
-  private static final void fireStorageEvent(String key, String oldValue, String newValue, Storage storage) {
+  private static final void fireStorageEvent(String key, String oldValue,
+      String newValue, Storage storage) {
     StorageEvent se = createStorageEvent(key, oldValue, newValue, storage);
     if (se != null) {
       handleStorageEvent(se);
     }
   }
-  
-  private static final native StorageEvent createStorageEvent(String key, String oldValue, String newValue, Storage storage) /*-{
+
+  private static final native StorageEvent createStorageEvent(String key,
+      String oldValue, String newValue, Storage storage) /*-{
     return {key: key, oldValue:oldValue, newValue:newValue, storageArea: storage, source: $wnd, url: $wnd.location.href};
   }-*/;
 

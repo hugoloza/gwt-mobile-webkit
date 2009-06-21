@@ -39,7 +39,7 @@ public class StorageImpl {
 
   protected static final List<StorageEventHandler> storageEventHandlers = new ArrayList<StorageEventHandler>();
   protected static JavaScriptObject jsHandler;
-  
+
   /**
    * This class can never be instantiated by itself.
    */
@@ -93,15 +93,16 @@ public class StorageImpl {
       addStorageEventHandler0();
     }
   }
+
   protected native void addStorageEventHandler0() /*-{
     @com.google.code.gwt.storage.client.StorageImpl::jsHandler = function(event) {
       @com.google.code.gwt.storage.client.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
     };
     $doc.body.addEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
   }-*/;
-  
+
   protected static final void handleStorageEvent(StorageEvent event) {
-    for (int i=0; i<storageEventHandlers.size(); i++) {
+    for (int i = 0; i < storageEventHandlers.size(); i++) {
       StorageEventHandler handler = storageEventHandlers.get(i);
       handler.onStorageChange(event);
     }
@@ -113,6 +114,7 @@ public class StorageImpl {
       removeStorageEventHandler0();
     }
   }
+
   protected native void removeStorageEventHandler0() /*-{
     $doc.body.removeEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
   }-*/;

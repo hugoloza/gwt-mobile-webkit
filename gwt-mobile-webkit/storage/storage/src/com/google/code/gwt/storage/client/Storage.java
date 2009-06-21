@@ -102,7 +102,7 @@ public final class Storage extends JavaScriptObject {
   public static void removeStorageEventHandler(StorageEventHandler handler) {
     impl.removeStorageEventHandler(handler);
   }
-  
+
   /**
    * Returns the number of items in this Storage.
    * 
