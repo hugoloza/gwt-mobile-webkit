@@ -18,13 +18,14 @@ package com.google.code.gwt.storage.client;
 
 import com.google.gwt.core.client.GWT;
 
-
 /**
  * IE8-specific implementation of the Web Storage.
  * 
  * @author bguijt
  * 
- * @see <a href="http://msdn.microsoft.com/en-us/library/cc197062(VS.85).aspx">MSDN - Introduction to DOM Storage</a>
+ * @see <a
+ *      href="http://msdn.microsoft.com/en-us/library/cc197062(VS.85).aspx">MSDN
+ *      - Introduction to DOM Storage</a>
  */
 public class StorageImplIE8 extends StorageImpl {
 
@@ -33,27 +34,39 @@ public class StorageImplIE8 extends StorageImpl {
   static String eventNewValue;
   static String eventUrl;
   static Storage eventSource;
-  
+
   @Override
   public void setItem(Storage storage, String key, String data) {
-    String oldValue = getItem(storage, key);
+    String oldValue = null;
+    if (storageEventHandlers.size() > 0) {
+      oldValue = getItem(storage, key);
+    }
     super.setItem(storage, key, data);
-    prepareStorageEventData(key, oldValue, data, storage);
+    if (storageEventHandlers.size() > 0) {
+      prepareStorageEventData(key, oldValue, data, storage);
+    }
   }
 
   @Override
   public void removeItem(Storage storage, String key) {
-    String oldValue = getItem(storage, key);
+    String oldValue = null;
+    if (storageEventHandlers.size() > 0) {
+      oldValue = getItem(storage, key);
+    }
     super.removeItem(storage, key);
-    prepareStorageEventData(key, oldValue, null, storage);
+    if (storageEventHandlers.size() > 0) {
+      prepareStorageEventData(key, oldValue, null, storage);
+    }
   }
-  
+
   @Override
   public void clear(Storage storage) {
     super.clear(storage);
-    prepareStorageEventData("", null, null, storage);
+    if (storageEventHandlers.size() > 0) {
+      prepareStorageEventData("", null, null, storage);
+    }
   }
-  
+
   private void prepareStorageEventData(String key, String oldValue,
       String newValue, Storage storage) {
     eventKey = key;
@@ -62,7 +75,7 @@ public class StorageImplIE8 extends StorageImpl {
     eventSource = storage;
     eventUrl = GWT.getHostPageBaseURL();
   }
-  
+
   @Override
   protected native void addStorageEventHandler0() /*-{
     @com.google.code.gwt.storage.client.StorageImpl::jsHandler = function(event) {
@@ -70,7 +83,7 @@ public class StorageImplIE8 extends StorageImpl {
     };
     $doc.onstorage = @com.google.code.gwt.storage.client.StorageImpl::jsHandler;
   }-*/;
-  
+
   @Override
   protected native void removeStorageEventHandler0() /*-{
     $doc.onstorage = null;

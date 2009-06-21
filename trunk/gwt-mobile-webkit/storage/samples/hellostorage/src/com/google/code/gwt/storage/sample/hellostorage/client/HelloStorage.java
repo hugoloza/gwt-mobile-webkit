@@ -46,21 +46,25 @@ public class HelloStorage implements EntryPoint {
     VerticalPanel main = new VerticalPanel();
     RootPanel.get().add(main);
     RootPanel.get().setWidgetPosition(main, 10, 10);
-    
+
     final Label eventLabel = new Label("[StorageEvent info]");
     main.add(eventLabel);
-    
+
     StorageEventHandler handler = new StorageEventHandler() {
       public void onStorageChange(StorageEvent event) {
-        eventLabel.setText("StorageEvent: key=" + event.getKey() + ", oldValue=" + event.getOldValue() + ", newValue=" + event.getNewValue() + ", url=" + event.getUrl() + ", timestamp=" + new Date());
-        //eventLabel.setText("StorageEvent: attrs=" + event.enumerateAttributes() + ", timestamp=" + new Date());
+        eventLabel.setText("StorageEvent: key=" + event.getKey()
+            + ", oldValue=" + event.getOldValue() + ", newValue="
+            + event.getNewValue() + ", url=" + event.getUrl() + ", timestamp="
+            + new Date());
+        // eventLabel.setText("StorageEvent: attrs=" +
+        // event.enumerateAttributes() + ", timestamp=" + new Date());
       }
     };
-    
+
     Storage local = Storage.getLocalStorage();
     Storage session = Storage.getSessionStorage();
     Storage.addStorageEventHandler(handler);
-    
+
     TabPanel tabs = new TabPanel();
     main.add(tabs);
     tabs.add(createStorageTab(local), "localStorage");
@@ -73,9 +77,9 @@ public class HelloStorage implements EntryPoint {
     grid.setCellPadding(5);
     grid.setBorderWidth(1);
     renderGrid(grid, storage);
-    
+
     VerticalPanel p = new VerticalPanel();
-    
+
     HorizontalPanel hp = new HorizontalPanel();
     p.add(hp);
     hp.add(new Label("key:"));
@@ -98,19 +102,19 @@ public class HelloStorage implements EntryPoint {
         renderGrid(grid, storage);
       }
     }));
-    
+
     p.add(grid);
-    
+
     return p;
   }
-  
+
   private static void renderGrid(Grid grid, Storage storage) {
     grid.clear();
     grid.resize(storage.getLength() + 1, 3);
     grid.setWidget(0, 0, new HTML("<b>Key</b>"));
     grid.setWidget(0, 1, new HTML("<b>Data</b>"));
-    for (int i=1; i<=storage.getLength(); i++) {
-      String key = storage.key(i-1);
+    for (int i = 1; i <= storage.getLength(); i++) {
+      String key = storage.key(i - 1);
       grid.setWidget(i, 0, new Label(key));
       grid.setWidget(i, 1, new Label(storage.getItem(key)));
       grid.setWidget(i, 2, new DeleteButton(storage, key, grid));
@@ -121,7 +125,7 @@ public class HelloStorage implements EntryPoint {
     private Storage s;
     private String key;
     private Grid grid;
-    
+
     DeleteButton(Storage s, String key, Grid grid) {
       this.s = s;
       this.key = key;

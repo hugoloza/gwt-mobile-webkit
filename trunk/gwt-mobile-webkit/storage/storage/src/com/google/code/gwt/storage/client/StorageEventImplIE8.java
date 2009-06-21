@@ -16,28 +16,33 @@
 
 package com.google.code.gwt.storage.client;
 
+/**
+ * IE8-specific implementation of a StorageEvent.
+ * 
+ * @author bguijt
+ */
 public class StorageEventImplIE8 extends StorageEventImpl {
 
   @Override
   public String getKey(StorageEvent se) {
     return StorageImplIE8.eventKey;
   }
-  
+
   @Override
   public String getOldValue(StorageEvent se) {
     return StorageImplIE8.eventOldValue;
   }
-  
+
   @Override
   public String getNewValue(StorageEvent se) {
     return StorageImplIE8.eventNewValue;
   }
-  
+
   @Override
   public Storage getStorageArea(StorageEvent se) {
     return StorageImplIE8.eventSource;
   }
-  
+
   @Override
   public String getUrl(StorageEvent se) {
     return StorageImplIE8.eventUrl;
