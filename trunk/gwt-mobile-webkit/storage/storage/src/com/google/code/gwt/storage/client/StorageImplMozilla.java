@@ -16,48 +16,41 @@
 
 package com.google.code.gwt.storage.client;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Firefox-specific implementation of a Storage.
+ * Mozilla-specific implementation of a Storage.
  * 
- * <p>Implementation of StorageEvents is incomplete for Firefox. This class implements it consistent with Safari's behavior.</p>
+ * <p>Implementation of StorageEvents is incomplete for Mozilla. This class implements it consistent with Safari's behavior.</p>
  * 
  * @author bguijt
  */
-public class StorageImplGecko18 extends StorageImpl {
+public class StorageImplMozilla extends StorageImpl {
 
-  private static final List<StorageEventHandler> storageEventHandlers = new ArrayList<StorageEventHandler>();
-  
   @Override
   public native void setItem(Storage storage, String key, String data) /*-{
     var oldValue = storage[key];
     storage.setItem(key, data);
-    @com.google.code.gwt.storage.client.StorageImplGecko18::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, data, storage);
+    @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, data, storage);
   }-*/;
   
   @Override
   public native void removeItem(Storage storage, String key) /*-{
     var oldValue = storage[key];
     storage.removeItem(key);
-    @com.google.code.gwt.storage.client.StorageImplGecko18::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, null, storage);
+    @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, null, storage);
   }-*/;
   
   @Override
   public native void clear(Storage storage) /*-{
     storage.clear();
-    @com.google.code.gwt.storage.client.StorageImplGecko18::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) ("", null, null, storage);
+    @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) ("", null, null, storage);
   }-*/;
 
   @SuppressWarnings("unused")
   private static final void fireStorageEvent(String key, String oldValue, String newValue, Storage storage) {
     StorageEvent se = createStorageEvent(key, oldValue, newValue, storage);
     if (se != null) {
-      for (int i=0; i<storageEventHandlers.size(); i++) {
-        StorageEventHandler handler = storageEventHandlers.get(i);
-        handler.onStorageChange(se);
-      }
+      handleStorageEvent(se);
     }
   }
   

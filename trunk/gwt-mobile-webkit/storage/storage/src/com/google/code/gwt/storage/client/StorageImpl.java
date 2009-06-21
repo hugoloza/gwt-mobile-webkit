@@ -16,6 +16,11 @@
 
 package com.google.code.gwt.storage.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.JavaScriptObject;
+
 /**
  * This is the HTML5 Storage implementation according to the <a
  * href="http://www.w3.org/TR/webstorage/#storage-0">standard
@@ -32,6 +37,9 @@ package com.google.code.gwt.storage.client;
  */
 public class StorageImpl {
 
+  protected static final List<StorageEventHandler> storageEventHandlers = new ArrayList<StorageEventHandler>();
+  protected static JavaScriptObject jsHandler;
+  
   /**
    * This class can never be instantiated by itself.
    */
@@ -79,21 +87,35 @@ public class StorageImpl {
    *      Storage - the storage event</a>
    * @param handler
    */
-  public native void addStorageEventHandler(StorageEventHandler handler) /*-{
-    $doc.body.addEventListener(
-      "storage",
-      function(event) {
-        @com.google.code.gwt.storage.client.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEventHandler;Lcom/google/code/gwt/storage/client/StorageEvent;) (handler, event);
-      },
-      false
-    );
-  }-*/;
-
-  @SuppressWarnings("unused")
-  private static final void handleStorageEvent(StorageEventHandler handler,
-      StorageEvent event) {
-    handler.onStorageChange(event);
+  public void addStorageEventHandler(StorageEventHandler handler) {
+    storageEventHandlers.add(handler);
+    if (storageEventHandlers.size() == 1) {
+      addStorageEventHandler0();
+    }
   }
+  protected native void addStorageEventHandler0() /*-{
+    @com.google.code.gwt.storage.client.StorageImpl::jsHandler = function(event) {
+      @com.google.code.gwt.storage.client.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
+    };
+    $doc.body.addEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
+  }-*/;
+  
+  protected static final void handleStorageEvent(StorageEvent event) {
+    for (int i=0; i<storageEventHandlers.size(); i++) {
+      StorageEventHandler handler = storageEventHandlers.get(i);
+      handler.onStorageChange(event);
+    }
+  }
+
+  public void removeStorageEventHandler(StorageEventHandler handler) {
+    storageEventHandlers.remove(handler);
+    if (storageEventHandlers.size() == 0) {
+      removeStorageEventHandler0();
+    }
+  }
+  protected native void removeStorageEventHandler0() /*-{
+    $doc.body.removeEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
+  }-*/;
 
   /**
    * Returns the number of items in this Storage.
