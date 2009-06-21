@@ -52,7 +52,7 @@ public final class StorageEvent extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storageevent-key">W3C
    *      Web Storage - StorageEvent.key</a>
    */
-  public final String getKey() {
+  public String getKey() {
     return impl.getKey(this);
   }
 
@@ -64,7 +64,7 @@ public final class StorageEvent extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-storageevent-oldvalue">W3C
    *      Web Storage - StorageEvent.oldValue</a>
    */
-  public final String getOldValue() {
+  public String getOldValue() {
     return impl.getOldValue(this);
   }
 
@@ -76,7 +76,7 @@ public final class StorageEvent extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-storageevent-newvalue">W3C
    *      Web Storage - StorageEvent.newValue</a>
    */
-  public final String getNewValue() {
+  public String getNewValue() {
     return impl.getNewValue(this);
   }
 
@@ -87,7 +87,7 @@ public final class StorageEvent extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storageevent-url">W3C
    *      Web Storage - StorageEvent.url</a>
    */
-  public final String getUrl() {
+  public String getUrl() {
     return impl.getUrl(this);
   }
 
@@ -112,7 +112,18 @@ public final class StorageEvent extends JavaScriptObject {
    *      href="http://www.w3.org/TR/webstorage/#dom-storageevent-storagearea">W3C
    *      Web Storage - StorageEvent.storageArea</a>
    */
-  public final Storage getStorageArea() {
+  public Storage getStorageArea() {
     return impl.getStorageArea(this);
   }
+  
+  public native String enumerateAttributes() /*-{
+    var names = "";
+    for (var key in this) {
+      if (names.length > 0) {
+        names += ", ";
+      }
+      names += key;
+    }
+    return names;
+  }-*/;
 }

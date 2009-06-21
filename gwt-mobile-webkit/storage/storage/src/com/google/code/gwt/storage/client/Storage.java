@@ -93,6 +93,17 @@ public final class Storage extends JavaScriptObject {
   }
 
   /**
+   * De-registers an event handler for StorageEvents.
+   * 
+   * @see <a href="http://www.w3.org/TR/webstorage/#the-storage-event">W3C Web
+   *      Storage - the storage event</a>
+   * @param handler
+   */
+  public static void removeStorageEventHandler(StorageEventHandler handler) {
+    impl.removeStorageEventHandler(handler);
+  }
+  
+  /**
    * Returns the number of items in this Storage.
    * 
    * @return number of items in this Storage

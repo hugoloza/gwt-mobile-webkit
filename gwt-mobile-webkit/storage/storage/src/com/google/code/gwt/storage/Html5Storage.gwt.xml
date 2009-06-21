@@ -19,13 +19,31 @@
   <inherits name="com.google.gwt.core.Core" />
   <inherits name="com.google.gwt.user.UserAgent" />
   
-  <replace-with class="com.google.code.gwt.storage.client.StorageImplGecko18">
+  <replace-with class="com.google.code.gwt.storage.client.StorageImplMozilla">
     <when-type-is class="com.google.code.gwt.storage.client.StorageImpl" />
     <when-property-is name="user.agent" value="gecko1_8" />
+  </replace-with>
+  
+  <replace-with class="com.google.code.gwt.storage.client.StorageImplIE8">
+    <when-type-is class="com.google.code.gwt.storage.client.StorageImpl" />
+    <any>
+      <when-property-is name="user.agent" value="ie8" />
+      <!-- If you use GWT 1.6 or earlier: -->
+      <when-property-is name="user.agent" value="ie6" />
+    </any>
   </replace-with>
   
   <replace-with class="com.google.code.gwt.storage.client.StorageEventImplSafari">
     <when-type-is class="com.google.code.gwt.storage.client.StorageEventImpl" />
     <when-property-is name="user.agent" value="safari" />
+  </replace-with>
+  
+  <replace-with class="com.google.code.gwt.storage.client.StorageEventImplIE8">
+    <when-type-is class="com.google.code.gwt.storage.client.StorageEventImpl" />
+    <any>
+      <when-property-is name="user.agent" value="ie8" />
+      <!-- If you use GWT 1.6 or earlier: -->
+      <when-property-is name="user.agent" value="ie6" />
+    </any>
   </replace-with>
 </module>
