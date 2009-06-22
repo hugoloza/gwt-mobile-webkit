@@ -1,5 +1,5 @@
 <project name="Storage API Library for GWT" default="build" basedir=".">
-    <property name="api.version" value="0.9.1" />
+    <property name="api.version" value="1.0.0" />
 	<property name="gwt.root" location="." />
 	<property name="project.tail" value="" />
 	<import file="${gwt.root}/common.ant.xml" />

@@ -29,6 +29,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -45,7 +46,8 @@ public class HelloStorage implements EntryPoint {
 
   private List<StorageEventHandler> handlers = new ArrayList<StorageEventHandler>();
   private TextArea eventArea;
-
+  private Label handlersLabel;
+  
   /**
    * This is the entry point method.
    */
@@ -53,20 +55,25 @@ public class HelloStorage implements EntryPoint {
     VerticalPanel main = new VerticalPanel();
     RootPanel.get().add(main);
     RootPanel.get().setWidgetPosition(main, 10, 10);
-
-    HorizontalPanel eventPanel = new HorizontalPanel();
-    main.add(eventPanel);
-
+    
     eventArea = new TextArea();
     eventArea.setStyleName("widePanel");
     eventArea.setHeight("60px");
     eventArea.setText("[StorageEvent info]");
-    eventPanel.add(eventArea);
+    main.add(eventArea);
+
+    HorizontalPanel eventPanel = new HorizontalPanel();
+    eventPanel.setStyleName("widePanel");
+    main.add(eventPanel);
+    
+    handlersLabel = new Label("0");
+    
     eventPanel.add(new Button("Add a Handler", new ClickHandler() {
       public void onClick(ClickEvent event) {
         StorageEventHandler handler = new MyHandler(handlers.size() + 1);
         handlers.add(handler);
         Storage.addStorageEventHandler(handler);
+        handlersLabel.setText(String.valueOf(handlers.size()));
       }
     }));
     eventPanel.add(new Button("Delete a Handler", new ClickHandler() {
@@ -74,10 +81,13 @@ public class HelloStorage implements EntryPoint {
         if (handlers.size() > 0) {
           StorageEventHandler handler = handlers.remove(handlers.size() - 1);
           Storage.removeStorageEventHandler(handler);
+          handlersLabel.setText(String.valueOf(handlers.size()));
         }
       }
     }));
-
+    eventPanel.add(handlersLabel);
+    eventPanel.setCellHorizontalAlignment(handlersLabel, HasHorizontalAlignment.ALIGN_RIGHT);
+    
     Storage local = Storage.getLocalStorage();
     Storage session = Storage.getSessionStorage();
     if (local == null) {
