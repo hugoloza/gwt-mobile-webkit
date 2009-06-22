@@ -15,7 +15,9 @@
  */
 package com.google.code.gwt.storage.sample.hellostorage.client;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.google.code.gwt.storage.client.Storage;
 import com.google.code.gwt.storage.client.StorageEvent;
@@ -23,6 +25,7 @@ import com.google.code.gwt.storage.client.StorageEventHandler;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -30,6 +33,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,6 +43,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class HelloStorage implements EntryPoint {
 
+  private List<StorageEventHandler> handlers = new ArrayList<StorageEventHandler>();
+  private TextArea eventArea;
+
   /**
    * This is the entry point method.
    */
@@ -47,23 +54,36 @@ public class HelloStorage implements EntryPoint {
     RootPanel.get().add(main);
     RootPanel.get().setWidgetPosition(main, 10, 10);
 
-    final Label eventLabel = new Label("[StorageEvent info]");
-    main.add(eventLabel);
+    HorizontalPanel eventPanel = new HorizontalPanel();
+    main.add(eventPanel);
 
-    StorageEventHandler handler = new StorageEventHandler() {
-      public void onStorageChange(StorageEvent event) {
-        eventLabel.setText("StorageEvent: key=" + event.getKey()
-            + ", oldValue=" + event.getOldValue() + ", newValue="
-            + event.getNewValue() + ", url=" + event.getUrl() + ", timestamp="
-            + new Date());
-        // eventLabel.setText("StorageEvent: attrs=" +
-        // event.enumerateAttributes() + ", timestamp=" + new Date());
+    eventArea = new TextArea();
+    eventArea.setStyleName("widePanel");
+    eventArea.setHeight("60px");
+    eventArea.setText("[StorageEvent info]");
+    eventPanel.add(eventArea);
+    eventPanel.add(new Button("Add a Handler", new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        StorageEventHandler handler = new MyHandler(handlers.size() + 1);
+        handlers.add(handler);
+        Storage.addStorageEventHandler(handler);
       }
-    };
+    }));
+    eventPanel.add(new Button("Delete a Handler", new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        if (handlers.size() > 0) {
+          StorageEventHandler handler = handlers.remove(handlers.size() - 1);
+          Storage.removeStorageEventHandler(handler);
+        }
+      }
+    }));
 
     Storage local = Storage.getLocalStorage();
     Storage session = Storage.getSessionStorage();
-    Storage.addStorageEventHandler(handler);
+    if (local == null) {
+      Window.alert("Web Storage NOT supported in this browser!");
+      return;
+    }
 
     TabPanel tabs = new TabPanel();
     main.add(tabs);
@@ -137,6 +157,23 @@ public class HelloStorage implements EntryPoint {
     public void onClick(ClickEvent event) {
       s.removeItem(key);
       renderGrid(grid, s);
+    }
+  }
+
+  private class MyHandler implements StorageEventHandler {
+    private int nr;
+
+    private MyHandler(int nr) {
+      this.nr = nr;
+    }
+
+    public void onStorageChange(StorageEvent event) {
+      eventArea.setText(eventArea.getText() + "\nStorageEvent: Handler=" + nr
+          + ", key=" + event.getKey() + ", oldValue=" + event.getOldValue()
+          + ", newValue=" + event.getNewValue() + ", url=" + event.getUrl()
+          + ", timestamp=" + new Date());
+      // eventArea.setText("StorageEvent: attrs=" +
+      // event.enumerateAttributes() + ", timestamp=" + new Date());
     }
   }
 }

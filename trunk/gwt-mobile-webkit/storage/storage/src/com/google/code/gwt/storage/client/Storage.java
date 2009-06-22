@@ -27,6 +27,11 @@ import com.google.gwt.core.client.JavaScriptObject;
  * {@link #getSessionStorage()}.
  * </p>
  * 
+ * <p>
+ * If Web Storage is NOT supported in the browser, these methods return
+ * <code>null</code>.
+ * </p>
+ * 
  * @see <a href="http://www.w3.org/TR/webstorage/#storage-0">W3C Web Storage -
  *      Storage</a>
  * @see <a
@@ -58,7 +63,8 @@ public final class Storage extends JavaScriptObject {
    * 
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-localstorage">W3C Web
    *      Storage - localStorage</a>
-   * @return the localStorage instance.
+   * @return the localStorage instance, or <code>null</code> if Web Storage is
+   *         NOT supported.
    */
   public static Storage getLocalStorage() {
     return impl.getLocalStorage();
@@ -75,7 +81,8 @@ public final class Storage extends JavaScriptObject {
    * 
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-sessionstorage">W3C Web
    *      Storage - sessionStorage</a>
-   * @return the sessionStorage instance.
+   * @return the sessionStorage instance, or <code>null</code> if Web Storage is
+   *         NOT supported.
    */
   public static Storage getSessionStorage() {
     return impl.getSessionStorage();
