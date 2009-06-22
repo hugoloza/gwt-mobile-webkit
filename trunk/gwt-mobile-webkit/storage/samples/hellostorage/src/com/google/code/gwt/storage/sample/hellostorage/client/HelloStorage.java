@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.google.code.gwt.storage.sample.hellostorage.client;
 
 import java.util.ArrayList;
@@ -66,14 +67,14 @@ public class HelloStorage implements EntryPoint {
     eventPanel.setStyleName("widePanel");
     main.add(eventPanel);
     
-    handlersLabel = new Label("0");
+    handlersLabel = new Label("#Handlers: 0");
     
     eventPanel.add(new Button("Add a Handler", new ClickHandler() {
       public void onClick(ClickEvent event) {
         StorageEventHandler handler = new MyHandler(handlers.size() + 1);
         handlers.add(handler);
         Storage.addStorageEventHandler(handler);
-        handlersLabel.setText(String.valueOf(handlers.size()));
+        handlersLabel.setText("#Handlers: " + handlers.size());
       }
     }));
     eventPanel.add(new Button("Delete a Handler", new ClickHandler() {
@@ -81,7 +82,7 @@ public class HelloStorage implements EntryPoint {
         if (handlers.size() > 0) {
           StorageEventHandler handler = handlers.remove(handlers.size() - 1);
           Storage.removeStorageEventHandler(handler);
-          handlersLabel.setText(String.valueOf(handlers.size()));
+          handlersLabel.setText("#Handlers: " + handlers.size());
         }
       }
     }));
