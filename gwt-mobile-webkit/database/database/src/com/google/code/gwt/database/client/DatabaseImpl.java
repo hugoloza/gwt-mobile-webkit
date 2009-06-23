@@ -28,6 +28,10 @@ public class DatabaseImpl {
 
   protected DatabaseImpl() {}
   
+  public native boolean isSupported() /*-{
+    return typeof $wnd.openDatabase == "function";
+  }-*/;
+  
   public Database openDatabase(String shortName, String version,
       String displayName, int maxSizeBytes) throws DatabaseException {
     try {

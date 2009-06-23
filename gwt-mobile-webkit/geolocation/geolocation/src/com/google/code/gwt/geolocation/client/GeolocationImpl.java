@@ -28,6 +28,10 @@ public class GeolocationImpl {
   protected GeolocationImpl() {
   }
 
+  public native boolean isSupported() /*-{
+    return typeof $wnd.navigator.geolocation != "undefined";
+  }-*/;
+
   /**
    * Returns the Geolocation instance.
    * 
