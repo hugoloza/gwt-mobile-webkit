@@ -56,7 +56,7 @@ public final class Storage extends JavaScriptObject {
    * Returns <code>true</code> if the Storage API is supported on the running
    * platform.
    */
-  public boolean isSupported() {
+  public static boolean isSupported() {
     return impl.isSupported();
   }
 

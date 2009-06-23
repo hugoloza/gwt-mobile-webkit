@@ -25,7 +25,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @author bguijt
  * @see <a href="http://www.w3.org/TR/geolocation-API/">W3C Geolocation</a>
  */
-public class Geolocation extends JavaScriptObject {
+public final class Geolocation extends JavaScriptObject {
 
   private final static GeolocationImpl impl = GWT.create(GeolocationImpl.class);
 
@@ -36,14 +36,14 @@ public class Geolocation extends JavaScriptObject {
    * Returns <code>true</code> if the Geolocation API is supported on the
    * running platform.
    */
-  public boolean isSupported() {
+  public static boolean isSupported() {
     return impl.isSupported();
   }
 
   /**
    * Returns the Geolocation object.
    */
-  public final static Geolocation getGeolocation() {
+  public static Geolocation getGeolocation() {
     return impl.getGeolocation();
   }
 
@@ -56,7 +56,7 @@ public class Geolocation extends JavaScriptObject {
    *      href="http://www.w3.org/TR/geolocation-API/#get-current-position">W3C
    *      Geolocation API - Geolocation.getCurrentPosition</a>
    */
-  public final void getCurrentPosition(PositionCallback callback) {
+  public void getCurrentPosition(PositionCallback callback) {
     impl.getCurrentPosition(this, callback);
   }
 
@@ -70,7 +70,7 @@ public class Geolocation extends JavaScriptObject {
    *      href="http://www.w3.org/TR/geolocation-API/#get-current-position">W3C
    *      Geolocation API - Geolocation.getCurrentPosition</a>
    */
-  public final void getCurrentPosition(PositionCallback callback,
+  public void getCurrentPosition(PositionCallback callback,
       PositionOptions options) {
     impl.getCurrentPosition(this, callback, options);
   }
@@ -86,7 +86,7 @@ public class Geolocation extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/geolocation-API/#watch-position">W3C
    *      Geolocation API - Geolocation.watchPosition</a>
    */
-  public final int watchPosition(PositionCallback callback) {
+  public int watchPosition(PositionCallback callback) {
     return impl.watchPosition(this, callback);
   }
 
@@ -102,7 +102,7 @@ public class Geolocation extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/geolocation-API/#watch-position">W3C
    *      Geolocation API - Geolocation.watchPosition</a>
    */
-  public final int watchPosition(PositionCallback callback,
+  public int watchPosition(PositionCallback callback,
       PositionOptions options) {
     return impl.watchPosition(this, callback, options);
   }
@@ -114,7 +114,7 @@ public class Geolocation extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/geolocation-API/#clear-watch">W3C
    *      Geolocation API - Geolocation.clearWatch</a>
    */
-  public final void clearWatch(int watchId) {
+  public void clearWatch(int watchId) {
     impl.clearWatch(this, watchId);
   }
 }
