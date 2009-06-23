@@ -46,6 +46,10 @@ public class StorageImpl {
   protected StorageImpl() {
   }
 
+  public native boolean isSupported() /*-{
+    return typeof $wnd.localStorage != "undefined";
+  }-*/;
+
   /**
    * Returns a Local Storage.
    * 

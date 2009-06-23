@@ -65,6 +65,13 @@ public final class Database extends JavaScriptObject {
   }
 
   /**
+   * Returns <code>true</code> if the Database API is supported on the running platform.
+   */
+  public boolean isSupported() {
+    return impl.isSupported();
+  }
+
+  /**
    * Creates a handle to a Database instance.
    * 
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-opendatabase">W3C Web

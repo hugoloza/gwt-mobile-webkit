@@ -33,6 +33,14 @@ public class Geolocation extends JavaScriptObject {
   }
 
   /**
+   * Returns <code>true</code> if the Geolocation API is supported on the
+   * running platform.
+   */
+  public boolean isSupported() {
+    return impl.isSupported();
+  }
+
+  /**
    * Returns the Geolocation object.
    */
   public final static Geolocation getGeolocation() {
