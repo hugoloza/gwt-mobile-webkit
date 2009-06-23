@@ -39,6 +39,10 @@ public class HelloGeolocation implements EntryPoint {
 
     Label l1 = new Label("Obtaining Geolocation...");
     main.add(l1);
+    if (!Geolocation.isSupported()) {
+      l1.setText("Obtaining Geolocation... FAILED! Geolocation API is not supported.");
+      return;
+    }
     Geolocation geo = Geolocation.getGeolocation();
     if (geo == null) {
       l1.setText("Obtaining Geolocation... FAILED! Object is null.");
