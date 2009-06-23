@@ -17,10 +17,10 @@
 
 <module>
   <inherits name="com.google.gwt.core.Core" />
-  <!--inherits name="com.google.gwt.user.UserAgent" />
+  <inherits name="com.google.gwt.user.UserAgent" />
   
-  <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplSafari">
+  <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplOpera">
     <when-type-is class="com.google.code.gwt.geolocation.client.GeolocationImpl" />
-    <when-property-is name="user.agent" value="safari" />
-  </replace-with-->
+    <when-property-is name="user.agent" value="opera" />
+  </replace-with>
 </module>
