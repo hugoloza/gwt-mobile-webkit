@@ -67,7 +67,7 @@ public final class Database extends JavaScriptObject {
   /**
    * Returns <code>true</code> if the Database API is supported on the running platform.
    */
-  public boolean isSupported() {
+  public static boolean isSupported() {
     return impl.isSupported();
   }
 
