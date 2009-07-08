@@ -33,12 +33,16 @@ import com.google.gwt.core.ext.linker.ArtifactSet;
 import com.google.gwt.core.ext.linker.CompilationResult;
 import com.google.gwt.core.ext.linker.EmittedArtifact;
 import com.google.gwt.core.ext.linker.LinkerOrder;
+import com.google.gwt.core.ext.linker.PublicResource;
 import com.google.gwt.core.ext.linker.LinkerOrder.Order;
 import com.google.gwt.core.linker.IFrameLinker;
 
 /**
  * Creates an Application Cache Manifest file
- * <code>cache-manifest.nocache.txt</code> as per HTML5 spec.
+ * <code>cache-manifest.nocache.txt</code> as per HTML5 spec. Additionally, it
+ * adds a <a
+ * href="http://www.w3.org/TR/html5/semantics.html#attr-html-manifest">manifest
+ * attribute</a> to the html tag in the root HTML file.
  * 
  * <p>
  * If you need to add your own entries, ensure you have a template manifest in
@@ -81,6 +85,7 @@ import com.google.gwt.core.linker.IFrameLinker;
 @LinkerOrder(Order.POST)
 public class ApplicationCacheManifestLinker extends AbstractLinker {
 
+  private static final String MANIFEST = "cache-manifest.nocache.txt";
   private static final String TEMPLATE_RESOURCE = "/html5-cache-manifest.txt";
   private static final String CACHE_ENTRIES = "@CACHE_ENTRIES@";
   private static final String NETWORK_ENTRIES = "@NETWORK_ENTRIES@";
@@ -102,10 +107,22 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
     // Create a new ArtifactSet to return:
     ArtifactSet artifactSet = new ArtifactSet(artifacts);
 
+    // Find the root HTML file:
+    String htmlName = context.getModuleName();
+    int index = htmlName.lastIndexOf('.');
+    if (index > 0) {
+      htmlName = htmlName.substring(index + 1);
+    }
+    htmlName += ".html";
+
+    logger.log(TreeLogger.INFO, "Adding cache-manifest to " + htmlName);
+
     // Create a list of cacheable resources:
     SortedSet<String> cachePaths = new TreeSet<String>();
     SortedSet<String> networkPaths = new TreeSet<String>();
 
+    // Iterate over all emitted artifacts, and collect all
+    // cacheable- and networked artifacts:
     for (Artifact artifact : artifacts) {
       if (artifact instanceof CompilationResult) {
         final CompilationResult compilationResult = (CompilationResult) artifact;
@@ -118,6 +135,30 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
         NetworkSectionArtifact nsa = (NetworkSectionArtifact) artifact;
         networkPaths.add(nsa.getUrl());
       }
+      // We need to 'fix' the module's HTML file with a manifest attribute:
+      if (artifact instanceof PublicResource) {
+        PublicResource pr = (PublicResource) artifact;
+        if (pr.getPartialPath().equals(htmlName)) {
+          // module's html file found:
+          StringBuilder htmlSb = readResource(pr.getContents(logger), logger);
+          if (htmlSb != null && htmlSb.length() > 0) {
+            if (searchAndReplace(htmlSb, "<html", "<html manifest=\""
+                + MANIFEST + "\"")) {
+              logger.log(TreeLogger.INFO, "manifest='" + MANIFEST
+                  + "' attribute successfully added to HTML tag of resource '"
+                  + pr.getPartialPath() + "'.");
+              artifactSet.remove(pr);
+              artifactSet.add(emitString(logger, htmlSb.toString(), htmlName,
+                  pr.getLastModified()));
+            } else {
+              // Failed to 'fix' HTML tag:
+              logger.log(TreeLogger.WARN, "Resource '" + pr.getPartialPath()
+                  + "' could NOT be fixed to add 'manifest' attribute"
+                  + " to root HTML tag!");
+            }
+          }
+        }
+      }
     }
 
     String cacheEntries = emitPaths(CACHE_ENTRIES, cachePaths);
@@ -128,8 +169,7 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
     StringBuilder tb = new StringBuilder();
     if (templateInput != null) {
       logger.log(TreeLogger.INFO, "HTML5 cache-manifest resource '"
-          + TEMPLATE_RESOURCE
-          + "' found - using that resource as template.");
+          + TEMPLATE_RESOURCE + "' found - using that resource as template.");
       // Read template into a StringBuilder:
       BufferedReader reader = new BufferedReader(new InputStreamReader(
           templateInput));
@@ -152,14 +192,30 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
       logger.log(TreeLogger.INFO, "HTML5 cache-manifest resource '"
           + TEMPLATE_RESOURCE
           + "' not found (or empty or whatever) - generating default manifest.");
-      tb.append("CACHE MANIFEST:\n\nCACHE:\n").append(cacheEntries).append("\n\nNETWORK:\n").append(networkEntries);
+      tb.append("CACHE MANIFEST:\n\nCACHE:\n").append(cacheEntries).append(
+          "\n\nNETWORK:\n").append(networkEntries);
     }
 
     // Add the manifest as a new artifact to the set that we're returning.
-    artifactSet.add(emitString(logger, tb.toString(),
-        "cache-manifest.nocache.txt"));
+    artifactSet.add(emitString(logger, tb.toString(), MANIFEST));
 
     return artifactSet;
+  }
+
+  private StringBuilder readResource(InputStream in, TreeLogger logger) {
+    // Read template into a StringBuilder:
+    StringBuilder sb = new StringBuilder();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+    try {
+      String line = null;
+      while ((line = reader.readLine()) != null) {
+        sb.append(line).append('\n');
+      }
+      reader.close();
+    } catch (IOException e) {
+      logger.log(TreeLogger.ERROR, "Failed to read input!", e);
+    }
+    return sb;
   }
 
   private String searchAndReplace(String str, String search, String replace) {
@@ -169,6 +225,16 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
           + str.substring(index + search.length());
     }
     return str;
+  }
+
+  private boolean searchAndReplace(StringBuilder str, String search,
+      String replace) {
+    int index = str.indexOf(search);
+    if (index >= 0) {
+      str.replace(index, index + search.length(), replace);
+      return true;
+    }
+    return false;
   }
 
   private String emitPaths(String sectionName, SortedSet<String> paths) {
