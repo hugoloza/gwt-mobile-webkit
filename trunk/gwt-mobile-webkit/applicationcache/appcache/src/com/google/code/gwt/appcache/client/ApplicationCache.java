@@ -17,6 +17,7 @@
 package com.google.code.gwt.appcache.client;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
 public final class ApplicationCache extends JavaScriptObject {
@@ -45,12 +46,17 @@ public final class ApplicationCache extends JavaScriptObject {
     return $wnd.applicationCache;
   }-*/;
 
+  @SuppressWarnings("unused")
+  private static void handleCacheEvents(EventListener listener, Event event) {
+    listener.onBrowserEvent(event);
+  }
+  
   public native void addEventListener(String type, EventListener listener,
       boolean bubble) /*-{
     this.addEventListener(
       type,
       function(event) {
-        listener.@com.google.gwt.user.client.EventListener::onBrowserEvent(Lcom/google/gwt/user/client/Event;) (event);
+        @com.google.code.gwt.appcache.client.ApplicationCache::handleCacheEvents(Lcom/google/gwt/user/client/EventListener;Lcom/google/gwt/user/client/Event;) (listener, event);
       },
       bubble
     );
