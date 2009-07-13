@@ -42,6 +42,14 @@ public final class ApplicationCache extends JavaScriptObject {
   protected ApplicationCache() {
   }
 
+  /**
+   * Returns <code>true</code> if the Application Cache API is supported on the
+   * running platform.
+   */
+  public static native boolean isSupported() /*-{
+    return typeof $wnd.applicationCache != "undefined";
+  }-*/;
+
   public static native ApplicationCache getApplicationCache() /*-{
     return $wnd.applicationCache;
   }-*/;
@@ -50,15 +58,15 @@ public final class ApplicationCache extends JavaScriptObject {
   private static void handleCacheEvents(EventListener listener, Event event) {
     listener.onBrowserEvent(event);
   }
-  
+
   public native void addEventListener(String type, EventListener listener,
-      boolean bubble) /*-{
+      boolean useCapture) /*-{
     this.addEventListener(
       type,
       function(event) {
         @com.google.code.gwt.appcache.client.ApplicationCache::handleCacheEvents(Lcom/google/gwt/user/client/EventListener;Lcom/google/gwt/user/client/Event;) (listener, event);
       },
-      bubble
+      useCapture
     );
   }-*/;
 
@@ -72,5 +80,9 @@ public final class ApplicationCache extends JavaScriptObject {
 
   public native int getStatus() /*-{
     return this.status;
+  }-*/;
+
+  public native boolean isOnline() /*-{
+    return $wnd.navigator.onLine;
   }-*/;
 }
