@@ -1,4 +1,4 @@
-<module>
+<module rename-to="helloappcache">
 
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name="com.google.gwt.user.User"/>
@@ -15,9 +15,6 @@
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class="com.google.code.gwt.appcache.sample.helloappcache.client.HelloApplicationCache"/>
-
-  <!-- Specify the application specific style sheet.              -->
-  <stylesheet src="HelloApplicationCache.css" />
 
   <servlet path="/hello" class="com.google.code.gwt.appcache.sample.helloappcache.server.HelloServiceImpl" />
 </module>

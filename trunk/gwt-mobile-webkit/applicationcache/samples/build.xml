@@ -34,4 +34,10 @@
 		<delete dir="${project.build}" />
 		<delete dir="${gwt.build.out}/samples-scripts" />
 	</target>
+
+    <target name="hosted" description="Run sample in hosted mode">
+        <antcall target="-do">
+            <param name="target" value="hosted" />
+        </antcall>
+    </target>
 </project>

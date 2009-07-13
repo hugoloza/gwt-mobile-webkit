@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>cache-manifest</servlet-name>
+    <servlet-class>com.google.code.gwt.appcache.servlet.ApplicationCacheManifestServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>hello</servlet-name>
+    <servlet-class>com.google.code.gwt.appcache.sample.helloappcache.server.HelloServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>cache-manifest</servlet-name>
+    <url-pattern>/helloappcache/cache-manifest.nocache.txt</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>hello</servlet-name>
+    <url-pattern>/helloappcache/hello</url-pattern>
+  </servlet-mapping>
+
+</web-app>
