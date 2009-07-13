@@ -7,12 +7,12 @@ CACHE:
 # Use @CACHE_ENTRIES@ as a placeholder for generated cachable URLs:
 @CACHE_ENTRIES@
 # Your additional URLs:
-myResource.txt
-myImage.png
+#myResource.txt
+#myImage.png
 
 NETWORK:
 # Use @NETWORK_ENTRIES@ as a placeholder for generated network URLs:
 @NETWORK_ENTRIES@
 # Your additional URLs:
-cgi-bin
-messagebroker/amf
+#cgi-bin
+#messagebroker/amf
