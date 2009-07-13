@@ -115,7 +115,8 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
     }
     htmlName += ".html";
 
-    logger.log(TreeLogger.INFO, "Adding cache-manifest to " + htmlName);
+    logger.log(TreeLogger.INFO, "Trying to find " + htmlName
+        + " and add cache-manifest to it...");
 
     // Create a list of cacheable resources:
     SortedSet<String> cachePaths = new TreeSet<String>();
@@ -123,6 +124,7 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
 
     // Iterate over all emitted artifacts, and collect all
     // cacheable- and networked artifacts:
+    boolean htmlFound = false;
     for (Artifact artifact : artifacts) {
       if (artifact instanceof CompilationResult) {
         final CompilationResult compilationResult = (CompilationResult) artifact;
@@ -135,7 +137,7 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
         NetworkSectionArtifact nsa = (NetworkSectionArtifact) artifact;
         networkPaths.add(nsa.getUrl());
       }
-      // We need to 'fix' the module's HTML file with a manifest attribute:
+      // We try to 'fix' the module's HTML file with a manifest attribute:
       if (artifact instanceof PublicResource) {
         PublicResource pr = (PublicResource) artifact;
         if (pr.getPartialPath().equals(htmlName)) {
@@ -150,17 +152,24 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
               artifactSet.remove(pr);
               artifactSet.add(emitString(logger, htmlSb.toString(), htmlName,
                   pr.getLastModified()));
-            } else {
-              // Failed to 'fix' HTML tag:
-              logger.log(TreeLogger.WARN, "Resource '" + pr.getPartialPath()
-                  + "' could NOT be fixed to add 'manifest' attribute"
-                  + " to root HTML tag!");
+              htmlFound = true;
             }
           }
         }
       }
     }
 
+    if (!htmlFound) {
+      // Failed to 'fix' HTML tag:
+      logger.log(TreeLogger.WARN, "HTML file named '" + htmlName
+          + "' could NOT be fixed to add 'manifest' attribute"
+          + " to root HTML tag!");
+      logger.log(TreeLogger.WARN, "If you use an HTML file from your main"
+          + " module, please review its HTML code.");
+      logger.log(TreeLogger.WARN, "Or, add the following"
+          + " attribute to your landing page's <html> tag: manifest=\""
+          + context.getModuleFunctionName() + "/" + MANIFEST + "\"");
+    }
     String cacheEntries = emitPaths(CACHE_ENTRIES, cachePaths);
     String networkEntries = emitPaths(NETWORK_ENTRIES, networkPaths);
 
