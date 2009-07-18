@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Quick getting started introduction to the Database API
 #labels Featured,Phase-Implementation
 
 = Introduction =
@@ -41,12 +41,21 @@ db.transaction(new TransactionCallback() {
         tx.executeSql("CREATE TABLE clickcount IF NOT EXISTS ("
                 + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 + "clicked INTEGER)", null);
-        }
-        public void onTransactionFailure(SQLError error) {
-            // handle error...
-        }
-        public void onTransactionSuccess() {
-            // Proceed when successfully committed...
-        }
-    });
+    }
+    public void onTransactionFailure(SQLError error) {
+        // handle error...
+    }
+    public void onTransactionSuccess() {
+        // Proceed when successfully committed...
+    }
+});
 }}}
+
+As you can see, the Database API depends heavily on callback calls. In this case, you open a database transaction by calling the 'transaction' method on the database instance, which must be provided with a callback instance to actually operate the transaction.
+
+The transaction callback needs to implement three methods:
+  # `onTransactionStart()` which executes the actual database transaction;
+  # `onTransactionFailure()` which is executed when the transaction is rolled back;
+  # `onTransacionSuccess()` which is executed after the transaction is successfully committed.
+
+Within the `onTransactionStart()` method you have the `tx` parameter to execute your SQL on.
