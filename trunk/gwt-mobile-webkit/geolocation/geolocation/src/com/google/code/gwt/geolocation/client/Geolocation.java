@@ -22,8 +22,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * Represents a HTML5 Geolocation object.
  * 
- * @author bguijt
  * @see <a href="http://www.w3.org/TR/geolocation-API/">W3C Geolocation</a>
+ * @see <a
+ *      href="http://code.google.com/p/gwt-mobile-webkit/wiki/GeolocationApi">Wiki
+ *      - Quickstart Guide</a>
+ * @author bguijt
  */
 public final class Geolocation extends JavaScriptObject {
 
