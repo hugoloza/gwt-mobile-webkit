@@ -2,7 +2,7 @@
 #labels Featured,Phase-Implementation
 
 = Introduction =
-The Geolocation API leverages the [http://www.w3.org/TR/geolocation-API/ W3C Geolocation API].
+The Geolocation API ([http://gwt-mobile-webkit.googlecode.com/files/gwt-mobile-webkit-geolocation-0.9.0.tar.gz download]) leverages the [http://www.w3.org/TR/geolocation-API/ W3C Geolocation API].
 
 As of June 2009 some browsers started to add support for this API, specifically Firefox 3.5 and iPhone Safari 3.0. This API gives you the [http://en.wikipedia.org/wiki/World_Geodetic_System WGS84 coordinates] of the location of the browser.
 
