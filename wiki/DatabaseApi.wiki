@@ -33,7 +33,7 @@ This line opens a database and returns a handle to that database:
 Database db = Database.openDatabase("ClckCnt", "1.0", "Click Counter", 10000);
 }}}
 
-== Creating a Table ==
+== Performing a Transaction ==
 This code creates a new table if doesn't exist already:
 {{{
 db.transaction(new TransactionCallback() {
@@ -52,6 +52,11 @@ db.transaction(new TransactionCallback() {
 }}}
 
 As you can see, the Database API depends heavily on callback calls. In this case, you open a database transaction by calling the 'transaction' method on the database instance, which must be provided with a callback instance to actually operate the transaction.
+
+There are basically two methods to perform transactions (each has some overloaded alternatives):
+  # `transaction()` to perform a read and/or write transaction;
+  # `readTransaction()` to perform just a read transaction.
+The iPhone Safari database API does not implement the `readTransaction()` method. In this GWT library you can, because under the 'hood' [http://is.gd/1DpT2 we just call the `transaction()` method] instead.
 
 The transaction callback needs to implement three methods:
   # `onTransactionStart()` which executes the actual database transaction;
