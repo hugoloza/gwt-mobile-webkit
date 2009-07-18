@@ -1,0 +1,52 @@
+#summary One-sentence summary of this page.
+#labels Featured,Phase-Implementation
+
+= Introduction =
+
+The database API ([http://gwt-mobile-webkit.googlecode.com/files/gwt-mobile-webkit-database-1.0.0.tar.gz download]) leverages the [http://www.w3.org/TR/webstorage/#sql Web Storage Database API].
+
+Using this API you are able to store data in a SQLite database which is embedded in the browser. This is great for offline features of your application.
+
+= Browser support =
+Not every browser supports this feature, and currently there are no fallback scenario's to rely on Flash, Java or Gears plugins. We built support for the following browsers:
+
+# iPhone Safari (OS2.0 and higher - maybe earlier versions are supported, but are untested)
+# Desktop Safari (3.1 and higher)
+# Opera (9.5 and higher)
+# Opera Mobile (9.5 and higher - untested!)
+# Google Android (1.0 and higher - untested!)
+
+NOTE: The Database API as specified by W3C describes two API's: an Asynchronous and a Synchronous API. Currently we only built support for the Asynchronous API, because the Synchronous API isn't supported by the current browsers that much.
+
+= Usage =
+== is API supported? ==
+The following will test whether the API is supported in your browser:
+{{{
+if (Database.isSupported()) {
+    // Interact with your database...
+}
+}}}
+
+== Opening a Database ==
+This line opens a database and returns a handle to that database:
+{{{
+Database db = Database.openDatabase("ClckCnt", "1.0", "Click Counter", 10000);
+}}}
+
+== Creating a Table ==
+This code creates a new table if doesn't exist already:
+{{{
+db.transaction(new TransactionCallback() {
+    public void onTransactionStart(SQLTransaction tx) {
+        tx.executeSql("CREATE TABLE clickcount IF NOT EXISTS ("
+                + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                + "clicked INTEGER)", null);
+        }
+        public void onTransactionFailure(SQLError error) {
+            // handle error...
+        }
+        public void onTransactionSuccess() {
+            // Proceed when successfully committed...
+        }
+    });
+}}}
