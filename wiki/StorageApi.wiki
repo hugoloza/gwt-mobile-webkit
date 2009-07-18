@@ -1,0 +1,67 @@
+#summary Quick getting started introduction to the Storage API
+#labels Featured,Phase-Implementation
+
+= Introduction =
+
+The Storage API leverages the [http://www.w3.org/TR/webstorage/#storage W3C Web Storage API].
+
+With this API you are able to store data on the client using a Java Map-like interface (key/values).
+
+= Browser support =
+Not every browser supports this feature, and currently there are no fallback scenario's to rely on Flash, Java or Gears plugins. We built support for the following browsers:
+
+  # iPhone Safari (OS3.0)
+  # Desktop Safari (4.0)
+  # Internet Explorer (8)
+
+Other browsers might also support Web Storage, we just didn't test them nor found any feature support documentation.
+
+= Usage =
+== is API supported? ==
+The following will test whether the API is supported in your browser:
+{{{
+if (Storage.isSupported()) {
+    // Interact with the storage...
+}
+}}}
+
+== Getting a Storage instance ==
+There are two Storage types available. Both have exactly the same API, they just persist differently:
+  # `localStorage` actually persists data permanently;
+  # `sessionStorage` keeps the data available for the duration of the Session.
+
+A Storage is obtained like this:
+{{{
+Storage localStorage = Storage.getLocalStorage();
+Storage sessionStorage = Storage.getSessionStorage();
+}}}
+
+== Writing in the Storage ==
+Values can be written as follows:
+{{{
+localStorage.setItem("key", "value");
+}}}
+All keys and values must be Strings.
+
+== Reading the Storage ==
+{{{
+String value = localStorage.getItem("key");
+}}}
+
+== Iterating over the Storage ==
+{{{
+for (int i=0; i<localStorage.getLength(); i++) {
+    String key = localStorage.key(i);
+    String value = localStorage.getItem(key);
+    // ...
+}
+}}}
+
+== Accessing the Storage using a Java Map ==
+For convenience sake we added a Java Map implementation over the Storage API. Using this Map you can read and write the Storage using familiar methods:
+{{{
+Map<String, String> map = new StorageMap(localStorage);
+map.putAll(otherMap);
+// ...
+}}}
+Word of advice: Please note that the Java Map interface is way bigger than the Storage interface, and introducing the StorageMap to your code implies some overhead in accessing the Storage data. Only use the StorageMap if absolutely necessary.
