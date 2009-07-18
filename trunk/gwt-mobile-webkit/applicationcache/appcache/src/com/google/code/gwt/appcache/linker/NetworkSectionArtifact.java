@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.google.code.gwt.appcache.rebind;
+package com.google.code.gwt.appcache.linker;
 
-import com.google.code.gwt.appcache.linker.ApplicationCacheManifestLinker;
+import com.google.code.gwt.appcache.rebind.ApplicationCacheNetworkSectionGenerator;
 import com.google.gwt.core.ext.linker.Artifact;
 
 /**
@@ -36,7 +36,7 @@ public class NetworkSectionArtifact extends Artifact<NetworkSectionArtifact> {
   
   private String url;
 
-  protected NetworkSectionArtifact(String url) {
+  public NetworkSectionArtifact(String url) {
     super(ApplicationCacheManifestLinker.class);
     this.url = url;
   }
@@ -54,6 +54,11 @@ public class NetworkSectionArtifact extends Artifact<NetworkSectionArtifact> {
   @Override
   public int hashCode() {
     return url.hashCode();
+  }
+  
+  @Override
+  public String toString() {
+    return "NETWORK entry: " + url;
   }
 
   /**

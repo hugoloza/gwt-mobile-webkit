@@ -23,19 +23,16 @@ import java.io.InputStreamReader;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import com.google.code.gwt.appcache.rebind.NetworkSectionArtifact;
 import com.google.gwt.core.ext.LinkerContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.linker.AbstractLinker;
 import com.google.gwt.core.ext.linker.Artifact;
 import com.google.gwt.core.ext.linker.ArtifactSet;
-import com.google.gwt.core.ext.linker.CompilationResult;
 import com.google.gwt.core.ext.linker.EmittedArtifact;
 import com.google.gwt.core.ext.linker.LinkerOrder;
 import com.google.gwt.core.ext.linker.PublicResource;
 import com.google.gwt.core.ext.linker.LinkerOrder.Order;
-import com.google.gwt.core.linker.IFrameLinker;
 
 /**
  * Creates an Application Cache Manifest file
@@ -90,11 +87,6 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
   private static final String CACHE_ENTRIES = "@CACHE_ENTRIES@";
   private static final String NETWORK_ENTRIES = "@NETWORK_ENTRIES@";
 
-  /**
-   * Used to calculate the paths for CompilationResults.
-   */
-  private MySelectionScriptLinker ssl = new MySelectionScriptLinker();
-
   @Override
   public String getDescription() {
     return "HTML5 Application Cache Manifest";
@@ -126,11 +118,8 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
     // cacheable- and networked artifacts:
     boolean htmlFound = false;
     for (Artifact artifact : artifacts) {
-      if (artifact instanceof CompilationResult) {
-        final CompilationResult compilationResult = (CompilationResult) artifact;
-        String artifactPath = ssl.getPath(logger, context, compilationResult);
-        checkCacheable(artifactPath, cachePaths);
-      } else if (artifact instanceof EmittedArtifact) {
+      //logger.log(TreeLogger.INFO, "Checking artifact " + artifact.getClass().getName() + " created by " + artifact.getLinker().getName() + ": " + artifact.toString() + "...");
+      if (artifact instanceof EmittedArtifact) {
         EmittedArtifact ea = (EmittedArtifact) artifact;
         checkCacheable(ea.getPartialPath(), cachePaths);
       } else if (artifact instanceof NetworkSectionArtifact) {
@@ -258,21 +247,8 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
   }
 
   private void checkCacheable(String path, SortedSet<String> cachePaths) {
-    if (path.indexOf(".cache.") > 30) {
+    //if (path.indexOf(".cache.") > 30) {
       cachePaths.add(path);
-    }
-  }
-
-  /**
-   * An extension of IFrameLinker that provides a method to get the path that a
-   * compilation result should be emitted under.
-   */
-  private static class MySelectionScriptLinker extends IFrameLinker {
-    private String getPath(TreeLogger treeLogger, LinkerContext context,
-        CompilationResult compilationResult) throws UnableToCompleteException {
-      EmittedArtifact ea = doEmitCompilation(treeLogger, context,
-          compilationResult);
-      return ea.getPartialPath();
-    }
+    //}
   }
 }
