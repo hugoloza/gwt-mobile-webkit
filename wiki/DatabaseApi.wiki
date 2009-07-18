@@ -59,3 +59,42 @@ The transaction callback needs to implement three methods:
   # `onTransacionSuccess()` which is executed after the transaction is successfully committed.
 
 Within the `onTransactionStart()` method you have the `tx` parameter to execute your SQL on.
+
+The `tx` instance provides two methods to execute SQL:
+  # `executeSql(sqlStatement, arguments)`
+  # `executeSql(sqlStatement, arguments, callback)`
+
+Both methods execute the same SQL, but the second gives you a callback to handle resultsets and failures. The provided SQL must comply to the [http://sqlite.org/lang.html SQLite language]. Up to now all browser-embedded databases are [http://sqlite.org/ SQLite].
+
+== Executing SQL ==
+In order to execute SQL we need to do something like the following:
+{{{
+db.transaction(new TransactionCallback() {
+    public void onTransactionStart(SQLTransaction tx) {
+        tx.executeSql("INSERT INTO clickcount (clicked) VALUES (?)", new Object[] {new Date().getTime()});
+        tx.executeSql("SELECT clicked FROM clickcount", null, new StatementCallback<ClickRow>() {
+            public boolean onFailure(SQLTransaction transaction, SQLError error) {
+                return false;  // don't roll back
+            }
+            public void onSuccess(SQLTransaction transaction, SQLResultSet<ClickRow> resultSet) {
+                clickedData.clear();
+                for (ClickRow row : resultSet.getRows()) {
+                    clickedData.add(new Label("Clicked on " + row.getClicked()));
+                }
+            }
+        });
+    }
+    public void onTransactionFailure(SQLError error) {
+        // ...
+    }
+    public void onTransactionSuccess() {
+        // ...
+    }
+});
+}}}
+
+The first call to `executeSql()` inserts data using a parameter list, similar to the way JDBC accepts parameters in a Statement. The parameters must be provided in an Object array, which has the same number of elements as parameters declared in the SQL statement using the `?` symbol.
+
+The second call to `executeSql()` uses the additional callback parameter to handle the resultset. The callback mandates two methods to implement:
+  # `onfailure()` is invoked if the SQL statement somehow fails. If you want to rollback the transaction, return `true` here, otherwise just return `false`;
+  # `onSuccess()` is invoked if the SQL was executed successfully. The `transaction` parameter allows you to execute additional SQL statements, and the `resultSet` parameter provides you the results of the query.
