@@ -2,7 +2,7 @@
 #labels Featured,Phase-Implementation
 
 = Introduction =
-The Storage API leverages the [http://www.w3.org/TR/webstorage/#storage W3C Web Storage API].
+The Storage API ([http://gwt-mobile-webkit.googlecode.com/files/gwt-mobile-webkit-storage-1.0.0.tar.gz download]) leverages the [http://www.w3.org/TR/webstorage/#storage W3C Web Storage API].
 
 With this API you are able to store data on the client using a Java Map-like interface (key/values).
 
