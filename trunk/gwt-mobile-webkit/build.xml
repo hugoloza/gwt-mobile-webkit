@@ -7,7 +7,15 @@
 		<ant dir="database" target="${target}" />
 	</target>
 
-	<target name="-do" depends="database" description="Run all subprojects" />
+    <target name="storage" description="Build HTML5 Storage API">
+        <ant dir="storage" target="${target}" />
+    </target>
+
+    <target name="geolocation" description="Build HTML5 Geolocation API">
+        <ant dir="geolocation" target="${target}" />
+    </target>
+
+	<target name="-do" depends="database, storage, geolocation" description="Run all subprojects" />
 
   <!-- Generic targets: -->
 	<target name="build" description="Builds all of the APIs that make up the GWT Mobile Webkit library">
