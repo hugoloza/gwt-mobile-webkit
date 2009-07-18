@@ -1,4 +1,5 @@
 #summary Quick getting started introduction to the Geolocation API
+#labels Featured,Phase-Implementation
 
 = Introduction =
 The Geolocation API leverages the [http://www.w3.org/TR/geolocation-API/ W3C Geolocation API].
