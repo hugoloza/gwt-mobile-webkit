@@ -101,5 +101,5 @@ The second call to `executeSql()` uses the additional callback parameter to hand
 
 Both methods get the `transaction` parameter which allows you to execute additional SQL statements depending on the outcome of the executed SQL.
 
-== Caution ==
+= Word of advice =
 During testing this API it became apparent that the instance returned by by `openDatabase()` must be retained throughout the application. If you open the database multiple times during the same session, it seemed that its behavior becomes unpredictable. (perhaps I need to solve this problem in the API, but for now, be careful!)
