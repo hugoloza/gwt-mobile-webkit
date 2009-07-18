@@ -34,7 +34,8 @@ geo.getCurrentPosition(new PositionCallback() {
         // Handle failure
     }
     public void onSuccess(Position position) {
-        // Do something with 'position'
+        Coordinates coords = position.getCoords();
+        // ...
     }
 });
 }}}
