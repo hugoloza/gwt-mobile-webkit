@@ -10,11 +10,11 @@ Using this API you are able to store data in a SQLite database which is embedded
 = Browser support =
 Not every browser supports this feature, and currently there are no fallback scenario's to rely on Flash, Java or Gears plugins. We built support for the following browsers:
 
-# iPhone Safari (OS2.0 and higher - maybe earlier versions are supported, but are untested)
-# Desktop Safari (3.1 and higher)
-# Opera (9.5 and higher)
-# Opera Mobile (9.5 and higher - untested!)
-# Google Android (1.0 and higher - untested!)
+  # iPhone Safari (OS2.0 and higher - maybe earlier versions are supported, but are untested)
+  # Desktop Safari (3.1 and higher)
+  # Opera (9.5 and higher)
+  # Opera Mobile (9.5 and higher - untested!)
+  # Google Android (1.0 and higher - untested!)
 
 NOTE: The Database API as specified by W3C describes two API's: an Asynchronous and a Synchronous API. Currently we only built support for the Asynchronous API, because the Synchronous API isn't supported by the current browsers that much.
 
