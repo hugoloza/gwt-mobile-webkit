@@ -1,0 +1,40 @@
+#summary Quick getting started introduction to the Geolocation API
+
+= Introduction =
+The Geolocation API leverages the [http://www.w3.org/TR/geolocation-API/ W3C Geolocation API].
+
+As of June 2009 some browsers started to add support for this API, specifically Firefox 3.5 and iPhone Safari 3.0. This API gives you the [http://en.wikipedia.org/wiki/World_Geodetic_System WGS84 coordinates] of the location of the browser.
+
+= Browser support =
+Not every browser supports this feature. Fortunately, there is a fallback scenario to rely on the Gears plugin (which as of version 0.9 is only enabled for Opera) for that API is very similar. We built support for the following browsers:
+
+  # iPhone Safari (OS3.0)
+  # Firefox (3.5)
+  # Opera Mobile (9.7 but untested!)
+
+= Usage =
+== is API supported? ==
+The following will test whether the API is supported in your browser:
+{{{
+if (Geolocation.isSupported()) {
+    // get your Geo location...
+}
+}}}
+
+== Getting a Storage instance ==
+{{{
+Geolocation geo = Geolocation.getGeolocation();
+}}}
+
+== Obtaining your location ==
+{{{
+geo.getCurrentPosition(new PositionCallback() {
+    public void onFailure(PositionError error) {
+        // Handle failure
+    }
+    public void onSuccess(Position position) {
+        // Do something with 'position'
+    }
+});
+}}}
+The location is enclosed in the `Position` instance returned in the `onSuccess()` callback method.
