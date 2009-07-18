@@ -106,5 +106,17 @@ The second call to `executeSql()` uses the additional callback parameter to hand
 
 Both methods get the `transaction` parameter which allows you to execute additional SQL statements depending on the outcome of the executed SQL.
 
-= Word of advice =
+== Getting the ResultSet ==
+Notice in the code snippet above that the second `executeSql()` method adds a callback instance with a Type parameter:
+{{{
+tx.executeSql("SELECT clicked FROM clickcount", null, new StatementCallback<ClickRow>() { ... });
+}}}
+In this case, the specified Type is `[http://is.gd/1DqDR ClickRow]`. ClickRow is a simple Java class representing a record in the ResultSet. Each property name in the bean represents a column in the ResultSet. The bean only needs getter methods in order to get the record values.
+Instead of a specific Java bean representing the ResultSet records, you could also use the `[http://is.gd/1DqL9 GenericRow]` class which provides a generic way of getting the values from your ResultSet records.
+
+= Tips =
+== One Instance ==
 During testing this API it became apparent that the instance returned by by `openDatabase()` must be retained throughout the application. If you open the database multiple times during the same session, it seemed that its behavior becomes unpredictable. (perhaps I need to solve this problem in the API, but for now, be careful!)
+
+== Performance ==
+The database (especially on a mobile device) is _slow_. Please test carefully using a *real* device rather than an emulator to experience potential slow response times in your webapp!
