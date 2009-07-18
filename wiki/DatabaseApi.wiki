@@ -51,7 +51,7 @@ db.transaction(new TransactionCallback() {
 });
 }}}
 
-As you can see, the Database API depends heavily on callback calls. In this case, you open a database transaction by calling the 'transaction' method on the database instance, which must be provided with a callback instance to actually operate the transaction.
+As you can see, the Database API depends heavily on callback calls. In this case, you open a database transaction by calling the `transaction()` method on the Database instance, which must be provided with a callback instance to actually do something with the transaction.
 
 There are basically two methods to perform transactions (each has some overloaded alternatives):
   # `transaction()` to perform a read and/or write transaction;
