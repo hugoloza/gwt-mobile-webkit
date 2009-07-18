@@ -18,6 +18,7 @@ package com.google.code.gwt.appcache.rebind;
 
 import java.util.Iterator;
 
+import com.google.code.gwt.appcache.linker.NetworkSectionArtifact;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
