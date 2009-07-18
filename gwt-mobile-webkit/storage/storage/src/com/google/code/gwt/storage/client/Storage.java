@@ -40,6 +40,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  *      Key-Value Storage</a>
  * @see <a href="http://quirksmode.org/dom/html5.html#t00">Quirksmode.org -
  *      HTML5 Compatibility - Storage</a>
+ * @see <a
+ *      href="http://code.google.com/p/gwt-mobile-webkit/wiki/StorageApi">Wiki
+ *      - Quickstart Guide</a>
  * @author bguijt
  */
 public final class Storage extends JavaScriptObject {

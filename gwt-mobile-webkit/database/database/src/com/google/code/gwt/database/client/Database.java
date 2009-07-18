@@ -55,6 +55,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @see <a
  *      href="http://developer.apple.com/safari/library/documentation/iPhone/Conceptual/SafariJSDatabaseGuide/RelationalDatabases/chapter_4_section_3.html#//apple_ref/doc/uid/TP40007256-CH5-SW10">Safari
  *      Client-Side Storage - SQL Basics</a>
+ * @see <a
+ *      href="http://code.google.com/p/gwt-mobile-webkit/wiki/DatabaseApi">Wiki
+ *      - Quickstart Guide</a>
  * @author bguijt
  */
 public final class Database extends JavaScriptObject {
@@ -65,7 +68,8 @@ public final class Database extends JavaScriptObject {
   }
 
   /**
-   * Returns <code>true</code> if the Database API is supported on the running platform.
+   * Returns <code>true</code> if the Database API is supported on the running
+   * platform.
    */
   public static boolean isSupported() {
     return impl.isSupported();
