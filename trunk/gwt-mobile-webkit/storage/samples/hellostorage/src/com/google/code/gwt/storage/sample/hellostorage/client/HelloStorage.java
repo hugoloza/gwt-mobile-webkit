@@ -89,12 +89,13 @@ public class HelloStorage implements EntryPoint {
     eventPanel.add(handlersLabel);
     eventPanel.setCellHorizontalAlignment(handlersLabel, HasHorizontalAlignment.ALIGN_RIGHT);
     
-    Storage local = Storage.getLocalStorage();
-    Storage session = Storage.getSessionStorage();
-    if (local == null) {
+    if (!Storage.isSupported()) {
       Window.alert("Web Storage NOT supported in this browser!");
       return;
     }
+    
+    Storage local = Storage.getLocalStorage();
+    Storage session = Storage.getSessionStorage();
 
     TabPanel tabs = new TabPanel();
     main.add(tabs);
