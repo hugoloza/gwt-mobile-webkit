@@ -64,7 +64,7 @@ The `tx` instance provides two methods to execute SQL:
   # `executeSql(sqlStatement, arguments)`
   # `executeSql(sqlStatement, arguments, callback)`
 
-Both methods execute the same SQL, but the second gives you a callback to handle resultsets and failures. The provided SQL must comply to the [http://sqlite.org/lang.html SQLite language]. Up to now all browser-embedded databases are [http://sqlite.org/ SQLite].
+Both methods execute the same SQL, but the second gives you a callback to handle resultsets and failures. The provided SQL must comply to the [http://sqlite.org/lang.html SQLite language]. Up to now all browser-embedded databases are of the [http://sqlite.org/ SQLite] type.
 
 == Executing SQL ==
 In order to execute SQL we need to do something like the following:
@@ -96,5 +96,10 @@ db.transaction(new TransactionCallback() {
 The first call to `executeSql()` inserts data using a parameter list, similar to the way JDBC accepts parameters in a Statement. The parameters must be provided in an Object array, which has the same number of elements as parameters declared in the SQL statement using the `?` symbol.
 
 The second call to `executeSql()` uses the additional callback parameter to handle the resultset. The callback mandates two methods to implement:
-  # `onfailure()` is invoked if the SQL statement somehow fails. If you want to rollback the transaction, return `true` here, otherwise just return `false`;
-  # `onSuccess()` is invoked if the SQL was executed successfully. The `transaction` parameter allows you to execute additional SQL statements, and the `resultSet` parameter provides you the results of the query.
+  # `onfailure()` is invoked if the SQL statement somehow fails. If you want to rollback the transaction, return `true` here, otherwise just return `false`. The `error` parameter provides you the failure details;
+  # `onSuccess()` is invoked if the SQL was executed successfully. The `resultSet` parameter provides you the results of the query.
+
+Both methods get the `transaction` parameter which allows you to execute additional SQL statements depending on the outcome of the executed SQL.
+
+== Caution ==
+During testing this API it became apparent that the instance returned by by `openDatabase()` must be retained throughout the application. If you open the database multiple times during the same session, it seemed that its behavior becomes unpredictable. (perhaps I need to solve this problem in the API, but for now, be careful!)
