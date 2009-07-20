@@ -3,7 +3,7 @@
 
 = Introduction =
 
-The database API ([http://code.google.com/p/gwt-mobile-webkit/downloads/list?q=label:API-Database download]) leverages the [http://www.w3.org/TR/webstorage/#sql Web Storage Database API].
+The database API ([http://code.google.com/p/gwt-mobile-webkit/downloads/list?q=label:API-Database download]) leverages the [http://www.w3.org/TR/webstorage/#sql W3C Web Storage Database API].
 
 Using this API you are able to store data in a SQLite database which is embedded in the browser. This is great for offline features of your application.
 
