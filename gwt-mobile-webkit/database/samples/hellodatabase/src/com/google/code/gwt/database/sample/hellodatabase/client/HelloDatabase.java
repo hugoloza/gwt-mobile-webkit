@@ -26,6 +26,7 @@ import com.google.code.gwt.database.client.TransactionCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Image;
@@ -42,6 +43,11 @@ public class HelloDatabase implements EntryPoint {
    * This is the entry point method.
    */
   public void onModuleLoad() {
+    if (!Database.isSupported()) {
+      Window.alert("HTML 5 Database is NOT supported in this browser!");
+      return;
+    }
+    
     // Prepare database
     final Database db = Database.openDatabase("ClckCnt", "1.0", "Click Counter", 10000);
     
