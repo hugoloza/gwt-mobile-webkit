@@ -10,7 +10,4 @@
 
 	<!-- Specify the application specific style sheet.              -->
 	<stylesheet src="HelloDatabase.css" />
-
-	<!-- We only need the Safari permutation(s)                     -->
-	<set-property name="user.agent" value="safari" />
 </module>
