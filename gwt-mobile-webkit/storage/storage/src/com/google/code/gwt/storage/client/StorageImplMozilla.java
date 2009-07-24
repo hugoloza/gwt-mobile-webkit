@@ -21,7 +21,7 @@ package com.google.code.gwt.storage.client;
  * 
  * <p>
  * Implementation of StorageEvents is incomplete for Mozilla. This class
- * implements it consistent with Safari's behavior.
+ * amends the properties consistently with W3C's StorageEvent.
  * </p>
  * 
  * @author bguijt
