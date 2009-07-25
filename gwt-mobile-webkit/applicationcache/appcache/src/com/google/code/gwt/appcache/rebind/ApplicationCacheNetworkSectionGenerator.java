@@ -18,6 +18,7 @@ package com.google.code.gwt.appcache.rebind;
 
 import java.util.Iterator;
 
+import com.google.code.gwt.appcache.linker.ApplicationCacheManifestLinker;
 import com.google.code.gwt.appcache.linker.NetworkSectionArtifact;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -60,7 +61,7 @@ public class ApplicationCacheNetworkSectionGenerator extends Generator {
                 + moduleRelativeUrl.value() + "'");
       }
       NetworkSectionArtifact artifact = new NetworkSectionArtifact(
-          moduleRelativeUrl.value());
+          ApplicationCacheManifestLinker.class, moduleRelativeUrl.value());
       context.commitArtifact(logger, artifact);
     }
 

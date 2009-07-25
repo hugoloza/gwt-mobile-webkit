@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app>
-
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-  </welcome-file-list>
-
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+  
   <!-- Servlets -->
   <servlet>
     <servlet-name>cache-manifest</servlet-name>
@@ -26,5 +24,14 @@
     <servlet-name>hello</servlet-name>
     <url-pattern>/helloappcache/hello</url-pattern>
   </servlet-mapping>
-
+  
+  <welcome-file-list>
+    <welcome-file>HelloApplicationCache.html</welcome-file>
+  </welcome-file-list>
+  
+  <!-- Alternative mime-type setting for appcache? -->
+  <mime-mapping>
+    <extension>cache-manifest</extension>
+    <mime-type>text/cache-manifest</mime-type>
+  </mime-mapping>
 </web-app>

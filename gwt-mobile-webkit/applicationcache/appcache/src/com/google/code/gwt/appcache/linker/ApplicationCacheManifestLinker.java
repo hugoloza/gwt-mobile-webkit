@@ -118,7 +118,9 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
     // cacheable- and networked artifacts:
     boolean htmlFound = false;
     for (Artifact artifact : artifacts) {
-      //logger.log(TreeLogger.INFO, "Checking artifact " + artifact.getClass().getName() + " created by " + artifact.getLinker().getName() + ": " + artifact.toString() + "...");
+      logger.log(TreeLogger.INFO, "Checking artifact "
+          + artifact.getClass().getName() + " created by "
+          + artifact.getLinker().getName() + ": " + artifact.toString() + "...");
       if (artifact instanceof EmittedArtifact) {
         EmittedArtifact ea = (EmittedArtifact) artifact;
         checkCacheable(ea.getPartialPath(), cachePaths);
@@ -247,8 +249,8 @@ public class ApplicationCacheManifestLinker extends AbstractLinker {
   }
 
   private void checkCacheable(String path, SortedSet<String> cachePaths) {
-    //if (path.indexOf(".cache.") > 30) {
-      cachePaths.add(path);
-    //}
+    // if (path.indexOf(".cache.") > 30) {
+    cachePaths.add(path);
+    // }
   }
 }
