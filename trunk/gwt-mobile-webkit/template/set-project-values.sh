@@ -64,5 +64,8 @@ done
 echo "Remove .svn directories? enter your root pwd!"
 sudo find . -name .svn -exec rm -Rf {} ";"
 
+# Include build-tools directory from GWT repository:
+svn propset svn:externals "http://google-web-toolkit.googlecode.com/svn/trunk/build-tools build-tools" .
+
 # removing this script:
 rm -f set-project-values.sh
