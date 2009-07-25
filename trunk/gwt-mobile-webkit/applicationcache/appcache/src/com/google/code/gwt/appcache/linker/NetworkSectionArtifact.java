@@ -17,6 +17,7 @@
 package com.google.code.gwt.appcache.linker;
 
 import com.google.code.gwt.appcache.rebind.ApplicationCacheNetworkSectionGenerator;
+import com.google.gwt.core.ext.Linker;
 import com.google.gwt.core.ext.linker.Artifact;
 
 /**
@@ -36,8 +37,8 @@ public class NetworkSectionArtifact extends Artifact<NetworkSectionArtifact> {
   
   private String url;
 
-  public NetworkSectionArtifact(String url) {
-    super(ApplicationCacheManifestLinker.class);
+  public NetworkSectionArtifact(Class<? extends Linker> linker, String url) {
+    super(linker);
     this.url = url;
   }
 

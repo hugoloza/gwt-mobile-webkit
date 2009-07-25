@@ -20,6 +20,10 @@
     <when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService" />
   </generate-with>
   
+  <define-linker name="redirect" class="com.google.code.gwt.appcache.linker.RedirectLinker" />
+  <add-linker name="redirect" />
+  <set-configuration-property name="webxml" value="war/WEB-INF/web.xml" />
+  
   <define-linker name="cachemanifest" class="com.google.code.gwt.appcache.linker.ApplicationCacheManifestLinker" />
   <add-linker name="cachemanifest" />
 </module>

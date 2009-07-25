@@ -64,6 +64,10 @@
             <arg value="${gwt.samples.localworkers}" />
             <arg value="-war" />
             <arg file="${sample.build}/war" />
+            <!--arg value="-logLevel" />
+            <arg value="DEBUG" />
+            <arg value="-style" />
+            <arg value="PRETTY" /-->
             <arg value="com.google.code.gwt.${sample.api}.sample.${sample.lower}.${sample.module}" />
           </java>
         </gwt.timer>
