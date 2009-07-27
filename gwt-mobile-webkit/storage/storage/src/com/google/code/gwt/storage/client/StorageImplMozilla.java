@@ -20,8 +20,8 @@ package com.google.code.gwt.storage.client;
  * Mozilla-specific implementation of a Storage.
  * 
  * <p>
- * Implementation of StorageEvents is incomplete for Mozilla. This class
- * amends the properties consistently with W3C's StorageEvent.
+ * Implementation of StorageEvents is incomplete for Mozilla. This class amends
+ * the properties consistently with W3C's StorageEvent.
  * </p>
  * 
  * @author bguijt
@@ -52,9 +52,7 @@ public class StorageImplMozilla extends StorageImpl {
   private static final void fireStorageEvent(String key, String oldValue,
       String newValue, Storage storage) {
     StorageEvent se = createStorageEvent(key, oldValue, newValue, storage);
-    if (se != null) {
-      handleStorageEvent(se);
-    }
+    handleStorageEvent(se);
   }
 
   private static final native StorageEvent createStorageEvent(String key,
