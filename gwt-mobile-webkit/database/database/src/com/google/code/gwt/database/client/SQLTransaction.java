@@ -16,7 +16,9 @@
 
 package com.google.code.gwt.database.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 /**
  * Represents a transaction, in either read or read/write mode, as started by a
@@ -44,7 +46,16 @@ public class SQLTransaction extends JavaScriptObject {
   @SuppressWarnings( {"unused", "unchecked"})
   private static final void handleStatement(StatementCallback callback,
       SQLTransaction transaction, SQLResultSet resultSet) {
-    callback.onSuccess(transaction, resultSet);
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        callback.onSuccess(transaction, resultSet);
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      callback.onSuccess(transaction, resultSet);
+    }
   }
 
   /*
@@ -55,7 +66,16 @@ public class SQLTransaction extends JavaScriptObject {
   private static final void handleError(
       StatementCallback<? extends JavaScriptObject> callback,
       SQLTransaction transaction, SQLError error) {
-    callback.onFailure(transaction, error);
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        callback.onFailure(transaction, error);
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      callback.onFailure(transaction, error);
+    }
   }
 
   /**
