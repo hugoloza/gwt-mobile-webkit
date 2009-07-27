@@ -16,7 +16,9 @@
 
 package com.google.code.gwt.appcache.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 
@@ -56,7 +58,16 @@ public final class ApplicationCache extends JavaScriptObject {
 
   @SuppressWarnings("unused")
   private static void handleCacheEvents(EventListener listener, Event event) {
-    listener.onBrowserEvent(event);
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        listener.onBrowserEvent(event);
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      listener.onBrowserEvent(event);
+    }
   }
 
   public native void addEventListener(String type, EventListener listener,

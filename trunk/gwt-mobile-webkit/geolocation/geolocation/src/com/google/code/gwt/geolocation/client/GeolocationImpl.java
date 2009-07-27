@@ -16,6 +16,9 @@
 
 package com.google.code.gwt.geolocation.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+
 /**
  * Represents the Geolocation implementation.
  * 
@@ -47,7 +50,16 @@ public class GeolocationImpl {
   @SuppressWarnings("unused")
   private static final void handleSuccess(PositionCallback callback,
       Position position) {
-    callback.onSuccess(position);
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        callback.onSuccess(position);
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      callback.onSuccess(position);
+    }
   }
 
   /*
@@ -56,7 +68,16 @@ public class GeolocationImpl {
   @SuppressWarnings("unused")
   private static final void handleError(PositionCallback callback,
       PositionError error) {
-    callback.onFailure(error);
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        callback.onFailure(error);
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      callback.onFailure(error);
+    }
   }
 
   public native void getCurrentPosition(Geolocation geo,

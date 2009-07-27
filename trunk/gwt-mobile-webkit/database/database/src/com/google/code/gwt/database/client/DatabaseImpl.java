@@ -16,7 +16,9 @@
 
 package com.google.code.gwt.database.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 /**
  * Default implementation of the (native) functions for {@link Database}.
@@ -26,12 +28,13 @@ import com.google.gwt.core.client.JavaScriptException;
  */
 public class DatabaseImpl {
 
-  protected DatabaseImpl() {}
-  
+  protected DatabaseImpl() {
+  }
+
   public native boolean isSupported() /*-{
     return typeof $wnd.openDatabase == "function";
   }-*/;
-  
+
   public Database openDatabase(String shortName, String version,
       String displayName, int maxSizeBytes) throws DatabaseException {
     try {
@@ -41,6 +44,7 @@ public class DatabaseImpl {
       throw new DatabaseException(e.getName());
     }
   }
+
   private native Database openDatabase0(String shortName, String version,
       String displayName, int maxSizeBytes) /*-{
     return $wnd.openDatabase(shortName, version, displayName, maxSizeBytes);
@@ -51,8 +55,18 @@ public class DatabaseImpl {
    * SQLTransactionCallback interface.
    */
   @SuppressWarnings("unused")
-  private static final void handleTransaction(TransactionCallback callback, SQLTransaction transaction) {
-    callback.onTransactionStart(transaction);
+  private static final void handleTransaction(TransactionCallback callback,
+      SQLTransaction transaction) {
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        callback.onTransactionStart(transaction);
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      callback.onTransactionStart(transaction);
+    }
   }
 
   /*
@@ -60,8 +74,18 @@ public class DatabaseImpl {
    * SQLTransactionErrorCallback interface.
    */
   @SuppressWarnings("unused")
-  private static final void handleError(TransactionCallback callback, SQLError error) {
-    callback.onTransactionFailure(error);
+  private static final void handleError(TransactionCallback callback,
+      SQLError error) {
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        callback.onTransactionFailure(error);
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      callback.onTransactionFailure(error);
+    }
   }
 
   /*
@@ -70,7 +94,16 @@ public class DatabaseImpl {
    */
   @SuppressWarnings("unused")
   private static final void handleSuccess(TransactionCallback callback) {
-    callback.onTransactionSuccess();
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
+    if (ueh != null) {
+      try {
+        callback.onTransactionSuccess();
+      } catch (Throwable t) {
+        ueh.onUncaughtException(t);
+      }
+    } else {
+      callback.onTransactionSuccess();
+    }
   }
 
   public native void transaction(Database db, TransactionCallback callback) /*-{

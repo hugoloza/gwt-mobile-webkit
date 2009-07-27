@@ -19,7 +19,9 @@ package com.google.code.gwt.storage.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 /**
  * This is the HTML5 Storage implementation according to the <a
@@ -106,9 +108,18 @@ public class StorageImpl {
   }-*/;
 
   protected static final void handleStorageEvent(StorageEvent event) {
+    UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
     for (int i = 0; i < storageEventHandlers.size(); i++) {
       StorageEventHandler handler = storageEventHandlers.get(i);
-      handler.onStorageChange(event);
+      if (ueh != null) {
+        try {
+          handler.onStorageChange(event);
+        } catch (Throwable t) {
+          ueh.onUncaughtException(t);
+        }
+      } else {
+        handler.onStorageChange(event);
+      }
     }
   }
 
