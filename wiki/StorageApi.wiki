@@ -64,4 +64,4 @@ Map<String, String> map = new StorageMap(localStorage);
 map.putAll(otherMap);
 // ...
 }}}
-Word of advice: Please note that the Java Map interface is way bigger than the Storage interface, and introducing the StorageMap to your code implies some overhead in accessing the Storage data. Only use the StorageMap if absolutely necessary.
+Word of advice: Please note that the Java Map interface is way bigger than the Storage interface, and introducing the !StorageMap to your code implies some overhead in accessing the Storage data. Only use the !StorageMap if absolutely necessary.
