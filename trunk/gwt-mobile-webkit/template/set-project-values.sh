@@ -68,5 +68,9 @@ sudo find . -name .svn -exec rm -Rf {} ";"
 svn propset svn:externals "http://google-web-toolkit.googlecode.com/svn/trunk/build-tools build-tools" .
 svn propset svn:externals "http://google-web-toolkit.googlecode.com/svn/trunk/eclipse/settings settings" eclipse
 
+# Mark some scripts as svn:executable:
+svn propset svn:executable ON samples/hello$TEMPLATE_ID/launch-scripts/linux/*
+svn propset svn:executable ON samples/hello$TEMPLATE_ID/launch-scripts/mac/*
+
 # removing this script:
 rm -f set-project-values.sh
