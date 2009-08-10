@@ -53,9 +53,10 @@ public class Coordinates extends JavaScriptObject {
   }-*/;
 
   /**
-   * Returns the height of the position specified in meters.
+   * Returns the height of the position specified in meters. This is an optional
+   * attribute and might be <code>0</code>.
    * 
-   * @return the height of the position specified in meters
+   * @return the height of the position specified in meters (or <code>0</code>)
    * @see <a href="http://www.w3.org/TR/geolocation-API/#altitude">W3C
    *      Geolocation API - Coordinates.altitude</a>
    */
@@ -75,10 +76,11 @@ public class Coordinates extends JavaScriptObject {
   }-*/;
 
   /**
-   * Returns the accuracy level of the altitude specified in meters.
+   * Returns the accuracy level of the altitude specified in meters. This is an
+   * optional attribute and might be <code>0</code>.
    * 
    * @return the accuracy level of the altitude specified in meters. If no value
-   *         can be calculated, returns 0.
+   *         can be calculated, returns <code>0</code>.
    * @see <a href="http://www.w3.org/TR/geolocation-API/#altitude-accuracy">W3C
    *      Geolocation API - Coordinates.altitudeAccuracy</a>
    */
@@ -88,10 +90,10 @@ public class Coordinates extends JavaScriptObject {
 
   /**
    * Returns the heading specified in degrees counting clockwise relative to the
-   * true north.
+   * true north. This is an optional attribute and might be <code>0</code>.
    * 
    * @return the heading specified in degrees counting clockwise relative to the
-   *         true north. If no value can be calculated, returns 0.
+   *         true north. If no value can be calculated, returns <code>0</code>.
    * @see <a href="http://www.w3.org/TR/geolocation-API/#heading">W3C
    *      Geolocation API - Coordinates.heading</a>
    */
@@ -100,10 +102,11 @@ public class Coordinates extends JavaScriptObject {
   }-*/;
 
   /**
-   * Returns the speed of the hosting device in meters per second.
+   * Returns the speed of the hosting device in meters per second. This is an
+   * optional attribute and might be <code>0</code>.
    * 
    * @return the speed of the hosting device in meters per second. If no value
-   *         can be calculated, returns 0.
+   *         can be calculated, returns <code>0</code>.
    * @see <a href="http://www.w3.org/TR/geolocation-API/#speed">W3C Geolocation
    *      API - Coordinates.speed</a>
    */
