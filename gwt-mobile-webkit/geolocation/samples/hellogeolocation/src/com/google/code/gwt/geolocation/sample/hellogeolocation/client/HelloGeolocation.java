@@ -82,9 +82,11 @@ public class HelloGeolocation implements EntryPoint {
         main.add(new Label("lat, lon: " + c.getLatitude() + ", "
             + c.getLongitude()));
         main.add(new Label("Accuracy (in meters): " + c.getAccuracy()));
-        main.add(new Label("Height: " + c.getAltitude()));
-        main.add(new Label("Height accuracy (in meters): "
+        main.add(new Label("Altitude: " + c.getAltitude()));
+        main.add(new Label("Altitude accuracy (in meters): "
             + c.getAltitudeAccuracy()));
+        main.add(new Label("Heading: " + c.getHeading()));
+        main.add(new Label("Speed: " + c.getSpeed()));
       }
     });
   }
