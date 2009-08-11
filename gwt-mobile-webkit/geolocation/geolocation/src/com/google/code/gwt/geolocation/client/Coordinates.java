@@ -53,10 +53,20 @@ public class Coordinates extends JavaScriptObject {
   }-*/;
 
   /**
+   * Returns <code>true</code> if this instance has a value for
+   * {@link #getAltitude()}.
+   */
+  public final native boolean hasAltitude() /*-{
+    return this.altitude != null;
+  }-*/;
+
+  /**
    * Returns the height of the position specified in meters. This is an optional
-   * attribute and might be <code>0</code>.
+   * attribute. If the Geolocation API doesn't support this attribute,
+   * unexpected results might be returned, or an Exception thrown. Use
+   * {@link #hasAltitude()} to check whether this attribute has a value.
    * 
-   * @return the height of the position specified in meters (or <code>0</code>)
+   * @return the height of the position specified in meters
    * @see <a href="http://www.w3.org/TR/geolocation-API/#altitude">W3C
    *      Geolocation API - Coordinates.altitude</a>
    */
@@ -76,11 +86,20 @@ public class Coordinates extends JavaScriptObject {
   }-*/;
 
   /**
+   * Returns <code>true</code> if this instance has a value for
+   * {@link #getAltitudeAccuracy()}.
+   */
+  public final native boolean hasAltitudeAccuracy() /*-{
+    return this.altitideAccuracy != null;
+  }-*/;
+
+  /**
    * Returns the accuracy level of the altitude specified in meters. This is an
-   * optional attribute and might be <code>0</code>.
+   * optional attribute. If the Geolocation API doesn't support this attribute,
+   * unexpected results might be returned, or an Exception thrown. Use
+   * {@link #hasAltitudeAccuracy()} to check whether this attribute has a value.
    * 
-   * @return the accuracy level of the altitude specified in meters. If no value
-   *         can be calculated, returns <code>0</code>.
+   * @return the accuracy level of the altitude specified in meters.
    * @see <a href="http://www.w3.org/TR/geolocation-API/#altitude-accuracy">W3C
    *      Geolocation API - Coordinates.altitudeAccuracy</a>
    */
@@ -89,11 +108,22 @@ public class Coordinates extends JavaScriptObject {
   }-*/;
 
   /**
+   * Returns <code>true</code> if this instance has a value for
+   * {@link #getHeading()}.
+   */
+  public final native boolean hasHeading() /*-{
+    return this.heading != null;
+  }-*/;
+
+  /**
    * Returns the heading specified in degrees counting clockwise relative to the
-   * true north. This is an optional attribute and might be <code>0</code>.
+   * true north. This is an optional attribute. If the Geolocation API doesn't
+   * support this attribute, unexpected results might be returned, or an
+   * Exception thrown. Use {@link #hasHeading()} to check whether this attribute
+   * has a value.
    * 
    * @return the heading specified in degrees counting clockwise relative to the
-   *         true north. If no value can be calculated, returns <code>0</code>.
+   *         true north.
    * @see <a href="http://www.w3.org/TR/geolocation-API/#heading">W3C
    *      Geolocation API - Coordinates.heading</a>
    */
@@ -102,11 +132,20 @@ public class Coordinates extends JavaScriptObject {
   }-*/;
 
   /**
+   * Returns <code>true</code> if this instance has a value for
+   * {@link #getSpeed()}.
+   */
+  public final native boolean hasSpeed() /*-{
+    return this.speed != null;
+  }-*/;
+
+  /**
    * Returns the speed of the hosting device in meters per second. This is an
-   * optional attribute and might be <code>0</code>.
+   * optional attribute. If the Geolocation API doesn't support this attribute,
+   * unexpected results might be returned, or an Exception thrown. Use
+   * {@link #hasSpeed()} to check whether this attribute has a value.
    * 
-   * @return the speed of the hosting device in meters per second. If no value
-   *         can be calculated, returns <code>0</code>.
+   * @return the speed of the hosting device in meters per second.
    * @see <a href="http://www.w3.org/TR/geolocation-API/#speed">W3C Geolocation
    *      API - Coordinates.speed</a>
    */
