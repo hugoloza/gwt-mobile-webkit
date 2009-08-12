@@ -1,8 +1,8 @@
-Eclipse 3.3.X instructions
+Eclipse instructions
 
 ---------- Required Mobile Webkit Library for GWT variables ---------
 Window->Preferences->General->Workspace->Linked Resources
-Create a variable named "MOBILE_APPCACHE_API_ROOT" pointing to a working copy of the http://gwt-mobile-webkit.googlecode.com/svn/trunk/appcache folder.
+Create a variable named "MOBILE_APPCACHE_API_ROOT" pointing to a working copy of the http://gwt-mobile-webkit.googlecode.com/svn/trunk/gwt-mobile-webkit/appcache folder.
 
 Window->Preferences->Java->Build Path->Classpath Variables
 Create a variable named "GWT_HOME" pointing to a GWT install folder.
