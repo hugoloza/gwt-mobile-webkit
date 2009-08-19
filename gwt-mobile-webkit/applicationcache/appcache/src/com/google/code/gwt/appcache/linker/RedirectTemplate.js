@@ -20,7 +20,6 @@ function __MODULE_FUNC__() {
   // Cache symbols locally for good obfuscation
   var $wnd = window
   ,$doc = document
-  ,$stats = $wnd.__gwtStatsEvent ? function(a) {return $wnd.__gwtStatsEvent(a);} : null
 
   // These variables gate calling gwtOnLoad; all must be true to start
   ,scriptsDone, loadDone, bodyDone
@@ -45,14 +44,6 @@ function __MODULE_FUNC__() {
   ,onLoadErrorFunc, propertyErrorFunc
 
   ; // end of global vars
-
-  $stats && $stats({
-    moduleName: '__MODULE_NAME__',
-    subSystem: 'startup',
-    evtGroup: 'bootstrap', 
-    millis:(new Date()).getTime(), 
-    type: 'begin',
-  });
 
   // ------------------ TRUE GLOBALS ------------------
 
@@ -82,26 +73,10 @@ function __MODULE_FUNC__() {
   //
   function maybeStartModule() {
     if (scriptsDone && loadDone) {
-      var iframe = $doc.getElementById('__MODULE_NAME__');
-      var frameWnd = iframe.contentWindow;
-      // inject hosted mode property evaluation function
-      if (isHostedMode()) {
-        frameWnd.__gwt_getProperty = function(name) {
-          return computePropValue(name);
-        };
-      }
       // remove this whole function from the global namespace to allow GC
       __MODULE_FUNC__ = null;
       // JavaToJavaScriptCompiler logs onModuleLoadStart for each EntryPoint.
-      frameWnd.gwtOnLoad(onLoadErrorFunc, '__MODULE_NAME__', base);
-      // Record when the module EntryPoints return.
-      $stats && $stats({
-        moduleName: '__MODULE_NAME__',
-        subSystem: 'startup',
-        evtGroup: 'moduleStartup',
-        millis:(new Date()).getTime(),
-        type: 'end',
-      });
+      gwtOnLoad(onLoadErrorFunc, '__MODULE_NAME__', base);
     }
   }
 
@@ -272,32 +247,14 @@ function __MODULE_FUNC__() {
     throw null;
   }
 
-  var frameInjected;
-  function maybeInjectFrame() {
-    if (!frameInjected) {
-      frameInjected = true;
-      var iframe = $doc.createElement('iframe');
-      // Prevents mixed mode security in IE6/7.
-      iframe.src = "javascript:''";
-      iframe.id = "__MODULE_NAME__";
-      iframe.style.cssText = "position:absolute;width:0;height:0;border:none";
-      iframe.tabIndex = -1;
-      // Due to an IE6/7 refresh quirk, this must be an appendChild.
-      $doc.body.appendChild(iframe);
-      
-      /* 
-       * The src has to be set after the iframe is attached to the DOM to avoid
-       * refresh quirks in Safari.  We have to use the location.replace trick to
-       * avoid FF2 refresh quirks.
-       */
-      $stats && $stats({
-        moduleName:'__MODULE_NAME__', 
-        subSystem:'startup', 
-        evtGroup: 'moduleStartup', 
-        millis:(new Date()).getTime(), 
-        type: 'moduleRequested'
-      });
-      iframe.contentWindow.location.replace(base + strongName);
+  function maybeRedirect() {
+    //iframe.contentWindow.location.replace(base + strongName);
+    if ($wnd.location != base + strongName) {
+      // Redirect:
+      $wnd.location = base + strongName;
+    } else {
+      // We're good:
+      maybeStartModule();
     }
   }
 
@@ -314,7 +271,7 @@ function __MODULE_FUNC__() {
     // IE7 bookmark bug. A phantom (presumably cached) version of our compiled iframe
     // can call onScriptLoad before we even properly inject the iframe. So if this is
     // called before the frame was injected ... it is completely bogus.
-    if (frameInjected) {
+    if (redirected) {
       // Mark this module's script as done loading and (possibly) start the module.
       loadDone = true;
       maybeStartModule();
@@ -326,13 +283,6 @@ function __MODULE_FUNC__() {
   __MODULE_FUNC__.onInjectionDone = function() {
     // Mark this module's script injection done and (possibly) start the module.
     scriptsDone = true;
-    $stats && $stats({
-      moduleName:'__MODULE_NAME__', 
-      subSystem:'startup', 
-      evtGroup: 'loadExternalRefs', 
-      millis:(new Date()).getTime(), 
-      type: 'end'
-    });
     maybeStartModule();
   }
 
@@ -354,14 +304,6 @@ function __MODULE_FUNC__() {
   processMetas();
 
   // --------------- WINDOW ONLOAD HOOK ---------------
-
-  $stats && $stats({
-    moduleName:'__MODULE_NAME__', 
-    subSystem:'startup', 
-    evtGroup: 'bootstrap', 
-    millis:(new Date()).getTime(), 
-    type: 'selectingPermutation'
-  });
 
   if (!strongName) {
     try {
@@ -395,7 +337,7 @@ function __MODULE_FUNC__() {
   // For everyone that supports DOMContentLoaded.
   if ($doc.addEventListener) {
     $doc.addEventListener("DOMContentLoaded", function() {
-      maybeInjectFrame();
+      maybeRedirect();
       onBodyDone();
     }, false);
   }
@@ -403,26 +345,10 @@ function __MODULE_FUNC__() {
   // Fallback. If onBodyDone() gets fired twice, it's not a big deal.
   var onBodyDoneTimerId = setInterval(function() {
     if (/loaded|complete/.test($doc.readyState)) {
-      maybeInjectFrame();
+      maybeRedirect();
       onBodyDone();
     }
   }, 50);
-
-  $stats && $stats({
-    moduleName:'__MODULE_NAME__', 
-    subSystem:'startup', 
-    evtGroup: 'bootstrap', 
-    millis:(new Date()).getTime(), 
-    type: 'end'
-  });
-
-  $stats && $stats({
-    moduleName:'__MODULE_NAME__', 
-    subSystem:'startup', 
-    evtGroup: 'loadExternalRefs', 
-    millis:(new Date()).getTime(), 
-    type: 'begin'
-  });
 
 // __MODULE_SCRIPTS_BEGIN__
   // Script resources are injected here
