@@ -17,7 +17,7 @@
   
   <servlet-mapping>
     <servlet-name>cache-manifest</servlet-name>
-    <url-pattern>/helloappcache/cache-manifest.nocache.txt</url-pattern>
+    <url-pattern>*.manifest</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
@@ -29,9 +29,10 @@
     <welcome-file>HelloApplicationCache.html</welcome-file>
   </welcome-file-list>
   
-  <!-- Alternative mime-type setting for appcache? -->
+  <!-- mime-type setting for appcache: (errors out in Jetty Hostedmode!)
   <mime-mapping>
-    <extension>cache-manifest</extension>
+    <extension>manifest</extension>
     <mime-type>text/cache-manifest</mime-type>
   </mime-mapping>
+  -->
 </web-app>
