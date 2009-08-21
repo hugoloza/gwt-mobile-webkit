@@ -38,7 +38,7 @@ This code creates a new table if doesn't exist already:
 {{{
 db.transaction(new TransactionCallback() {
     public void onTransactionStart(SQLTransaction tx) {
-        tx.executeSql("CREATE TABLE clickcount IF NOT EXISTS ("
+        tx.executeSql("CREATE TABLE IF NOT EXISTS clickcount ("
                 + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 + "clicked INTEGER)", null);
     }
