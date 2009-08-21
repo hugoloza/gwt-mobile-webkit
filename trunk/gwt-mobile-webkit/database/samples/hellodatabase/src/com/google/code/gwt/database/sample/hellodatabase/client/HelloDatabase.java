@@ -47,23 +47,33 @@ public class HelloDatabase implements EntryPoint {
       Window.alert("HTML 5 Database is NOT supported in this browser!");
       return;
     }
-    
+
     // Prepare database
-    final Database db = Database.openDatabase("ClckCnt", "1.0", "Click Counter", 10000);
-    
+    final Database db = Database.openDatabase("ClckCnt", "1.0",
+        "Click Counter", 10000);
+
+    if (db == null) {
+      Window.alert("opened Database is NULL! Should not happen (hosted mode?)");
+      return;
+    }
+
     // Create table 'clickcount' if it doesn't exist already:
     db.transaction(new TransactionCallback() {
       public void onTransactionStart(SQLTransaction tx) {
-        tx.executeSql("CREATE TABLE clickcount IF NOT EXISTS ("
+        tx.executeSql("CREATE TABLE IF NOT EXISTS clickcount ("
             + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
             + "clicked INTEGER)", null);
       }
+
       public void onTransactionFailure(SQLError error) {
+        Window.alert("Failed to execute SQL! Code: " + error.getCode()
+            + ", msg: " + error.getMessage());
       }
+
       public void onTransactionSuccess() {
       }
     });
-    
+
     // Create the dialog box
     final DialogBox dialogBox = new DialogBox();
     dialogBox.setText("Welcome to GWT Database Demo!");
@@ -85,22 +95,31 @@ public class HelloDatabase implements EntryPoint {
       public void onClick(ClickEvent event) {
         db.transaction(new TransactionCallback() {
           public void onTransactionStart(SQLTransaction tx) {
-            tx.executeSql("INSERT INTO clickcount (clicked) VALUES (?)", new Object[] {new Date().getTime()});
+            tx.executeSql("INSERT INTO clickcount (clicked) VALUES (?)",
+                new Object[] {new Date().getTime()});
             tx.executeSql("SELECT clicked FROM clickcount", null,
                 new StatementCallback<ClickRow>() {
-                  public boolean onFailure(SQLTransaction transaction, SQLError error) {
+                  public boolean onFailure(SQLTransaction transaction,
+                      SQLError error) {
                     return false;
                   }
-                  public void onSuccess(SQLTransaction transaction, SQLResultSet<ClickRow> resultSet) {
+
+                  public void onSuccess(SQLTransaction transaction,
+                      SQLResultSet<ClickRow> resultSet) {
                     clickedData.clear();
                     for (ClickRow row : resultSet.getRows()) {
-                      clickedData.add(new Label("Clicked on " + row.getClicked()));
+                      clickedData.add(new Label("Clicked on "
+                          + row.getClicked()));
                     }
                   }
                 });
           }
+
           public void onTransactionFailure(SQLError error) {
+            Window.alert("Failed SQL TX! Code: " + error.getCode() + ", msg: "
+                + error.getMessage());
           }
+
           public void onTransactionSuccess() {
           }
         });
