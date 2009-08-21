@@ -6,7 +6,7 @@
 	<!-- "build" is the default when subprojects are directly targetted -->
 	<property name="target" value="build" />
 
-	<target name="hellodatabase" description="Build the Mobile Database sample">
+	<target name="hellodatabase" description="Build the Database sample">
 		<gwt.ant dir="hellodatabase" />
 	</target>
 
@@ -18,13 +18,13 @@
 		</antcall>
 	</target>
 
-	<target name="checkstyle" description="Static analysis of Mobile Database API Library for GWT source">
+	<target name="checkstyle" description="Static analysis of Database API Library for GWT source">
 		<antcall target="-do">
 			<param name="target" value="checkstyle" />
 		</antcall>
 	</target>
 
-	<target name="test" depends="build" description="Test Mobile Database API Library for GWT">
+	<target name="test" depends="build" description="Test Database API Library for GWT">
 		<antcall target="-do">
 			<param name="target" value="test" />
 		</antcall>
@@ -34,4 +34,10 @@
 		<delete dir="${project.build}" />
 		<delete dir="${gwt.build.out}/samples-scripts" />
 	</target>
+
+    <target name="hosted" description="Run sample in hosted mode">
+        <antcall target="-do">
+            <param name="target" value="hosted" />
+        </antcall>
+    </target>
 </project>
