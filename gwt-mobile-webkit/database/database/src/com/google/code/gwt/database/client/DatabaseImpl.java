@@ -32,7 +32,7 @@ public class DatabaseImpl {
   }
 
   public native boolean isSupported() /*-{
-    return typeof $wnd.openDatabase == "function";
+    return typeof $wnd.openDatabase != "undefined";
   }-*/;
 
   public Database openDatabase(String shortName, String version,
