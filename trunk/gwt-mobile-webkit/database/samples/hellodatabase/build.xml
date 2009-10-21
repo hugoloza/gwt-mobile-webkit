@@ -1,6 +1,7 @@
-<project name="database" default="build" basedir=".">
-	<property name="sample.api" value="database" />
-	<property name="sample.root" value="hellodatabase" />
-	<property name="sample.module" value="HelloDatabase" />
+<project name="sample" default="build" basedir=".">
+    <property file="../../build.properties" />
+	<property name="sample.api" value="${api.name}" />
+	<property name="sample.root" value="hello${api.name}" />
+	<property name="sample.module" value="Hello${api.Name}" />
 	<import file="../common.ant.xml" />
 </project>
