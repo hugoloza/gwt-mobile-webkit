@@ -1,30 +1,31 @@
 <project name="samples" default="build" basedir=".">
 	<property name="gwt.root" location=".." />
+    <property file="${gwt.root}/build.properties" />
 	<property name="project.tail" value="samples" />
 	<import file="${gwt.root}/common.ant.xml" />
 
 	<!-- "build" is the default when subprojects are directly targetted -->
 	<property name="target" value="build" />
 
-	<target name="helloappcache" description="Build the Mobile ApplicationCache sample">
-		<gwt.ant dir="helloappcache" />
+	<target name="sample" description="Build the ${api.description} sample">
+		<gwt.ant dir="hello${api.name}" />
 	</target>
 
-	<target name="-do" depends="helloappcache" description="Run all subprojects" />
+	<target name="-do" depends="sample" description="Run all subprojects" />
 
-	<target name="build" description="Builds ApplicationCache API Library for GWT Samples">
+	<target name="build" description="Builds ${api.description} Library for GWT Samples">
 		<antcall target="-do">
 			<param name="target" value="build" />
 		</antcall>
 	</target>
 
-	<target name="checkstyle" description="Static analysis of Mobile ApplicationCache API Library for GWT source">
+	<target name="checkstyle" description="Static analysis of ${api.description} Library for GWT source">
 		<antcall target="-do">
 			<param name="target" value="checkstyle" />
 		</antcall>
 	</target>
 
-	<target name="test" depends="build" description="Test Mobile ApplicationCache API Library for GWT">
+	<target name="test" depends="build" description="Test ${api.description} Library for GWT">
 		<antcall target="-do">
 			<param name="target" value="test" />
 		</antcall>
