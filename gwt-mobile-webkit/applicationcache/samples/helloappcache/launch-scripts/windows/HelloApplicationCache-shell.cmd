@@ -1,5 +1,5 @@
 @if "%GWT_HOME%"=="" goto needGWTHome
-@java -Xmx128m -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-html5-appcache.jar" com.google.gwt.dev.GWTShell -out "%~dp0\..\..\www" %* com.google.code.gwt.appcache.sample.helloappcache.HelloApplicationCache/HelloApplicationCache.html
+@java -Xmx128m -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-html5-appcache.jar" com.google.gwt.dev.HostedMode -war "%~dp0\..\..\war" %* -startupUrl HelloApplicationCache.html com.google.code.gwt.appcache.sample.helloappcache.HelloApplicationCache
 @exit /B %ERRORLEVEL%
 
 :needGWTHome
