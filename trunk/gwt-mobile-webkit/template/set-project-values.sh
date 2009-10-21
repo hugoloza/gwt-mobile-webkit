@@ -2,6 +2,8 @@
 
 # Please set your values in this script before executing!!
 
+TEMPLATE_TYPE_TITLE="Mobile WebKit"
+TEMPLATE_TYPE_ID="mobile-webkit"
 TEMPLATE_TITLE="Database"
 TEMPLATE_ID="database"
 TEMPLATE_CAPS="DATABASE"
@@ -26,6 +28,8 @@ function fdren {
 }
 
 function runrenames {
+  fdren templtype $TEMPLATE_TYPE_ID
+  fdren TemplType $TEMPLATE_TYPE_TITLE
   fdren template $TEMPLATE_ID
   fdren Template $TEMPLATE_TITLE
   fdren TEMPLATE $TEMPLATE_CAPS
@@ -49,7 +53,9 @@ for FILENAME in `find . -name '*.xml' -type f` \
                 `find . -name '*.sh' -type f`; do
 
   if [ $FILENAME != "./set-project-values.sh" ]; then
-    sed -e "s/Template/$TEMPLATE_TITLE/g" \
+    sed -e "s/TemplType/$TEMPLATE_TYPE_TITLE/g" \
+        -e "s/templtype/$TEMPLATE_TYPE_ID/g" \
+        -e "s/Template/$TEMPLATE_TITLE/g" \
         -e "s/template/$TEMPLATE_ID/g" \
         -e "s/TEMPLATE/$TEMPLATE_CAPS/g" \
         $FILENAME > $TEMPFILE

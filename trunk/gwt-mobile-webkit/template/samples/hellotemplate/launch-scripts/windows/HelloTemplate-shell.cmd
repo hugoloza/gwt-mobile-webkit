@@ -1,5 +1,5 @@
 @if "%GWT_HOME%"=="" goto needGWTHome
-@java -Xmx128m -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-mobile-webkit-template.jar" com.google.gwt.dev.GWTShell -out "%~dp0\..\..\www" %* com.google.code.gwt.template.sample.hellotemplate.HelloTemplate/HelloTemplate.html
+@java -Xmx128m -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-templtype-template.jar" com.google.gwt.dev.HostedMode -war "%~dp0\..\..\war" %* -startupUrl HelloTemplate.html com.google.code.gwt.template.sample.hellotemplate.HelloTemplate
 @exit /B %ERRORLEVEL%
 
 :needGWTHome
