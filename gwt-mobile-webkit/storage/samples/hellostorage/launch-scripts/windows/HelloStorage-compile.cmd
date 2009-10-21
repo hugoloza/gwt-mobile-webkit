@@ -1,5 +1,5 @@
 @if "%GWT_HOME%"=="" goto needGWTHome
-@java -Xmx128M -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-mobile-webkit-storage.jar" com.google.gwt.dev.Compiler -war "%~dp0\..\..\www" %* com.google.code.gwt.storage.sample.storage.HelloStorage
+@java -Xmx128M -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-html5-storage.jar" com.google.gwt.dev.Compiler -war "%~dp0\..\..\war" %* com.google.code.gwt.storage.sample.storage.HelloStorage
 @exit /B %ERRORLEVEL%
 
 :needGWTHome
