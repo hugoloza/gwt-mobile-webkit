@@ -18,7 +18,7 @@
 		<gwt.ant dir="doc" />
 	</target>
 
-	<target name="library" description="Build ${api.description} Bindings">
+	<target name="library" description="Build library bindings">
 		<gwt.ant dir="${api.name}"/>
 	</target>
 	
