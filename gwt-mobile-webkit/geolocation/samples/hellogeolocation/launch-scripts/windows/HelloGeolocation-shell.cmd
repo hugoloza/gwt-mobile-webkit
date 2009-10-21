@@ -1,5 +1,5 @@
 @if "%GWT_HOME%"=="" goto needGWTHome
-@java -Xmx128m -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-mobile-webkit-geolocation.jar" com.google.gwt.dev.GWTShell -out "%~dp0\..\..\www" %* com.google.code.gwt.geolocation.sample.geolocation.HelloGeolocation/HelloGeolocation.html
+@java -Xmx128m -cp "%~dp0\..\..\src;%~dp0\..\..\bin;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;..\..\..\..\gwt-html5-geolocation.jar" com.google.gwt.dev.HostedMode -war "%~dp0\..\..\war" %* -startupUrl HelloGeolocation.html com.google.code.gwt.geolocation.sample.geolocation.HelloGeolocation
 @exit /B %ERRORLEVEL%
 
 :needGWTHome
