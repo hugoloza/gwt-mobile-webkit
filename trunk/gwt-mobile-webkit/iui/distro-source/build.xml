@@ -1,5 +1,6 @@
 <project name="dist" default="build" basedir=".">
 	<property name="gwt.root" location=".." />
+    <property file="${gwt.root}/build.properties" />
 	<property name="project.tail" value="distro-source" />
 	<import file="common.ant.xml" />
 
@@ -7,7 +8,7 @@
 		<mkdir dir="${gwt.build.dist}" />
 		<gwt.tgz.cat destfile="${gwt.build.dist}/${project.distname}.tar.gz">
 			<!-- jars -->
-			<tarfileset file="${gwt.build.lib}/gwt-mobile-webkit-${api.name}.jar" prefix="${project.distname}" />
+			<tarfileset file="${gwt.build.lib}/gwt-${api.prefix}-${api.name}.jar" prefix="${project.distname}" />
 
 			<!-- distro-source files -->
 			<tarfileset dir="${gwt.build.out}/distro-source" prefix="${project.distname}">
@@ -25,7 +26,7 @@
 				<include name="samples/*" />
 				<include name="samples/*/src/**" />
 				<include name="samples/*/bin/**" />
-				<include name="samples/*/www/**" />
+				<include name="samples/*/war/**" />
 			</tarfileset>
 
 			<tarfileset dir="${gwt.build.out}/samples" mode="755" prefix="${project.distname}/samples">
@@ -38,7 +39,7 @@
 		<mkdir dir="${gwt.build.dist}" />
 		<zip destfile="${gwt.build.dist}/${project.distname}.zip">
 			<!-- jars -->
-			<zipfileset file="${gwt.build.lib}/gwt-mobile-webkit-${api.name}.jar" prefix="${project.distname}" />
+			<zipfileset file="${gwt.build.lib}/gwt-${api.prefix}-${api.name}.jar" prefix="${project.distname}" />
 
 			<!-- distro-source files -->
 			<zipfileset dir="${gwt.build.out}/distro-source" prefix="${project.distname}">
@@ -56,7 +57,7 @@
 				<include name="samples/*" />
 				<include name="samples/*/src/**" />
 				<include name="samples/*/bin/**" />
-				<include name="samples/*/www/**" />
+				<include name="samples/*/war/**" />
 			</zipfileset>
 
 			<!--

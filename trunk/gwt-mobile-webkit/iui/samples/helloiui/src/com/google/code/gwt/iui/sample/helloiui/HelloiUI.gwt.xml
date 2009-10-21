@@ -1,4 +1,4 @@
-<module>
+<module rename-to="helloiui">
 
       <!-- Inherit the core Web Toolkit stuff.                        -->
       <inherits name="com.google.gwt.user.User"/>
@@ -11,12 +11,9 @@
       <!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/>     -->
 
       <!-- Other module inherits                                      -->
-      <inherits name="com.google.code.gwt.iui.MobileWebkitiUI" />
+      <inherits name="com.google.code.gwt.iui.Iui" />
 
       <!-- Specify the app entry point class.                         -->
       <entry-point class="com.google.code.gwt.iui.sample.helloiui.client.HelloiUI"/>
-    
-      <!-- Specify the application specific style sheet.              -->
-      <stylesheet src="HelloiUI.css" />
 	
 </module>
