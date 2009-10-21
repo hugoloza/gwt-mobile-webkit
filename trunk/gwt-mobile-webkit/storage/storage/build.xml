@@ -1,6 +1,7 @@
-<project name="storage" default="build" basedir=".">
+<project name="gwt-mobile-webkit-library" default="build" basedir=".">
 	<property name="gwt.root" location=".." />
-	<property name="project.tail" value="storage" />
+    <property file="${gwt.root}/build.properties" />
+	<property name="project.tail" value="${api.name}" />
 	<import file="${gwt.root}/common.ant.xml" />
 
 	<!--
@@ -39,7 +40,7 @@
 
 	<target name="build" depends="compile" description="Build and package this project">
 		<mkdir dir="${gwt.build.lib}" />
-		<gwt.jar>
+		<gwt.jar destfile="${mobile.webkit.api.jar}">
 			<fileset dir="src" excludes="**/package.html" />
 			<fileset dir="${javac.out}" />
 		</gwt.jar>

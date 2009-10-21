@@ -1,13 +1,12 @@
 <project name="doc" default="build" basedir=".">
 	<property name="gwt.root" location=".." />
+    <property file="${gwt.root}/build.properties" />
 	<property name="project.tail" value="doc" />
 	<import file="${gwt.root}/common.ant.xml" />
 
 	<property.ensure name="java.tools.path" location="${java.home}/../lib/tools.jar" unless="build.host.ismac" message="Cannot find ${java.home}/../lib/tools.jar; please use a JDK when building doc rather than a JRE." />
 
-	<property name="API_PKGS" value="com.google.code.gwt.storage.client" />
-
-	<property name="api.name" value="storage" />
+	<property name="API_PKGS" value="com.google.code.gwt.${api.name}.client" />
 
 	<!--
 		*** Note that if the API_SOURCE_PATH paths are updated,
@@ -19,7 +18,7 @@
 	</path>
 
 	<path id="API_CLASS_PATH">
-		<pathelement location="${gwt.build.lib}/gwt-mobile-webkit-${api.name}.jar" />
+		<pathelement location="${gwt.build.lib}/gwt-${api.prefix}-${api.name}.jar" />
 		<pathelement location="${gwt.user.jar}" />
 		<pathelement location="${gwt.dev.jar}" />
 		<pathelement location="${gwt.tools.lib}/junit/junit-3.8.1.jar" />
