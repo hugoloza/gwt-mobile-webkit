@@ -68,8 +68,10 @@ public interface StatementCallback<T extends JavaScriptObject> {
   void onSuccess(SQLTransaction transaction, SQLResultSet<T> resultSet);
 
   /**
-   * This callback method is invoked is the SQL statement fails.
+   * This callback method is invoked if the SQL statement fails.
    * 
+   * @param transaction the transaction we're running now
+   * @param error the SQL error causing the failure
    * @return <code>true</code> if the specified <code>transaction</code> must be
    *         rolled-back, <code>false</code> otherwise.
    */
