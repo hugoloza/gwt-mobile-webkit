@@ -21,7 +21,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * 
  * @author bguijt
- * @see <a href="http://www.w3.org/TR/webstorage/#sqlerror">W3C Web Storage -
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqlerror">W3C Web Database -
  *      SQLError</a>
  */
 public class SQLError extends JavaScriptObject {
@@ -30,16 +30,16 @@ public class SQLError extends JavaScriptObject {
   }
 
   /**
-   * @see <a href="http://www.w3.org/TR/webstorage/#dom-sqlerror-code">W3C Web
-   *      Storage - SQLError - code</a>
+   * @see <a href="http://www.w3.org/TR/webdatabase/#dom-sqlerror-code">W3C Web
+   *      Database - SQLError - code</a>
    */
   public final native int getCode() /*-{
     return this.code;
   }-*/;
 
   /**
-   * @see <a href="http://www.w3.org/TR/webstorage/#dom-sqlerror-message">W3C
-   *      Web Storage - SQLError - message</a>
+   * @see <a href="http://www.w3.org/TR/webdatabase/#dom-sqlerror-message">W3C
+   *      Web Database - SQLError - message</a>
    */
   public final native String getMessage() /*-{
     return this.message;

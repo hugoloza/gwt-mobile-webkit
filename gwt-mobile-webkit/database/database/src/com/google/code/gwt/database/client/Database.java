@@ -21,7 +21,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Implements the Asynchronous Database interface, modeled after the <a
- * href="http://www.w3.org/TR/webstorage/#sql">W3C Web Storage - Database</a>.
+ * href="http://www.w3.org/TR/webdatabase/#sql">W3C Web Database</a>.
  * 
  * <h2>Usage</h2>
  * <p>
@@ -50,8 +50,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * });
  * </pre>
  * 
- * @see <a href="http://www.w3.org/TR/webstorage/#sql">W3C Web Storage -
- *      Database</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sql">W3C Web Database</a>
  * @see <a
  *      href="http://developer.apple.com/safari/library/documentation/iPhone/Conceptual/SafariJSDatabaseGuide/RelationalDatabases/chapter_4_section_3.html#//apple_ref/doc/uid/TP40007256-CH5-SW10">Safari
  *      Client-Side Storage - SQL Basics</a>
@@ -78,8 +77,8 @@ public final class Database extends JavaScriptObject {
   /**
    * Creates a handle to a Database instance.
    * 
-   * @see <a href="http://www.w3.org/TR/webstorage/#dom-opendatabase">W3C Web
-   *      Storage - openDatabase</a>
+   * @see <a href="http://www.w3.org/TR/webdatabase/#dom-opendatabase">W3C Web
+   *      Database - openDatabase</a>
    * @param shortName
    * @param version
    * @param displayName
@@ -99,8 +98,8 @@ public final class Database extends JavaScriptObject {
    * @param callback the callback implementing the transaction script
    * 
    * @see <a
-   *      href="http://www.w3.org/TR/webstorage/#dom-database-transaction">W3C
-   *      Web Storage - transaction</a>
+   *      href="http://www.w3.org/TR/webdatabase/#dom-database-transaction">W3C
+   *      Web Database - transaction</a>
    */
   public void transaction(TransactionCallback callback) {
     impl.transaction(this, callback);
@@ -112,8 +111,8 @@ public final class Database extends JavaScriptObject {
    * @param callback the callback implementing the transaction script
    * 
    * @see <a
-   *      href="http://www.w3.org/TR/webstorage/#dom-database-readtransaction">W3C
-   *      Web Storage - readTransaction</a>
+   *      href="http://www.w3.org/TR/webdatabase/#dom-database-readtransaction">W3C
+   *      Web Database - readTransaction</a>
    */
   public void readTransaction(TransactionCallback callback) {
     impl.readTransaction(this, callback);
@@ -123,8 +122,8 @@ public final class Database extends JavaScriptObject {
    * Updates the version of the Database.
    * 
    * @see <a
-   *      href="http://www.w3.org/TR/webstorage/#dom-database-changeversion">W3C
-   *      Web Storage - changeVersion</a>
+   *      href="http://www.w3.org/TR/webdatabase/#dom-database-changeversion">W3C
+   *      Web Database - changeVersion</a>
    */
   public void changeVersion(String oldVersion, String newVersion,
       TransactionCallback callback) {
@@ -134,8 +133,8 @@ public final class Database extends JavaScriptObject {
   /**
    * @return the current version of the Database (as opposed to the expected
    *         version of the {@link Database} object).
-   * @see <a href="http://www.w3.org/TR/webstorage/#dom-database-version">W3C
-   *      Web Storage - getVersion</a>
+   * @see <a href="http://www.w3.org/TR/webdatabase/#dom-database-version">W3C
+   *      Web Database - getVersion</a>
    */
   public String getVersion() {
     return impl.getVersion(this);
