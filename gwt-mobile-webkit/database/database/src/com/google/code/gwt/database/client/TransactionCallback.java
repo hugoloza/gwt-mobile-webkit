@@ -27,8 +27,8 @@ package com.google.code.gwt.database.client;
  * </p>
  * <p>
  * If an error occurred during the transaction,
- * {@link #onTransactionFailure(SQLError)} is invoked. If the transaction
- * completes successfully, {@link #onTransactionSuccess()} is invoked.
+ * {@link #onTransactionFailure(SQLError)} is invoked. Otherwise (if the transaction
+ * completes successfully), {@link #onTransactionSuccess()} is invoked.
  * </p>
  * 
  * @see <a href="http://www.w3.org/TR/webstorage/#sqltransactioncallback">W3C
@@ -54,11 +54,21 @@ public interface TransactionCallback {
   /**
    * This callback is invoked if all SQL statements in the transaction are
    * committed successfully.
+   * 
+   * <p>
+   * The transaction is closed now. Use this method to proceed with your
+   * program.
+   * </p>
    */
   void onTransactionSuccess();
 
   /**
-   * This callback is only called once a transaction has failed.
+   * This callback is invoked when the transaction has failed to complete successfully.
+   * 
+   * <p>
+   * The transaction is closed now. Use this method to proceed with your
+   * program.
+   * </p>
    */
   void onTransactionFailure(SQLError error);
 }
