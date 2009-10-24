@@ -1,0 +1,83 @@
+#summary Design discussion around the DataService as part of the Database API.
+#labels API-Database,Phase-Design
+
+= Introduction =
+
+Interacting with the local Database is complex: it involves several levels of callbacks, and the programmer needs to deal with at least five callback methods if he wants to execute a single SQL statement.
+
+This document explores an additional, DataService API which should simplify the code without making it 'too simple' (e.g. sacrificing good practices).
+
+= Idea =
+
+It would be great if we could approach a local database much like we would approach an RPC service, by means of an interface description. A DataService would look like this:
+
+{{{
+@Connection(name = "ClckCnt", version = "1.0", description = "Click Counter", maxsize = 10000)
+public interface ClickCountDataService extends DataService {
+
+  /**
+   * Makes sure that the 'clickcount' table exists in the Database.
+   * Uses the Void callback to ignore any resultSet.
+   */
+  @SQL("CREATE TABLE IF NOT EXISTS clickcount ("
+            + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+            + "clicked INTEGER)")
+  void initTable(VoidCallback callback);
+  
+  /**
+   * Records a Click value, and obtains the list of all recorded clicks.
+   * Uses the List callback to handle a 'full' resultSet.
+   */
+  @SQL({
+    "INSERT INTO clickcount (clicked) VALUES ({when.getTime()})",
+    "SELECT clicked FROM clickcount"
+    })
+  void insertClick(Date when, ListCallback<ClickRow> callback);
+
+  /**
+   * Obtains the number of clicks recorded in the database.
+   * Uses the Scalar callback to get a single value as result.
+   */
+  @SQL("SELECT count(*) FROM clickcount")
+  void getClickCount(ScalarCallback<Integer> callback);
+}
+}}}
+
+It would be used like this:
+
+{{{
+// Initialize the DataService instance:
+ClickCountDataService service = GWT.create(ClickCountDataService.class);
+
+// Make sure the clickcount table is in the database:
+service.initTable(new VoidCallback() {
+  public boolean onFailure(SQLError error) {
+    // No success, stop the program!
+    return true;  // rollback tx
+  }
+
+  public void onSuccess() {
+    // The clickcount table is certainly in the database.
+    // Insert a new record:
+    service.insertClick(new Date(), new ListCallback<ClickRow>() {
+      public boolean onFailure(SQLError error) {
+        return true;  // rollback tx
+      }
+
+      public void onSuccess(List<ClickRow> result) {
+        // Done! Now do something with the clickcount records:
+        for (ClickRow row : result) {
+          // ...
+        }
+      }
+    });
+  }
+});
+}}}
+
+= Design issues =
+Although the design looks clean and should be able to do the job, there are a few caveats:
+  # The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the insertClick() call must be *copied* before the transaction ends, and then provided to the onSuccess method - or, a third callback method should be provided;
+  # The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
+
+Of course, the 'regular' Database API stays available for use next to the DataService.
