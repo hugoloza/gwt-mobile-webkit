@@ -36,8 +36,8 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @see GenericRow
  * @see StatementCallback
- * @see <a href="http://www.w3.org/TR/webstorage/#sqlresultsetrowlist">W3C Web
- *      Storage - SQLResultSetRowList</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqlresultsetrowlist">W3C Web
+ *      Database - SQLResultSetRowList</a>
  * 
  * @author bguijt
  */

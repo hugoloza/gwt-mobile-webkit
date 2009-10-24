@@ -21,15 +21,14 @@ package com.google.code.gwt.database.client;
  * 
  * <p>
  * The main difference between the Safari implementation and the <a
- * href="http://www.w3.org/TR/webstorage/#database">W3C Web Storage</a>
+ * href="http://www.w3.org/TR/webdatabase/#database">W3C Web Database</a>
  * recommendation is the lack of a readTransaction() method. Therefore, this
  * implementation simply calls
  * {@link #transaction(Database, TransactionCallback)} for <em>all</em> read and
  * read/write transactions.
  * </p>
  * 
- * @see <a href="http://www.w3.org/TR/webstorage/#database">W3C Web Storage -
- *      Database</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#database">W3C Web Database</a>
  * @see <a
  *      href="https://developer.apple.com/safari/library/documentation/AppleApplications/Reference/WebKitDOMRef/Database_idl/Classes/Database/index.html">WebKit
  *      DOM Reference - Database</a>

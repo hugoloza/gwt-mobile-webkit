@@ -23,7 +23,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * Represents the ResultSet as a result of an SQL Statement invoked by
  * {@link SQLTransaction#executeSql(String, Object[], StatementCallback)}.
  * 
- * @see <a href="http://www.w3.org/TR/webstorage/#sqlresultset">W3C Web Storage
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqlresultset">W3C Web Database
  *      - SQLResultSet</a>
  * @author bguijt
  */

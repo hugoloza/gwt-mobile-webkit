@@ -30,8 +30,8 @@ import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
  * boundaries of a transaction.
  * </p>
  * 
- * @see <a href="http://www.w3.org/TR/webstorage/#sqltransaction">W3C Web
- *      Storage - SQLTransaction</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqltransaction">W3C Web
+ *      Database - SQLTransaction</a>
  * @author bguijt
  */
 public class SQLTransaction extends JavaScriptObject {
@@ -43,7 +43,7 @@ public class SQLTransaction extends JavaScriptObject {
    * Helper method to bind the JS function callback to the Java
    * SQLStatementCallback interface.
    */
-  @SuppressWarnings( {"unused", "unchecked"})
+  @SuppressWarnings({"unused", "unchecked"})
   private static final void handleStatement(StatementCallback callback,
       SQLTransaction transaction, SQLResultSet resultSet) {
     UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
@@ -89,8 +89,8 @@ public class SQLTransaction extends JavaScriptObject {
    * </p>
    * 
    * @see <a
-   *      href="http://www.w3.org/TR/webstorage/#dom-sqltransaction-executesql">W3C
-   *      Web Storage - SQLTransaction - executeSql</a>
+   *      href="http://www.w3.org/TR/webdatabase/#dom-sqltransaction-executesql">W3C
+   *      Web Database - SQLTransaction - executeSql</a>
    * @see <a href="http://www.sqlite.org/lang.html">SQLite3 SQL Language
    *      Reference</a>
    * @param sqlStatement the SQL statement to execute, containing
@@ -113,8 +113,8 @@ public class SQLTransaction extends JavaScriptObject {
    * </p>
    * 
    * @see <a
-   *      href="http://www.w3.org/TR/webstorage/#dom-sqltransaction-executesql">W3C
-   *      Web Storage - SQLTransaction - executeSql</a>
+   *      href="http://www.w3.org/TR/webdatabase/#dom-sqltransaction-executesql">W3C
+   *      Web Database - SQLTransaction - executeSql</a>
    * @see <a href="http://www.sqlite.org/lang.html">SQLite3 SQL Language
    *      Reference</a>
    * @param sqlStatement the SQL statement to execute, containing

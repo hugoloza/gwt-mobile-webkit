@@ -57,10 +57,10 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @see GenericRow
  * @see SQLTransaction
- * @see <a href="http://www.w3.org/TR/webstorage/#sqlstatementcallback">W3C Web
- *      Storage - SQLStatementCallback</a>
- * @see <a href="http://www.w3.org/TR/webstorage/#sqlstatementerrorcallback">W3C
- *      Web Storage - SQLStatementErrorCallback</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqlstatementcallback">W3C Web
+ *      Database - SQLStatementCallback</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqlstatementerrorcallback">W3C
+ *      Web Database - SQLStatementErrorCallback</a>
  * @author bguijt
  */
 public interface StatementCallback<T extends JavaScriptObject> {

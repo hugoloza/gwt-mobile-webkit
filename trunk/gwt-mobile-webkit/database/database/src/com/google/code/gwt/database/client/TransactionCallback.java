@@ -31,13 +31,13 @@ package com.google.code.gwt.database.client;
  * completes successfully), {@link #onTransactionSuccess()} is invoked.
  * </p>
  * 
- * @see <a href="http://www.w3.org/TR/webstorage/#sqltransactioncallback">W3C
- *      Web Storage - SQLTransactionCallback</a>
- * @see <a href="http://www.w3.org/TR/webstorage/#sqlvoidcallback">W3C Web
- *      Storage - SQLVoidCallback</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqltransactioncallback">W3C
+ *      Web Database - SQLTransactionCallback</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#sqlvoidcallback">W3C Web
+ *      Database - SQLVoidCallback</a>
  * @see <a
- *      href="http://www.w3.org/TR/webstorage/#sqltransactionerrorcallback">W3C
- *      Web Storage - SQLTransactionErrorCallback</a>
+ *      href="http://www.w3.org/TR/webdatabase/#sqltransactionerrorcallback">W3C
+ *      Web Database - SQLTransactionErrorCallback</a>
  * @author bguijt
  */
 public interface TransactionCallback {
