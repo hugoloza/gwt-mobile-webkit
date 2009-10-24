@@ -22,10 +22,17 @@ import com.google.gwt.core.client.JavaScriptObject;
  * Provides the result of an executed SQL Statement.
  * 
  * <p>
- * This interface specifies the object type you expect to return in the
- * resultset rows by means of the Java Generics. A generic row type is
- * {@link GenericRow}, which provides access to all row attributes dynamically.
- * Use {@link GenericRow} like follows:
+ * All callback methods in this interface are called in the context of the SQL
+ * Transaction. This is important if you want to proceed your program after the
+ * SQL statements are executed: don't do that from this callback type, use the
+ * callback methods from {@link SQLTransaction} to proceed.
+ * </p>
+ * 
+ * <p>
+ * This interface specifies a type parameter to denote the type you expect to
+ * return in the resultset rows. A generic row type is {@link GenericRow}, which
+ * provides access to all row attributes dynamically. Use {@link GenericRow}
+ * like follows:
  * </p>
  * 
  * <pre>
@@ -62,7 +69,14 @@ public interface StatementCallback<T extends JavaScriptObject> {
    * This callback method is invoked with the result of an executed SQL
    * statement (be it SELECT, CREATE, UPDATE or anything else).
    * 
-   * @param transaction the transaction context
+   * <p>
+   * Note: <b>DO NOT</b> use this callback to proceed with your program (use
+   * {@link TransactionCallback#onTransactionSuccess()} for that). <b>ONLY</b>
+   * use this to process the resultSet, and/or execute additional SQL statements
+   * within the same transaction!
+   * </p>
+   * 
+   * @param transaction the transaction context of the callback
    * @param resultSet the result of the statement
    */
   void onSuccess(SQLTransaction transaction, SQLResultSet<T> resultSet);
@@ -70,7 +84,14 @@ public interface StatementCallback<T extends JavaScriptObject> {
   /**
    * This callback method is invoked if the SQL statement fails.
    * 
-   * @param transaction the transaction we're running now
+   * <p>
+   * Note: <b>DO NOT</b> use this callback to proceed with your program (use
+   * {@link TransactionCallback#onTransactionFailure(SQLError)} for that).
+   * <b>ONLY</b> use this to process the error, and/or execute additional SQL
+   * statements within the same transaction!
+   * </p>
+   * 
+   * @param transaction the transaction context of the callback
    * @param error the SQL error causing the failure
    * @return <code>true</code> if the specified <code>transaction</code> must be
    *         rolled-back, <code>false</code> otherwise.
