@@ -83,9 +83,8 @@ Although the design looks clean and should be able to do the job, there are a fe
 
 = Experimental version in SVN =
 The code repository is updated with an experimental version of the DataService API. Use as follows:
-  # Check out the sourcecode using instructions at BuildingFromSource
-  # Build the database subproject (`cd database` followed by `ant`)
-  # Pick up the jar file from `build/lib/gwt-html5-database.jar`, and/or check out sample at `samples/hellodatabase`.
+  # [http://code.google.com/p/gwt-mobile-webkit/downloads/list?q=label:API-Database Download] a 1.5 version of the Database API library
+  # Pick up the jar file `gwt-html5-database.jar`, and/or check out sample at `samples/HelloDatabase`.
 
 The current version implements the design issues as follows:
   # If calling `openDatabase()` fails, the callback's `onFailure()` method is invoked, rather than an Exception is thrown;
