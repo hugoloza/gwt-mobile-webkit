@@ -1,11 +1,11 @@
-#summary Design discussion around the DataService as part of the Database API.
+#summary Design discussion around the !DataService as part of the Database API.
 #labels API-Database,Phase-Design
 
 = Introduction =
 
 Interacting with the local Database is complex: it involves several levels of callbacks, and the programmer needs to deal with at least five callback methods if he wants to execute a single SQL statement.
 
-This document explores an additional, DataService API which should simplify the code without making it 'too simple' (e.g. sacrificing good practices).
+This document explores an additional, !DataService API which should simplify the code without making it 'too simple' (e.g. sacrificing good practices).
 
 = Idea =
 
@@ -51,17 +51,16 @@ ClickCountDataService service = GWT.create(ClickCountDataService.class);
 
 // Make sure the clickcount table is in the database:
 service.initTable(new VoidCallback() {
-  public boolean onFailure(SQLError error) {
+  public void onFailure(SQLError error) {
     // No success, stop the program!
-    return true;  // rollback tx
   }
 
   public void onSuccess() {
     // The clickcount table is certainly in the database.
     // Insert a new record:
     service.insertClick(new Date(), new ListCallback<ClickRow>() {
-      public boolean onFailure(SQLError error) {
-        return true;  // rollback tx
+      public void onFailure(SQLError error) {
+        // Something went wrong!
       }
 
       public void onSuccess(List<ClickRow> result) {
@@ -80,5 +79,6 @@ Although the design looks clean and should be able to do the job, there are a fe
   # The service expects the Database API to just 'be there'. How should we cope with the fact no database is available - throw an Exception at each service method, checked or unchecked? Go straight to the 'onFailure' callback?
   # The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the insertClick() call must be *copied* before the transaction ends, and then provided to the onSuccess method - or, a third callback method should be provided;
   # The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
+  # The regular !StatementCallback enables the user to rollback a transaction when something went wrong. Should the user somehow be able to specify how to handle failures, or should we just always mandate a rollback?
 
-Of course, the 'regular' Database API stays available for use next to the DataService.
+Of course, the 'regular' Database API stays available for use next to the !DataService.
