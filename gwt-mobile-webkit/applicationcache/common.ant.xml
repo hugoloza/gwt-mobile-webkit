@@ -118,7 +118,7 @@
         <fail unless="gwt.dev.jar.exists" message="Cannot find '${gwt.dev.jar}'; perhaps you should define the GWT_HOME environment variable" />
 
 
-  <condition property="junit.platform.args" value="-d32 -XstartOnFirstThread" else="">
+  <condition property="hostedmode.platform.args" value="-d32 -XstartOnFirstThread" else="">
     <isset property="build.host.ismac" />
   </condition>
 
@@ -227,7 +227,7 @@
 
       <junit dir="@{test.out}" fork="yes" printsummary="yes"
              failureproperty="junit.failure" tempdir="@{test.out}">
-        <jvmarg line="${junit.platform.args}" />
+        <jvmarg line="${hostedmode.platform.args}" />
         <jvmarg line="-Xmx768m" />
         <jvmarg value="-Demma.coverage.out.file=@{test.emma.coverage}/coverage.emma" />
         <jvmarg value="-Demma.coverage.out.merge=true" />

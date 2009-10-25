@@ -108,7 +108,7 @@
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
       </classpath>
-      <jvmarg value="-XstartOnFirstThread" />  <!-- Mac specific arg. -->
+      <jvmarg line="${hostedmode.platform.args}" />
       <jvmarg value="-Xmx256M" />
       <arg value="-war" />
       <arg value="${sample.build}/war" />
