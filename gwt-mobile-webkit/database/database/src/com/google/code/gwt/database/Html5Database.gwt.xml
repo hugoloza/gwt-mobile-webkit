@@ -23,4 +23,8 @@
     <when-type-is class="com.google.code.gwt.database.client.DatabaseImpl" />
     <when-property-is name="user.agent" value="safari" />
   </replace-with>
+  
+  <generate-with class="com.google.code.gwt.database.rebind.DataServiceGenerator">
+    <when-type-assignable class="com.google.code.gwt.database.client.service.DataService" />
+  </generate-with>
 </module>

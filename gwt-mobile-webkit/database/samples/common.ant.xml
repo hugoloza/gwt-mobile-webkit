@@ -61,7 +61,9 @@
             <arg value="-war" />
             <arg file="${sample.build}/war" />
             <!--arg value="-logLevel" />
-            <arg value="DEBUG" />
+            <arg value="INFO" />
+            <arg value="-gen" />
+            <arg value=".gwt-gen" />
             <arg value="-style" />
             <arg value="PRETTY" /-->
             <arg value="com.google.code.gwt.${sample.api}.sample.${sample.lower}.${sample.module}" />
@@ -108,7 +110,7 @@
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
       </classpath>
-      <jvmarg value="-XstartOnFirstThread" />  <!-- Mac specific arg. -->
+      <jvmarg line="${junit.platform.args}" />
       <jvmarg value="-Xmx256M" />
       <arg value="-war" />
       <arg value="${sample.build}/war" />
