@@ -51,7 +51,7 @@ ClickCountDataService service = GWT.create(ClickCountDataService.class);
 
 // Make sure the clickcount table is in the database:
 service.initTable(new VoidCallback() {
-  public void onFailure(SQLError error) {
+  public void onFailure(DataServiceException error) {
     // No success, stop the program!
   }
 
@@ -59,7 +59,7 @@ service.initTable(new VoidCallback() {
     // The clickcount table is certainly in the database.
     // Insert a new record:
     service.insertClick(new Date(), new ListCallback<ClickRow>() {
-      public void onFailure(SQLError error) {
+      public void onFailure(DataServiceException error) {
         // Something went wrong!
       }
 
