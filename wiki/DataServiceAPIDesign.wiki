@@ -77,6 +77,7 @@ service.initTable(new VoidCallback() {
 
 = Design issues =
 Although the design looks clean and should be able to do the job, there are a few caveats:
+  # The service expects the Database API to just 'be there'. How should we cope with the fact no database is available - throw an Exception at each service method, checked or unchecked? Go straight to the 'onFailure' callback?
   # The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the insertClick() call must be *copied* before the transaction ends, and then provided to the onSuccess method - or, a third callback method should be provided;
   # The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
 
