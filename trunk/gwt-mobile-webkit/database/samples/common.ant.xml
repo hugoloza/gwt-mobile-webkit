@@ -110,7 +110,7 @@
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
       </classpath>
-      <jvmarg line="${junit.platform.args}" />
+      <jvmarg line="${hostedmode.platform.args}" />
       <jvmarg value="-Xmx256M" />
       <arg value="-war" />
       <arg value="${sample.build}/war" />
