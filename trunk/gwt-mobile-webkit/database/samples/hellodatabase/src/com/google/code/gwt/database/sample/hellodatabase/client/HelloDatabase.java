@@ -13,17 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package com.google.code.gwt.database.sample.hellodatabase.client;
 
 import java.util.Date;
+import java.util.List;
 
 import com.google.code.gwt.database.client.Database;
-import com.google.code.gwt.database.client.SQLError;
-import com.google.code.gwt.database.client.SQLResultSet;
-import com.google.code.gwt.database.client.SQLTransaction;
-import com.google.code.gwt.database.client.StatementCallback;
-import com.google.code.gwt.database.client.TransactionCallback;
+import com.google.code.gwt.database.client.service.DataServiceException;
+import com.google.code.gwt.database.client.service.ListCallback;
+import com.google.code.gwt.database.client.service.ScalarCallback;
+import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -39,6 +41,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class HelloDatabase implements EntryPoint {
 
+  ClickCountDataService dbService = GWT.create(ClickCountDataService.class);
+
   /**
    * This is the entry point method.
    */
@@ -48,29 +52,15 @@ public class HelloDatabase implements EntryPoint {
       return;
     }
 
-    // Prepare database
-    final Database db = Database.openDatabase("ClckCnt", "1.0",
-        "Click Counter", 10000);
-
-    if (db == null) {
-      Window.alert("opened Database is NULL! Should not happen (hosted mode?)");
-      return;
-    }
-
     // Create table 'clickcount' if it doesn't exist already:
-    db.transaction(new TransactionCallback() {
-      public void onTransactionStart(SQLTransaction tx) {
-        tx.executeSql("CREATE TABLE IF NOT EXISTS clickcount ("
-            + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + "clicked INTEGER)", null);
-      }
-
-      public void onTransactionFailure(SQLError error) {
-        Window.alert("Failed to execute SQL! Code: " + error.getCode()
+    dbService.initTable(new VoidCallback() {
+      public void onFailure(DataServiceException error) {
+        Window.alert("Failed to initialize table! Code: " + error.getCode()
             + ", msg: " + error.getMessage());
       }
 
-      public void onTransactionSuccess() {
+      public void onSuccess() {
+        Window.alert("Database initialized successfully.");
       }
     });
 
@@ -90,37 +80,22 @@ public class HelloDatabase implements EntryPoint {
     dialogVPanel.add(clickedData);
     dialogVPanel.add(closeButton);
 
+    dialogBox.setWidget(dialogVPanel);
+
     Image img = new Image("http://code.google.com/webtoolkit/logo-185x175.png");
     Button button = new Button("Click me", new ClickHandler() {
       public void onClick(ClickEvent event) {
-        db.transaction(new TransactionCallback() {
-          public void onTransactionStart(SQLTransaction tx) {
-            tx.executeSql("INSERT INTO clickcount (clicked) VALUES (?)",
-                new Object[] {new Date().getTime()});
-            tx.executeSql("SELECT clicked FROM clickcount", null,
-                new StatementCallback<ClickRow>() {
-                  public boolean onFailure(SQLTransaction transaction,
-                      SQLError error) {
-                    return false;
-                  }
-
-                  public void onSuccess(SQLTransaction transaction,
-                      SQLResultSet<ClickRow> resultSet) {
-                    clickedData.clear();
-                    for (ClickRow row : resultSet.getRows()) {
-                      clickedData.add(new Label("Clicked on "
-                          + row.getClicked()));
-                    }
-                  }
-                });
+        dbService.insertClick(new Date(), new ListCallback<ClickRow>() {
+          public void onFailure(DataServiceException error) {
+            Window.alert("Failed to add click! Code: " + error.getCode()
+                + ", msg: " + error.getMessage());
           }
 
-          public void onTransactionFailure(SQLError error) {
-            Window.alert("Failed SQL TX! Code: " + error.getCode() + ", msg: "
-                + error.getMessage());
-          }
-
-          public void onTransactionSuccess() {
+          public void onSuccess(List<ClickRow> result) {
+            clickedData.clear();
+            for (ClickRow row : result) {
+              clickedData.add(new Label("Clicked on " + row.getClicked()));
+            }
           }
         });
 
@@ -129,7 +104,7 @@ public class HelloDatabase implements EntryPoint {
       }
     });
 
-    VerticalPanel vPanel = new VerticalPanel();
+    final VerticalPanel vPanel = new VerticalPanel();
     // We can add style names.
     vPanel.addStyleName("widePanel");
     vPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
@@ -139,7 +114,16 @@ public class HelloDatabase implements EntryPoint {
     // Add image and button to the RootPanel
     RootPanel.get().add(vPanel);
 
-    // Set the contents of the Widget
-    dialogBox.setWidget(dialogVPanel);
+    dbService.getClickCount(new ScalarCallback<Integer>() {
+      public void onFailure(DataServiceException error) {
+        Window.alert("Failed to get count! Code: " + error.getCode()
+            + ", msg: " + error.getMessage());
+      }
+
+      public void onSuccess(Integer result) {
+        vPanel.add(new Label("At start, there are " + result
+            + " clicks registered."));
+      }
+    });
   }
 }
