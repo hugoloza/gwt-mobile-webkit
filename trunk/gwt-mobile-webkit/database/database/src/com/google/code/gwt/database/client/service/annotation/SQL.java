@@ -21,11 +21,22 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * Provides the SQL statement(s) to be executed when the annotated method is called.
+ * Provides the SQL statement(s) to be executed when the annotated method is
+ * called.
  * 
- * <p>Provide any statement parameters between curly braces, e.g.:</p>
+ * <p>
+ * Provide any statement parameters between curly braces, e.g.:
+ * </p>
+ * 
  * <pre>INSERT INTO mytable (when) VALUES({System.currentTimeMillis()})</pre>
  * 
+ * <p>
+ * Up to now (oct. 2009) all HTML5 Database implementations use SQLite, which
+ * has its own <a href="http://www.sqlite.org/lang.html">SQL flavour</a>.
+ * </p>
+ * 
+ * @see <a href="http://www.sqlite.org/lang.html">SQLite3 SQL Language
+ *      Reference</a>
  * @author bguijt
  */
 @Documented
@@ -33,8 +44,9 @@ import java.lang.annotation.Target;
 public @interface SQL {
 
   /**
-   * Provides one or more SQL statements (of any SELECT, INSERT, UPDATE etc. type)
-   * to be executed whenever the annotated method is called.
+   * Provides one or more SQL statements (of any <code>SELECT</code>,
+   * <code>INSERT</code>, <code>UPDATE</code> etc. type) to be executed whenever
+   * the annotated method is called.
    */
   String[] value();
 }
