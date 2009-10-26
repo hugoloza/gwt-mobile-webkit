@@ -265,7 +265,7 @@ public class DataServiceGenerator extends Generator {
       throw new UnableToCompleteException();
     }
 
-    generateProxyServiceMethodJavadoc(logger, service, srcWriter, sql);
+    generateProxyServiceMethodJavadoc(logger, service, srcWriter);
 
     srcWriter.print("public final void " + service.getName() + "(");
     for (int i = 0; i < params.length; i++) {
@@ -284,7 +284,8 @@ public class DataServiceGenerator extends Generator {
         + " db = getDatabase(" + callback.getName() + ");");
     srcWriter.println("if (db != null) {");
     srcWriter.indent();
-    srcWriter.println("db.transaction(new "
+
+    srcWriter.println("db." + getTxMethod(sql) + "(new "
         + getTransactionCallbackClassName(logger, callback.getType()) + "("
         + callback.getName() + ") {");
     srcWriter.indent();
@@ -330,8 +331,8 @@ public class DataServiceGenerator extends Generator {
    * this code is arguable low :-)
    */
   private void generateProxyServiceMethodJavadoc(TreeLogger logger,
-      JMethod method, SourceWriter srcWriter, SQL sql)
-      throws UnableToCompleteException {
+      JMethod service, SourceWriter srcWriter) throws UnableToCompleteException {
+    SQL sql = service.getAnnotation(SQL.class);
     srcWriter.beginJavaDocComment();
     srcWriter.println("Executes the following "
         + (sql.value().length == 1 ? "SQL statement" : sql.value().length
@@ -430,6 +431,21 @@ public class DataServiceGenerator extends Generator {
     srcWriter.println("}");
     srcWriter.outdent();
     srcWriter.print("}");
+  }
+
+  /**
+   * Returns either <code>readTransaction</code> or <code>transaction</code>
+   * depending in the nature of the provided SQL statements.
+   */
+  private String getTxMethod(SQL sql) {
+    boolean allStatementsAreSelect = true;
+    for (String s : sql.value()) {
+      if (s.trim().toUpperCase().indexOf("SELECT") == -1) {
+        allStatementsAreSelect = false;
+        break;
+      }
+    }
+    return allStatementsAreSelect ? "readTransaction" : "transaction";
   }
 
   /**
@@ -545,7 +561,14 @@ public class DataServiceGenerator extends Generator {
           depth--;
           if (depth == 0) {
             // End a parameter:
-            result.add(param.toString());
+            String s = param.toString().trim();
+            if (s.length() == 0) {
+              logger.log(TreeLogger.ERROR,
+                  "Parameter expression in SQL statement '" + stmt
+                      + "' is empty!");
+              throw new UnableToCompleteException();
+            }
+            result.add(s);
             sql.append('?');
           } else if (depth < 0) {
             logger.log(TreeLogger.ERROR,
@@ -569,7 +592,7 @@ public class DataServiceGenerator extends Generator {
           + " closing brace(s)");
       throw new UnableToCompleteException();
     }
-    result.add(0, sql.toString());
+    result.add(0, sql.toString().trim());
     return result;
   }
 
@@ -584,7 +607,7 @@ public class DataServiceGenerator extends Generator {
         getProxySimpleName(dataService));
 
     if (printWriter == null) {
-      // It already exists.
+      // Proxy already exists.
       return null;
     }
 
