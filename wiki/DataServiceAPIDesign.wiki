@@ -89,6 +89,7 @@ Although the design looks clean and should be able to do the job, there are a fe
   # The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the `insertClick()` call must be *copied* before the transaction ends, and then provided to the `onSuccess()` method - or, a third callback method should be provided;
   # The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
   # The regular !StatementCallback enables the user to rollback a transaction when something went wrong. Should the user somehow be able to specify how to handle failures, or should we just always mandate a rollback?
+  # The Database API offers two transaction modes: One is read/write, the other is readonly. Should the !DataService API always, for simplicity sake, use the read/write transaction mode, or should we introspect the SQL statements to decide what mode to use?
 
 = Experimental version =
 
@@ -101,3 +102,4 @@ The current version implements the design issues as follows:
   # If the Callback expects a List resultset, the resultset is retained after the transaction (rather than copied to an ArrayList or something). This seems to work just fine on Safari;
   # The Transaction context is completely hidden from the service user;
   # Whenever a SQL failure happens, the statements are always rolled back.
+  # The transactions are all in read/write mode, no SQL introspection is done.
