@@ -22,7 +22,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * Provides the result of an executed SQL Statement.
  * 
  * <p>
- * All callback methods in this interface are called in the context of the SQL
+ * All callback methods in this interface are called in the context of a SQL
  * Transaction. This is important if you want to proceed your program after the
  * SQL statements are executed: don't do that from this callback type, use the
  * callback methods from {@link SQLTransaction} to proceed.
@@ -59,7 +59,8 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @see SQLTransaction
  * @see <a href="http://www.w3.org/TR/webdatabase/#sqlstatementcallback">W3C Web
  *      Database - SQLStatementCallback</a>
- * @see <a href="http://www.w3.org/TR/webdatabase/#sqlstatementerrorcallback">W3C
+ * @see <a
+ *      href="http://www.w3.org/TR/webdatabase/#sqlstatementerrorcallback">W3C
  *      Web Database - SQLStatementErrorCallback</a>
  * @author bguijt
  */
@@ -67,7 +68,8 @@ public interface StatementCallback<T extends JavaScriptObject> {
 
   /**
    * This callback method is invoked with the result of an executed SQL
-   * statement (be it SELECT, CREATE, UPDATE or anything else).
+   * statement (be it <code>SELECT</code>, <code>CREATE</code>,
+   * <code>UPDATE</code> or anything else).
    * 
    * <p>
    * Note: <b>DO NOT</b> use this callback to proceed with your program (use
@@ -76,7 +78,9 @@ public interface StatementCallback<T extends JavaScriptObject> {
    * within the same transaction!
    * </p>
    * 
-   * @param transaction the transaction context of the callback
+   * @param transaction the transaction context of the callback, enabling
+   *          additional {@link SQLTransaction#executeSql(String, Object[])}
+   *          calls within the same transaction
    * @param resultSet the result of the statement
    */
   void onSuccess(SQLTransaction transaction, SQLResultSet<T> resultSet);
@@ -91,10 +95,19 @@ public interface StatementCallback<T extends JavaScriptObject> {
    * statements within the same transaction!
    * </p>
    * 
-   * @param transaction the transaction context of the callback
+   * @param transaction the transaction context of the callback, enabling
+   *          additional {@link SQLTransaction#executeSql(String, Object[])}
+   *          calls within the same transaction
    * @param error the SQL error causing the failure
    * @return <code>true</code> if the specified <code>transaction</code> must be
-   *         rolled-back, <code>false</code> otherwise.
+   *         rolled-back, <code>false</code> otherwise. If <code>true</code> is
+   *         returned, the
+   *         {@link TransactionCallback#onTransactionFailure(SQLError)} callback
+   *         will be invoked directly. Otherwise, the transaction will proceed
+   *         to the next {@link SQLTransaction#executeSql(String, Object[])}
+   *         call, or invoke the
+   *         {@link TransactionCallback#onTransactionSuccess()} callback if no
+   *         SQL statements are left to execute.
    */
   boolean onFailure(SQLTransaction transaction, SQLError error);
 }

@@ -21,8 +21,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 /**
- * Represents a transaction, in either read or read/write mode, as started by a
- * {@link Database} instance.
+ * Represents a transaction as started by a
+ * {@link Database#transaction(TransactionCallback)} or
+ * {@link Database#readTransaction(TransactionCallback)} call.
  * 
  * <p>
  * You can use this class to invoke SQL statements by means of
@@ -39,11 +40,11 @@ public class SQLTransaction extends JavaScriptObject {
   protected SQLTransaction() {
   }
 
-  /*
-   * Helper method to bind the JS function callback to the Java
-   * SQLStatementCallback interface.
+  /**
+   * Helper method to bind a JS function callback to the
+   * {@link StatementCallback#onSuccess(SQLTransaction, SQLResultSet)} method.
    */
-  @SuppressWarnings({"unused", "unchecked"})
+  @SuppressWarnings( {"unused", "unchecked"})
   private static final void handleStatement(StatementCallback callback,
       SQLTransaction transaction, SQLResultSet resultSet) {
     UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
@@ -58,9 +59,9 @@ public class SQLTransaction extends JavaScriptObject {
     }
   }
 
-  /*
-   * Helper method to bind the JS function callback to the Java
-   * SQLStatementErrorCallback interface.
+  /**
+   * Helper method to bind a JS function callback to the
+   * {@link StatementCallback#onFailure(SQLTransaction, SQLError)} method.
    */
   @SuppressWarnings("unused")
   private static final void handleError(
@@ -86,6 +87,13 @@ public class SQLTransaction extends JavaScriptObject {
    * The SQL is executed in a SQLite3 database. Please see the <a
    * href="http://www.sqlite.org/lang.html">SQL Language Reference</a> for its
    * capabilities.
+   * </p>
+   * 
+   * <p>
+   * Because this method doesn't specify any callback, whenever a database error
+   * occurs the transaction will be rolled-back (as if a
+   * {@link StatementCallback#onFailure(SQLTransaction, SQLError)} callback returns
+   * <code>true</code>).
    * </p>
    * 
    * @see <a
@@ -121,20 +129,21 @@ public class SQLTransaction extends JavaScriptObject {
    *          <code>"?"</code> placeholders for the <code>arguments</code>
    * @param arguments the arguments to fit in the placeholders of the
    *          <code>sqlStatement</code> (could be <code>null</code>)
-   * @param callback the callback for forwarding the result of the SQL statement
+   * @param callback the callback for handling errors and the resultset of the
+   *          SQL statement
    */
   @SuppressWarnings("unchecked")
   public final native void executeSql(String sqlStatement, Object[] arguments,
       StatementCallback callback) /*-{
     this.executeSql(
-      sqlStatement,
-      arguments,
-      function(transaction, resultSet) {
-        @com.google.code.gwt.database.client.SQLTransaction::handleStatement(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLResultSet;) (callback, transaction, resultSet);
-      },
-      function(transaction, error) {
-        return @com.google.code.gwt.database.client.SQLTransaction::handleError(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLError;) (callback, transaction, error);
-      }
+    sqlStatement,
+    arguments,
+    function(transaction, resultSet) {
+    @com.google.code.gwt.database.client.SQLTransaction::handleStatement(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLResultSet;) (callback, transaction, resultSet);
+    },
+    function(transaction, error) {
+    return @com.google.code.gwt.database.client.SQLTransaction::handleError(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLError;) (callback, transaction, error);
+    }
     );
   }-*/;
 }

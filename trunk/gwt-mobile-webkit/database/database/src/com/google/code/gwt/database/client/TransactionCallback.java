@@ -23,21 +23,18 @@ package com.google.code.gwt.database.client;
  * <p>
  * First, the {@link #onTransactionStart(SQLTransaction)} is invoked. In this
  * method you should execute your SQL statements by means of
- * {@link SQLTransaction#executeSql(String, Object[])}.
+ * {@link SQLTransaction#executeSql(String, Object[])} calls.
  * </p>
  * <p>
- * If an error occurred during the transaction,
- * {@link #onTransactionFailure(SQLError)} is invoked. Otherwise (if the transaction
- * completes successfully), {@link #onTransactionSuccess()} is invoked.
+ * If an error occurs during the transaction (which means: some
+ * {@link StatementCallback#onFailure(SQLTransaction, SQLError)} callback
+ * returned <code>true</code>), {@link #onTransactionFailure(SQLError)} is
+ * invoked. Otherwise (if the transaction completes successfully),
+ * {@link #onTransactionSuccess()} is invoked.
  * </p>
  * 
- * @see <a href="http://www.w3.org/TR/webdatabase/#sqltransactioncallback">W3C
- *      Web Database - SQLTransactionCallback</a>
- * @see <a href="http://www.w3.org/TR/webdatabase/#sqlvoidcallback">W3C Web
- *      Database - SQLVoidCallback</a>
- * @see <a
- *      href="http://www.w3.org/TR/webdatabase/#sqltransactionerrorcallback">W3C
- *      Web Database - SQLTransactionErrorCallback</a>
+ * @see <a href="http://www.w3.org/TR/webdatabase/#transaction-steps">W3C Web
+ *      Database - Transaction steps</a>
  * @author bguijt
  */
 public interface TransactionCallback {
@@ -47,6 +44,8 @@ public interface TransactionCallback {
    * by using the specified <code>transaction</code> instance to invoke
    * {@link SQLTransaction#executeSql(String, Object[])}.
    * 
+   * @see <a href="http://www.w3.org/TR/webdatabase/#sqltransactioncallback">W3C
+   *      Web Database - SQLTransactionCallback</a>
    * @param transaction the transaction context
    */
   void onTransactionStart(SQLTransaction transaction);
@@ -59,16 +58,24 @@ public interface TransactionCallback {
    * The transaction is closed now. Use this method to proceed with your
    * program.
    * </p>
+   * 
+   * @see <a href="http://www.w3.org/TR/webdatabase/#sqlvoidcallback">W3C Web
+   *      Database - SQLVoidCallback</a>
    */
   void onTransactionSuccess();
 
   /**
-   * This callback is invoked when the transaction has failed to complete successfully.
+   * This callback is invoked when the transaction has failed to complete
+   * successfully.
    * 
    * <p>
    * The transaction is closed now. Use this method to proceed with your
    * program.
    * </p>
+   * 
+   * @see <a
+   *      href="http://www.w3.org/TR/webdatabase/#sqltransactionerrorcallback">W3C
+   *      Web Database - SQLTransactionErrorCallback</a>
    */
   void onTransactionFailure(SQLError error);
 }
