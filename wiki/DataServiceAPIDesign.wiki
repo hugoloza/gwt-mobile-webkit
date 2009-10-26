@@ -74,17 +74,25 @@ service.initTable(new VoidCallback() {
 });
 }}}
 
+= Improvements over regular API =
+
+The !DataService API makes several improvements over the regular Database API:
+  # Separation of Concerns: The API enforces separation of the service definition itself (the !DataService interface) and the client code calling the services;
+  # Simplicity: The amount of callbacks to implement a transaction are reduced from 5 to 2, while making sure all default callback behaviour is sensible. This ensures no confusion between two different `onFailure()` and `onSuccess()` methods;
+  # Extensibility: If, for instance, Microsoft decides to implement the Database API in IE9, while using a completely different Database engine than SQLite, the service method might be annotated with additional compatibility annotations. GWT's Deferred Binding compiler would automatically pick the right query;
+
+
 = Design issues =
 
 Although the design looks clean and should be able to do the job, there are a few caveats:
-  # The service expects the Database API to just 'be there'. How should we cope with the fact no database is available - throw an Exception at each service method, checked or unchecked? Go straight to the 'onFailure' callback?
-  # The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the insertClick() call must be *copied* before the transaction ends, and then provided to the onSuccess method - or, a third callback method should be provided;
+  # The service expects the Database API to just 'be there'. How should we cope with the fact no database is available - throw an Exception at each service method, checked or unchecked? Go straight to the `onFailure()` callback?
+  # The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the `insertClick()` call must be *copied* before the transaction ends, and then provided to the `onSuccess()` method - or, a third callback method should be provided;
   # The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
   # The regular !StatementCallback enables the user to rollback a transaction when something went wrong. Should the user somehow be able to specify how to handle failures, or should we just always mandate a rollback?
 
 = Experimental version =
 
-The code repository is updated with an experimental version of the DataService API, and a new download is also available (version 1.5). Use as follows:
+The code repository is updated with an experimental version of the !DataService API, and a new download is also available (version 1.5). Use as follows:
   # [http://code.google.com/p/gwt-mobile-webkit/downloads/list?q=label:API-Database Download] a 1.5 version of the Database API library
   # Pick up the jar file `gwt-html5-database.jar`, and/or check out sample at `samples/HelloDatabase`.
 
