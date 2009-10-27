@@ -49,14 +49,14 @@ public abstract class BaseDataService implements DataService {
   protected final Database getDatabase(Callback callback) {
     if (database == null) {
       if (!Database.isSupported()) {
-        callFailure(callback, "Web Database NOT supported");
+        callFailure(callback, ERR_MSG + "- API is NOT supported");
         return null;
       }
       try {
         database = openDatabase();
         if (database == null) {
           callFailure(callback, ERR_MSG + getDatabaseDetails()
-              + ": openDatabase() returned null");
+              + ": openDatabase() returned null (hostedmode?)");
         }
       } catch (DatabaseException e) {
         callFailure(callback, ERR_MSG + getDatabaseDetails() + ": "
