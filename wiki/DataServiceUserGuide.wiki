@@ -1,0 +1,203 @@
+#summary User guide for the DataService API in the html5-database library
+#labels Phase-Implementation,API-Database
+
+= Introduction =
+
+The !DataService API is a convenience API on top of the existing, regular [DatabaseApi Database API]. The goal is to simplify HTML5 Database programming without sacrificing important features and keeping good runtime performance.
+
+The API involves an interface, a few annotations and GWT's Deferred Binding to glue the parts together.
+
+= Quick start =
+
+In order to create a service, you need to inherit GWT module `com.google.code.gwt.database.Html5Database`.
+
+In your GWT client package, create an interface with a Connection annotation:
+
+{{{
+package my.gwt.package.client;
+
+import com.google.code.gwt.database.client.service.DataService;
+import com.google.code.gwt.database.client.service.VoidCallback;
+import com.google.code.gwt.database.client.service.annotation.Connection;
+import com.google.code.gwt.database.client.service.annotation.SQL;
+
+@Connection(name = "myDatabase", version = "1.0", description = "My Database", maxsize = 10000)
+public interface MyDataService extends DataService {
+
+  @SQL("CREATE TABLE IF NOT EXISTS testtable ("
+            + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            + "adate INTEGER)"
+  void initDatabase(VoidCallback callback);
+}
+}}}
+
+As you probably can imagine, a call to the `initDatabase()` will eventually run the `CREATE TABLE` statement on the database.
+
+Alright, let's review what is shown here.
+  # the interface declaration: Your interface *must* extend `DataService` in order to be recognized as an actual !DataService. This is important for the GWT deferred binding process.
+  # the interface must be annotated with `@Connection`, and all four parameters must be provided. These are the exact same parameters as entered at the `Database.openDatabase()` method.
+  # the interface methods must have a `void` return type, a `@SQL` annotation and a list of parameter(s) which must *always* end with a `[Void|Scalar|List]Callback` declaration - almost like a GWT RPC service method.
+
+So how do we use this interface?
+
+Try this:
+
+{{{
+MyDataService dbService = GWT.create(MyDataService.class);
+
+dbService.initDatabase(new VoidCallback() {
+  public void onFailure(DataServiceException e) {
+    // Handle failure. We get here if no Database implementation is available,
+    // or if the SQL statement could not be executed.
+  }
+  public void onSuccess() {
+    // Transaction completed! Continue...
+  }
+}
+}}}
+
+If you're used to the GWT RPC mechanism, you'll see a familiar structure here: a Callback interface providing a Failure and a Success path. Either the `onFailure()` or the `onSuccess()` callback method is called. The callback design is due to the asynchronous nature of the HTML5 Database API.
+
+
+= !DataService capabilities =
+
+== Transactions ==
+=== Multiple SQL statements in a single transaction ===
+The !DataService API supports transactions. Each method in the !DataService starts (and ends) its own transaction. To make this useful, you can specify multiple SQL statements in the `@SQL` annotation, e.g.:
+
+{{{
+@SQL({
+  "INSERT INTO testtable (adate) VALUES ({when.getTime()})",
+  "SELECT adate FROM testtable"
+  })
+void insertDate(Date when, ListCallback<GenericRow> callback);
+}}}
+
+=== What happens when a statement fails ===
+Whenever a SQL statement fails, the transaction is always rolled back, and the Callback's `onFailure()` method is called with an error code/message indicating the source of the error.
+
+=== Read-only and read-write mode ===
+The Database API supports both read-only transactions and read-write transactions. The !DataService checks whether all specified SQL statements of a service method start with `SELECT`, and if that is true, the transaction will be executed in read-only mode - otherwise, it will be executed in read-write mode.
+
+== Parameters ==
+Obviously, a Java method can carry some parameters. Luckily that matches perfectly with what we can do with the SQL statements. For instance:
+
+{{{
+@SQL({
+  "INSERT INTO testtable (adate, name) VALUES ({when.getTime()}, {name})",
+  "SELECT adate FROM testtable WHERE {when.getTime()} < adate"
+  })
+void insertDate(String name, Date when, ListCallback<GenericRow> callback);
+}}}
+
+The method declares two parameters before the callback: a String called `name` and a Date called `when`. These parameters also found their way in the SQL statements - between the curly braces you can see the Java expressions (that's what they are eventually) `when.getTime()` and `name`. The method parameters can be (re)used as much as you like. You could also use expressions not depending on any parameter, e.g. `{System.currentTimeMillis()}`.
+
+Under the hood, the expressions with their curly braces are replaced with a question mark (`?`) and the expressions are moved to an `Object[]` array initializer (in this example, `new Object[] {when.getTime(), name}`).
+
+== Getting results ==
+
+=== Expecting no results: !VoidCallback ===
+If you execute SQL and you don't want to handle any results, simply use the `VoidCallback` type:
+
+{{{
+@SQL("INSERT INTO testtable (adate) VALUES ({when.getTime()})")
+void insertDate(Date when, VoidCallback callback);
+}}}
+
+The `VoidCallback` still declares `onFailure()` and `onSuccess()` callbacks which must be provided by the caller. This is the simplest callback type.
+
+=== Expecting a single value result: !ScalarCallback ===
+Some SQL queries return just a single value in a resultSet of 1 row and 1 column. The `ScalarCallback` is designed for these cases. E.g.:
+
+{{{
+@SQL("SELECT COUNT(*) FROM testtable")
+void getCount(ScalarCallback<Integer> callback);
+}}}
+
+A `SELECT COUNT(*)` query is a very typical usecase for the `ScalarCallback`. The returned value is provided in the `onSuccess()` callback method:
+
+{{{
+dbService.getCount(new ScalarCallback<Integer>() {
+  public void onFailure(DataServiceException e) {
+     // Handle failure
+  }
+  public void onSuccess(Integer result) {
+     // Do something with the result count
+  }
+}
+}}}
+
+The `result` value is obtained as the first column from the first record in the resultSet. If no data is available, you probably executed the wrong SQL.
+
+If the transaction executes multiple SQL statements, *only the last* statement is considered for providing the value.
+
+=== Expecting multiple rows: !ListCallback ===
+Most `SELECT` queries return a regular, tabular kind of resultSet. The `ListCallback` is designed for this usecase:
+
+{{{
+@SQL("SELECT * FROM testtable")
+void getData(ListCallback<GenericRow> callback);
+}}}
+
+The callback returns a `java.util.List` with the same type parameter as the `ListCallback` (in this case, `GenericRow`):
+
+{{{
+dbService.getData(new ListCallback<GenericRow>() {
+  public void onFailure(DataServiceException e) {
+     // Handle failure
+  }
+  public void onSuccess(List<GenericRow> resultSet) {
+     // Do something with the resultSet
+  }
+}
+}}}
+
+The type which is used to define the 'row' (e.g. `GenericRow`) must be a [http://code.google.com/p/google-web-toolkit/wiki/OverlayTypes JavaScriptObject Overlay] type. The type must define the same attributes as defined by the actual resultSet. E.g., the query:
+
+{{{
+SELECT name, adate FROM testtable
+}}}
+
+creates a resultSet which matches with the following row type:
+
+{{{
+public final class TestTableRow extends JavaScriptObject {
+  protected TestTableRow() {}
+
+  public native String getName() /*-{
+    return this.name;
+  }-*/;
+
+  public native java.util.Date getADate() /*-{
+    return new Date(this.adate)  // date is stored in millisecs!
+  }-*/;
+}
+}}}
+
+The references in the [http://code.google.com/webtoolkit/doc/1.6/FAQ_Client.html#JavaScript_Native_Interface JSNI] code `this.name` and `this.adate` refer to the properties of a resultSet record. By means of a JavaScript overlay type, we can access these properties.
+
+If you think creating your own row type is too complex, you can always fall back to the generic row type `GenericRow`, just like in the example above. That type is a bit like the `ResultSet` type in JDBC: you access the data with methods like `getInteger(String columnName)` and `getString(String columnName)`. For most data types there is an accessor method.
+
+If the transaction executes multiple SQL statements, *only the last* statement is considered for providing the resultSet.
+
+== Using a !DataService inheritance tree ==
+Normally you would declare a !DataService with an interface extending the `DataService` interface.
+
+However, you can also create a !DataService by *extending* another !DataService:
+
+{{{
+@Connection(name="testdb", ...)
+public interface GeneralDataService extends DataService {
+  // general service methods here
+}
+}}}
+{{{
+// No need to annotate with @Connection!
+public interface SpecificDataService extends GeneralDataService {
+  // some additional services here
+}
+}}}
+
+This is especially useful if another GWT module already declares a !DataService to the same Database you'd like to use, only with additional service definitions.
+
+In the end, the GWT Generator will create two !DataService classes, one extending the other. No service method is generated twice, and the Generator maintains the DRY principle.
