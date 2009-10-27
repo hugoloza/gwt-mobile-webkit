@@ -23,8 +23,10 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * code.
  * 
  * <p>
- * The Generator only cares for the onTransactionStart() method body.
+ * The Generator implements the onTransactionStart() method body.
  * </p>
+ * 
+ * @param <T> represents the type for the scalar value
  * 
  * @author bguijt
  */
@@ -42,7 +44,7 @@ public abstract class DataServiceTransactionCallbackScalarCallback<T> extends
   }
 
   /**
-   * Invokes the DataService' {@link ScalarCallback#onSuccess(Object))} callback
+   * Invokes the DataService' {@link ScalarCallback#onSuccess(Object)} callback
    * method with the value stored at {@link #storeValue(Object)}.
    */
   public void onTransactionSuccess() {

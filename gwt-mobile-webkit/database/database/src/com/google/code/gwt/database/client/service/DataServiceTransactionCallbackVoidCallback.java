@@ -23,7 +23,7 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * code.
  * 
  * <p>
- * The Generator only cares for the onTransactionStart() method body.
+ * The Generator implements the onTransactionStart() method body.
  * </p>
  * 
  * @author bguijt

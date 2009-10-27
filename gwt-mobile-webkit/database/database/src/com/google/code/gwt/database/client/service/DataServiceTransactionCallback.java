@@ -25,7 +25,7 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * code.
  * 
  * <p>
- * The Generator only cares for onTransactionStart() and onTransactionSuccess()
+ * The Generator implements the onTransactionStart() and onTransactionSuccess()
  * method bodies.
  * </p>
  * 
