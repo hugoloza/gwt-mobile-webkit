@@ -18,25 +18,22 @@ package com.google.code.gwt.database.rebind;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.code.gwt.database.client.Database;
 import com.google.code.gwt.database.client.DatabaseException;
-import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
 import com.google.code.gwt.database.client.TransactionCallback;
 import com.google.code.gwt.database.client.service.BaseDataService;
 import com.google.code.gwt.database.client.service.Callback;
 import com.google.code.gwt.database.client.service.DataService;
-import com.google.code.gwt.database.client.service.DataServiceStatementCallback;
 import com.google.code.gwt.database.client.service.DataServiceStatementCallbackListCallback;
-import com.google.code.gwt.database.client.service.DataServiceTransactionCallback;
+import com.google.code.gwt.database.client.service.DataServiceStatementCallbackScalarCallback;
 import com.google.code.gwt.database.client.service.DataServiceTransactionCallbackListCallback;
+import com.google.code.gwt.database.client.service.DataServiceTransactionCallbackScalarCallback;
 import com.google.code.gwt.database.client.service.DataServiceTransactionCallbackVoidCallback;
 import com.google.code.gwt.database.client.service.ListCallback;
 import com.google.code.gwt.database.client.service.ScalarCallback;
-import com.google.code.gwt.database.client.service.ScalarRow;
 import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.code.gwt.database.client.service.annotation.Connection;
 import com.google.code.gwt.database.client.service.annotation.SQL;
@@ -67,17 +64,15 @@ public class SqlProxyCreator {
   private static final String PROXY_SUFFIX = "_SqlProxy";
 
   private static final String[] IMPORTED_CLASSES = new String[] {
-      Date.class.getCanonicalName(), Database.class.getCanonicalName(),
-      SQLResultSet.class.getCanonicalName(),
+      Database.class.getCanonicalName(),
       SQLTransaction.class.getCanonicalName(), BaseDataService.class.getName(),
-      ScalarRow.class.getCanonicalName(),
       VoidCallback.class.getCanonicalName(),
       ListCallback.class.getCanonicalName(),
       ScalarCallback.class.getCanonicalName(),
-      DataServiceStatementCallback.class.getCanonicalName(),
+      DataServiceStatementCallbackScalarCallback.class.getCanonicalName(),
       DataServiceStatementCallbackListCallback.class.getCanonicalName(),
-      DataServiceTransactionCallback.class.getCanonicalName(),
       DataServiceTransactionCallbackVoidCallback.class.getCanonicalName(),
+      DataServiceTransactionCallbackScalarCallback.class.getCanonicalName(),
       DataServiceTransactionCallbackListCallback.class.getCanonicalName(),
       DatabaseException.class.getCanonicalName()};
 
@@ -215,7 +210,6 @@ public class SqlProxyCreator {
     // Determine unique variable names:
     String dbVarName = getVariableName("db", params);
     String txVarName = getVariableName("tx", params);
-    String storeVarName = getVariableName("store", params);
 
     // We need to obtain a Database connection.
     sw.println("final " + getClassName(Database.class) + " " + dbVarName
@@ -228,17 +222,6 @@ public class SqlProxyCreator {
         + callback.getName() + ") {");
     sw.indent();
 
-    // We need a temporary 'store' for the ScalarCallback here:
-    if (isType(callback.getType(), ScalarCallback.class)) {
-      String scalarType = getTypeParameter(callback.getType());
-      if (scalarType.indexOf('.') >= 0) {
-        logger.log(TreeLogger.ERROR,
-            "The ScalarCallback does not understand scalar type " + scalarType);
-        throw new UnableToCompleteException();
-      }
-      sw.println(scalarType + " " + storeVarName + " = null;");
-    }
-
     sw.println("public void onTransactionStart("
         + getClassName(SQLTransaction.class) + " " + txVarName + ") {");
     sw.indent();
@@ -247,19 +230,20 @@ public class SqlProxyCreator {
       generateExecuteSqlStatement(service, callback,
           i == (sql.value().length - 1), sql.value()[i]);
     }
+
+    // ends onTransactionStart()
     sw.outdent();
     sw.println("}");
 
-    if (isType(callback.getType(), ScalarCallback.class)) {
-      sw.println("public void onTransactionSuccess() {");
-      sw.indentln(callback.getName() + ".onSuccess(" + storeVarName + ");");
-      sw.println("}");
-    }
-
+    // ends new TransactionCallback() and (read)transaction() call
     sw.outdent();
     sw.println("});");
+
+    // ends if (db != null)
     sw.outdent();
     sw.println("}");
+
+    // ends service method
     sw.outdent();
     sw.println("}");
   }
@@ -337,9 +321,9 @@ public class SqlProxyCreator {
     // ScalarCallback template:
     else if (isType(callback.getType(), ScalarCallback.class)) {
       String scalarType = getTypeParameter(callback.getType());
-      generateStmtCallbackArgument(getClassName(ScalarRow.class),
-          getVariableName("store", service.getParameters())
-              + " = r.getRows().getItem(0).get" + scalarType + "();");
+      sw.print(", new "
+          + getClassName(DataServiceStatementCallbackScalarCallback.class) + "<"
+          + scalarType + ">(this)");
     }
 
     // No expected callback found:
@@ -430,24 +414,6 @@ public class SqlProxyCreator {
   }
 
   /**
-   * Generates a StatementCallback definition as part of a method call.
-   * 
-   * @param rowType the type which represents a row from the resultSet
-   * @param onSuccessStmt the statement(s) to execute in the onSuccess body
-   */
-  private void generateStmtCallbackArgument(String rowType, String onSuccessStmt) {
-    sw.println(", new " + getClassName(DataServiceStatementCallback.class)
-        + "<" + rowType + ">() {");
-    sw.indent();
-    sw.println("public void onSuccess(" + getClassName(SQLTransaction.class)
-        + " t, " + getClassName(SQLResultSet.class) + "<" + rowType + "> r) {");
-    sw.indentln(onSuccessStmt);
-    sw.println("}");
-    sw.outdent();
-    sw.print("}");
-  }
-
-  /**
    * Returns either <code>readTransaction</code> or <code>transaction</code>
    * depending in the nature of the provided SQL statements.
    */
@@ -471,13 +437,17 @@ public class SqlProxyCreator {
   private String getTransactionCallbackClassName(JType callbackType)
       throws UnableToCompleteException {
     if (isType(callbackType, ListCallback.class)) {
+      // TransactionCallback for the ListCallback:
       return getClassName(DataServiceTransactionCallbackListCallback.class)
           + "<" + getTypeParameter(callbackType) + ">";
     }
     if (isType(callbackType, VoidCallback.class)) {
+      // TransactionCallback for the VoidCallback:
       return getClassName(DataServiceTransactionCallbackVoidCallback.class);
     }
-    return getClassName(DataServiceTransactionCallback.class);
+    // TransactionCallback for the ScalarCallback:
+    return getClassName(DataServiceTransactionCallbackScalarCallback.class)
+        + "<" + getTypeParameter(callbackType) + ">";
   }
 
   /**

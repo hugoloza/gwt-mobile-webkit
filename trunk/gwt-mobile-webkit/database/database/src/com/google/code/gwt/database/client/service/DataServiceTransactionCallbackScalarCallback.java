@@ -17,29 +17,42 @@
 package com.google.code.gwt.database.client.service;
 
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
  * code.
  * 
  * <p>
- * This Row type is used to obtain a scalar value from the resultset.
+ * The Generator only cares for the onTransactionStart() method body.
  * </p>
  * 
  * @author bguijt
  */
-public final class ScalarRow<T> extends JavaScriptObject {
+public abstract class DataServiceTransactionCallbackScalarCallback<T> extends
+    DataServiceTransactionCallback<ScalarCallback<T>> {
 
-  protected ScalarRow() {
+  private T store = null;
+
+  /**
+   * Creates a new TransactionCallback with the specified DataService' Scalar
+   * callback.
+   */
+  public DataServiceTransactionCallbackScalarCallback(ScalarCallback<T> callback) {
+    super(callback);
   }
 
   /**
-   * Returns the first value from the row as type T.
+   * Invokes the DataService' {@link ScalarCallback#onSuccess(Object))} callback
+   * method with the value stored at {@link #storeValue(Object)}.
    */
-  public native T getValue() /*-{
-    for (var n in this) {
-      return this[n];
-    }
-  }-*/;
+  public void onTransactionSuccess() {
+    getCallback().onSuccess(store);
+  }
+
+  /**
+   * Store the value for later retrieval when the transaction has ended.
+   */
+  protected void storeValue(T value) {
+    store = value;
+  }
 }
