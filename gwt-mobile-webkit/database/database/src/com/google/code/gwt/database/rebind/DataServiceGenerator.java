@@ -26,10 +26,11 @@ import com.google.code.gwt.database.client.DatabaseException;
 import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
 import com.google.code.gwt.database.client.TransactionCallback;
+import com.google.code.gwt.database.client.service.BaseDataService;
 import com.google.code.gwt.database.client.service.Callback;
 import com.google.code.gwt.database.client.service.DataService;
-import com.google.code.gwt.database.client.service.DataServiceException;
 import com.google.code.gwt.database.client.service.DataServiceStatementCallback;
+import com.google.code.gwt.database.client.service.DataServiceStatementCallbackListCallback;
 import com.google.code.gwt.database.client.service.DataServiceTransactionCallback;
 import com.google.code.gwt.database.client.service.DataServiceTransactionCallbackListCallback;
 import com.google.code.gwt.database.client.service.DataServiceTransactionCallbackVoidCallback;
@@ -65,13 +66,16 @@ public class DataServiceGenerator extends Generator {
   private static final String[] IMPORTED_CLASSES = new String[] {
       Date.class.getCanonicalName(), Database.class.getCanonicalName(),
       SQLResultSet.class.getCanonicalName(),
-      SQLTransaction.class.getCanonicalName(),
-      ScalarRow.class.getCanonicalName(), Callback.class.getCanonicalName(),
+      SQLTransaction.class.getCanonicalName(), BaseDataService.class.getName(),
+      ScalarRow.class.getCanonicalName(),
+      VoidCallback.class.getCanonicalName(),
+      ListCallback.class.getCanonicalName(),
+      ScalarCallback.class.getCanonicalName(),
       DataServiceStatementCallback.class.getCanonicalName(),
+      DataServiceStatementCallbackListCallback.class.getCanonicalName(),
       DataServiceTransactionCallback.class.getCanonicalName(),
       DataServiceTransactionCallbackVoidCallback.class.getCanonicalName(),
       DataServiceTransactionCallbackListCallback.class.getCanonicalName(),
-      DataServiceException.class.getCanonicalName(),
       DatabaseException.class.getCanonicalName()};
 
   @Override
@@ -122,11 +126,12 @@ public class DataServiceGenerator extends Generator {
       return getProxyQualifiedName(dataService);
     }
 
-    generateProxyFields(logger, context, dataService, srcWriter);
-
     generateProxyConstructor(logger, context, dataService, srcWriter);
 
-    generateProxyGetDatabaseMethod(logger, context, dataService, srcWriter);
+    generateProxyOpenDatabaseMethod(logger, context, dataService, srcWriter);
+
+    generateProxyGetDatabaseDetailsMethod(logger, context, dataService,
+        srcWriter);
 
     // Generate service methods for each defined interface method:
     for (JMethod method : dataService.getMethods()) {
@@ -137,16 +142,6 @@ public class DataServiceGenerator extends Generator {
     srcWriter.commit(logger);
 
     return getProxyQualifiedName(dataService);
-  }
-
-  /**
-   * Generates the fields used in the proxy.
-   */
-  private void generateProxyFields(TreeLogger logger, GeneratorContext context,
-      JClassType dataService, SourceWriter srcWriter) {
-    srcWriter.println("private static " + getClassName(Database.class)
-        + " database = null;");
-    srcWriter.println();
   }
 
   /**
@@ -162,72 +157,38 @@ public class DataServiceGenerator extends Generator {
   }
 
   /**
-   * Generates the 'getDatabase()' method (and its dependencies).
+   * Generates the {@link BaseDataService#openDatabase()} method
    */
-  private void generateProxyGetDatabaseMethod(TreeLogger logger,
+  private void generateProxyOpenDatabaseMethod(TreeLogger logger,
       GeneratorContext context, JClassType dataService, SourceWriter srcWriter) {
-    // Generate method for getting Database instance (from interface
-    // DataService):
     Connection con = dataService.getAnnotation(Connection.class);
     srcWriter.beginJavaDocComment();
-    srcWriter.print("Returns the Database connection singleton.");
+    srcWriter.print("Opens the '" + con.name() + "' Database version "
+        + con.version());
     srcWriter.endJavaDocComment();
     srcWriter.println("public final " + getClassName(Database.class)
-        + " getDatabase() {");
-    srcWriter.indentln("return getDatabase(null);");
-    srcWriter.println("}");
-    srcWriter.println();
-
-    // Generate method for getting Database instance with callback parameter:
-    srcWriter.println("private " + getClassName(Database.class)
-        + " getDatabase(" + getClassName(Callback.class) + " callback) {");
-    srcWriter.indent();
-    srcWriter.println("if (database == null) {");
-    srcWriter.indent();
-    srcWriter.println("if (!" + getClassName(Database.class)
-        + ".isSupported()) {");
-    srcWriter.indent();
-    srcWriter.println("callFailure(callback, \"Web Database NOT supported\");");
-    srcWriter.println("return null;");
-    srcWriter.outdent();
-    srcWriter.println("}");
-    srcWriter.println("try {");
-    srcWriter.indent();
-    srcWriter.println("database = " + getClassName(Database.class)
+        + " openDatabase() throws " + getClassName(DatabaseException.class)
+        + " {");
+    srcWriter.indentln("return " + getClassName(Database.class)
         + ".openDatabase(\"" + escape(con.name()) + "\", \""
-        + escape(con.version()) + "\", \"" + con.description() + "\", "
+        + escape(con.version()) + "\", \"" + escape(con.description()) + "\", "
         + con.maxsize() + ");");
-    srcWriter.println("if (database == null) {");
-    srcWriter.indentln("callFailure(callback, \"Unable to open Web Database '"
-        + con.name() + "', version " + con.version()
-        + ": openDatabase() returned null\");");
     srcWriter.println("}");
-    srcWriter.outdent();
-    srcWriter.println("} catch (" + getClassName(DatabaseException.class)
-        + " e) {");
-    srcWriter.indent();
-    srcWriter.println("callFailure(callback, \"Unable to open Web Database '"
-        + con.name() + "', version " + con.version()
-        + ": \" + e.getMessage());");
-    srcWriter.println("return null;");
-    srcWriter.outdent();
-    srcWriter.println("}");
-    srcWriter.outdent();
-    srcWriter.println("}");
-    srcWriter.println("return database;");
-    srcWriter.outdent();
-    srcWriter.println("}");
-    srcWriter.println();
+  }
 
-    // Generate method to call onFailure on the callback (if any):
-    srcWriter.println("private void callFailure("
-        + getClassName(Callback.class) + " callback, String msg) {");
-    srcWriter.indent();
-    srcWriter.println("if (callback != null) {");
-    srcWriter.indentln("callback.onFailure(new "
-        + getClassName(DataServiceException.class) + "(msg));");
-    srcWriter.println("}");
-    srcWriter.outdent();
+  /**
+   * Generates the {@link BaseDataService#getDatabaseDetails()} method.
+   */
+  private void generateProxyGetDatabaseDetailsMethod(TreeLogger logger,
+      GeneratorContext context, JClassType dataService, SourceWriter srcWriter) {
+    Connection con = dataService.getAnnotation(Connection.class);
+    String toReturn = "'" + escape(con.name()) + "' version "
+        + escape(con.version());
+    srcWriter.beginJavaDocComment();
+    srcWriter.print("Returns the <code>" + toReturn + "</code> string.");
+    srcWriter.endJavaDocComment();
+    srcWriter.println("public final String getDatabaseDetails() {");
+    srcWriter.indentln("return \"" + toReturn + "\";");
     srcWriter.println("}");
   }
 
@@ -272,9 +233,8 @@ public class DataServiceGenerator extends Generator {
       if (i > 0) {
         srcWriter.print(", ");
       }
-      srcWriter.print("final "
-          + shortenName(params[i].getType().getParameterizedQualifiedSourceName())
-          + " " + params[i].getName());
+      srcWriter.print("final " + getClassName(params[i].getType()) + " "
+          + params[i].getName());
     }
     srcWriter.println(") {");
     srcWriter.indent();
@@ -400,7 +360,9 @@ public class DataServiceGenerator extends Generator {
     // ListCallback template:
     else if (isType(callback.getType(), ListCallback.class)) {
       String rowType = getTypeParameter(logger, callback.getType());
-      generateStmtCallbackArgument(srcWriter, rowType, "storeResultSet(r);");
+      srcWriter.print(", new "
+          + getClassName(DataServiceStatementCallbackListCallback.class) + "<"
+          + rowType + ">(this)");
     }
 
     // ScalarCallback template:
@@ -481,6 +443,34 @@ public class DataServiceGenerator extends Generator {
   }
 
   /**
+   * Returns the name of the specified type, which can be safely emitted in the
+   * generated sourcecode.
+   */
+  private String getClassName(JType type) {
+    if (type.isPrimitive() != null) {
+      return type.isPrimitive().getSimpleSourceName();
+    }
+    
+    StringBuilder sb = new StringBuilder(shortenName(type.getQualifiedSourceName()));
+
+    if (type.isParameterized() != null && type.isParameterized().getTypeArgs().length > 0) {
+      sb.append('<');
+      boolean needComma = false;
+      for (JType typeArg : type.isParameterized().getTypeArgs()) {
+        if (needComma) {
+          sb.append(", ");
+        } else {
+          needComma = true;
+        }
+        sb.append(shortenName(typeArg.getParameterizedQualifiedSourceName()));
+      }
+      sb.append('>');
+    }
+
+    return sb.toString();
+  }
+
+  /**
    * Returns the shortest name of the specified className.
    * 
    * <p>
@@ -491,6 +481,7 @@ public class DataServiceGenerator extends Generator {
   private String shortenName(String className) {
     int index = className.lastIndexOf('.');
     if (index == -1) {
+      // No package name (primitive?)
       return className;
     }
     String packageName = className.substring(0, index);
@@ -646,10 +637,11 @@ public class DataServiceGenerator extends Generator {
       composerFactory.addImport(imp);
     }
 
-    composerFactory.addImplementedInterface(dataService.getErasedType().getQualifiedSourceName());
+    composerFactory.setSuperclass(getClassName(BaseDataService.class));
+    composerFactory.addImplementedInterface(getClassName(dataService));
 
     composerFactory.setJavaDocCommentForClass("Generated by {@link "
-        + getClass().getCanonicalName() + "}");
+        + getClassName(getClass()) + "}");
 
     return composerFactory.createSourceWriter(ctx, printWriter);
   }
