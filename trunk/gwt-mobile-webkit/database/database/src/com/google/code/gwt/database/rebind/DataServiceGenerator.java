@@ -279,13 +279,18 @@ public class DataServiceGenerator extends Generator {
     srcWriter.println(") {");
     srcWriter.indent();
 
+    // Determine unique variable names:
+    String dbVarName = getVariableName("db", params);
+    String txVarName = getVariableName("tx", params);
+    String storeVarName = getVariableName("store", params);
+
     // We need to obtain a Database connection.
-    srcWriter.println("final " + getClassName(Database.class)
-        + " db = getDatabase(" + callback.getName() + ");");
-    srcWriter.println("if (db != null) {");
+    srcWriter.println("final " + getClassName(Database.class) + " " + dbVarName
+        + " = getDatabase(" + callback.getName() + ");");
+    srcWriter.println("if (" + dbVarName + " != null) {");
     srcWriter.indent();
 
-    srcWriter.println("db." + getTxMethod(sql) + "(new "
+    srcWriter.println(dbVarName + "." + getTxMethod(sql) + "(new "
         + getTransactionCallbackClassName(logger, callback.getType()) + "("
         + callback.getName() + ") {");
     srcWriter.indent();
@@ -298,15 +303,15 @@ public class DataServiceGenerator extends Generator {
             "The ScalarCallback does not understand scalar type " + scalarType);
         throw new UnableToCompleteException();
       }
-      srcWriter.println(scalarType + " store = null;");
+      srcWriter.println(scalarType + " " + storeVarName + " = null;");
     }
 
     srcWriter.println("public void onTransactionStart("
-        + getClassName(SQLTransaction.class) + " tx) {");
+        + getClassName(SQLTransaction.class) + " " + txVarName + ") {");
     srcWriter.indent();
     // Write a tx.executeSql() call for each SQL statement:
     for (int i = 0; i < sql.value().length; i++) {
-      generateExecuteSqlStatement(logger, srcWriter, callback,
+      generateExecuteSqlStatement(logger, service, srcWriter, callback,
           i == (sql.value().length - 1), sql.value()[i]);
     }
     srcWriter.outdent();
@@ -314,7 +319,8 @@ public class DataServiceGenerator extends Generator {
 
     if (isType(callback.getType(), ScalarCallback.class)) {
       srcWriter.println("public void onTransactionSuccess() {");
-      srcWriter.indentln(callback.getName() + ".onSuccess(store);");
+      srcWriter.indentln(callback.getName() + ".onSuccess(" + storeVarName
+          + ");");
       srcWriter.println("}");
     }
 
@@ -357,18 +363,21 @@ public class DataServiceGenerator extends Generator {
    * Generates a <code>tx.executeSql(...);</code> call statement.
    * 
    * @param logger
+   * @param service
    * @param srcWriter
    * @param callback the callback defined for the service method
    * @param isLastStatement whether this is the last statement to execute (to
    *          determine callback type)
    * @param stmt the SQL statement to execute
+   * @param txVarName the name of the SQLTransaction instance variable
    * @throws UnableToCompleteException
    */
-  private void generateExecuteSqlStatement(TreeLogger logger,
+  private void generateExecuteSqlStatement(TreeLogger logger, JMethod service,
       SourceWriter srcWriter, JParameter callback, boolean isLastStatement,
       String stmt) throws UnableToCompleteException {
     List<String> prepStmt = getPreparedStatementSql(logger, stmt);
-    srcWriter.print("tx.executeSql(\"" + escape(prepStmt.get(0)) + "\", ");
+    srcWriter.print(getVariableName("tx", service.getParameters())
+        + ".executeSql(\"" + escape(prepStmt.get(0)) + "\", ");
     if (prepStmt.size() == 1) {
       srcWriter.print("null");
     } else {
@@ -398,7 +407,8 @@ public class DataServiceGenerator extends Generator {
     else if (isType(callback.getType(), ScalarCallback.class)) {
       String scalarType = getTypeParameter(logger, callback.getType());
       generateStmtCallbackArgument(srcWriter, getClassName(ScalarRow.class),
-          "store = r.getRows().getItem(0).get" + scalarType + "();");
+          getVariableName("store", service.getParameters())
+              + " = r.getRows().getItem(0).get" + scalarType + "();");
     }
 
     // No expected callback found:
@@ -434,18 +444,32 @@ public class DataServiceGenerator extends Generator {
   }
 
   /**
+   * Fabricates the name of a variable for use in a method body.
+   * 
+   * <p>
+   * This method ensures that the returned name is not used as parameter name.
+   * </p>
+   */
+  private String getVariableName(String name, JParameter[] params) {
+    for (JParameter param : params) {
+      if (name.equals(param.getName())) {
+        return getVariableName("_" + name, params);
+      }
+    }
+    return name;
+  }
+
+  /**
    * Returns either <code>readTransaction</code> or <code>transaction</code>
    * depending in the nature of the provided SQL statements.
    */
   private String getTxMethod(SQL sql) {
-    boolean allStatementsAreSelect = true;
     for (String s : sql.value()) {
       if (s.trim().toUpperCase().indexOf("SELECT") == -1) {
-        allStatementsAreSelect = false;
-        break;
+        return "transaction";
       }
     }
-    return allStatementsAreSelect ? "readTransaction" : "transaction";
+    return "readTransaction";
   }
 
   /**
@@ -465,13 +489,17 @@ public class DataServiceGenerator extends Generator {
    * </p>
    */
   private String shortenName(String className) {
-    String packageName = className.substring(0, className.lastIndexOf('.'));
+    int index = className.lastIndexOf('.');
+    if (index == -1) {
+      return className;
+    }
+    String packageName = className.substring(0, index);
     if ("java.lang".equals(packageName)) {
-      return className.substring(className.lastIndexOf('.') + 1);
+      return className.substring(index + 1);
     }
     for (String i : IMPORTED_CLASSES) {
       if (i.equals(className)) {
-        return className.substring(className.lastIndexOf('.') + 1);
+        return className.substring(index + 1);
       }
     }
     return className;
