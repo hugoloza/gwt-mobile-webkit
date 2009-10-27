@@ -29,7 +29,7 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * @author bguijt
  */
 public abstract class DataServiceTransactionCallbackVoidCallback extends
-    DataServiceTransactionCallback {
+    DataServiceTransactionCallback<VoidCallback> {
 
   /**
    * Creates a new TransactionCallback with the specified DataService' Void
@@ -43,6 +43,6 @@ public abstract class DataServiceTransactionCallbackVoidCallback extends
    * Invokes the DataService' {@link VoidCallback#onSuccess()} callback method.
    */
   public void onTransactionSuccess() {
-    ((VoidCallback) getCallback()).onSuccess();
+    getCallback().onSuccess();
   }
 }

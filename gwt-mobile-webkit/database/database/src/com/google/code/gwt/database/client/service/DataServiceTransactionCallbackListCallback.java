@@ -31,7 +31,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @author bguijt
  */
 public abstract class DataServiceTransactionCallbackListCallback<T extends JavaScriptObject>
-    extends DataServiceTransactionCallback {
+    extends DataServiceTransactionCallback<ListCallback<T>> {
 
   private ResultSetList<T> store;
 
@@ -55,8 +55,7 @@ public abstract class DataServiceTransactionCallbackListCallback<T extends JavaS
    * callback method with the value stored at
    * {@link #storeResultSet(SQLResultSet)}.
    */
-  @SuppressWarnings("unchecked")
   public void onTransactionSuccess() {
-    ((ListCallback<T>) getCallback()).onSuccess(store);
+    getCallback().onSuccess(store);
   }
 }

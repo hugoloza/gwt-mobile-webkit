@@ -29,17 +29,19 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * method bodies.
  * </p>
  * 
+ * @param <C> the {@link Callback} type use for this transaction
+ * 
  * @author bguijt
  */
-public abstract class DataServiceTransactionCallback implements
-    TransactionCallback {
+public abstract class DataServiceTransactionCallback<C extends Callback>
+    implements TransactionCallback {
 
-  private Callback callback;
+  private C callback;
 
   /**
    * Creates a new TransactionCallback with the specified DataService callback.
    */
-  public DataServiceTransactionCallback(Callback callback) {
+  public DataServiceTransactionCallback(C callback) {
     this.callback = callback;
   }
 
@@ -54,7 +56,7 @@ public abstract class DataServiceTransactionCallback implements
   /**
    * Returns the DataService callback associated with this transaction.
    */
-  protected Callback getCallback() {
+  protected C getCallback() {
     return callback;
   }
 }
