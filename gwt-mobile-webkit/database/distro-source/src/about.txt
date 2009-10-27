@@ -1,4 +1,4 @@
-Mobile Database API Library @API_VERSION@ for GWT
+HTML5 Database API Library @API_VERSION@ for GWT
 (c) Copyright Bart Guijt, 2009.  All rights reserved.
 Visit Google Code (http://code.google.com/p/gwt-mobile-webkit).
 
