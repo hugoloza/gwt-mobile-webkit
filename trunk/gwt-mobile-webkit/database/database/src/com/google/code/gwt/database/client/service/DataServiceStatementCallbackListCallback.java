@@ -16,9 +16,8 @@
 
 package com.google.code.gwt.database.client.service;
 
-import com.google.code.gwt.database.client.SQLError;
+import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
-import com.google.code.gwt.database.client.StatementCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -26,18 +25,27 @@ import com.google.gwt.core.client.JavaScriptObject;
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
  * code.
  * 
+ * <p>This StatementCallback impl is applied specifically to the {@link ListCallback}
+ * service methods.</p>
+ * 
  * @author bguijt
  */
-public abstract class DataServiceStatementCallback<T extends JavaScriptObject>
-    implements StatementCallback<T> {
+public class DataServiceStatementCallbackListCallback<T extends JavaScriptObject> extends
+    DataServiceStatementCallback<T> {
+
+  private DataServiceTransactionCallbackListCallback<T> txCallback;
 
   /**
-   * The onFailure method, once called, always signals the database to rollback
-   * the transaction.
-   * 
-   * @return <code>true</code>
+   * Creates a StatementCallback with a ListCallback-specific TransactionCallback
    */
-  public boolean onFailure(SQLTransaction transaction, SQLError error) {
-    return true;
+  public DataServiceStatementCallbackListCallback(DataServiceTransactionCallbackListCallback<T> txCallback) {
+    this.txCallback = txCallback;
+  }
+
+  /**
+   * Stores the resultSet in the TransactionCallback
+   */
+  public void onSuccess(SQLTransaction transaction, SQLResultSet<T> resultSet) {
+    txCallback.storeResultSet(resultSet);
   }
 }
