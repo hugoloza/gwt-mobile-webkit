@@ -90,6 +90,7 @@ Although the design looks clean and should be able to do the job, there are a fe
   # The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
   # The regular !StatementCallback enables the user to rollback a transaction when something went wrong. Should the user somehow be able to specify how to handle failures, or should we just always mandate a rollback?
   # The Database API offers two transaction modes: One is read/write, the other is readonly. Should the !DataService API always, for simplicity sake, use the read/write transaction mode, or should we introspect the SQL statements to decide what mode to use?
+  # How do we cope with Collections of data as *input*? For instance, adding any number of records to a table using a collection, or providing values for a SQL `IN()` expression from a Collection.
 
 = Experimental version =
 
@@ -102,4 +103,5 @@ The current version implements the design issues as follows:
   # If the Callback expects a List resultset, the resultset is retained after the transaction (rather than copied to an ArrayList or something). This seems to work just fine on Safari;
   # The Transaction context is completely hidden from the service user;
   # Whenever a SQL failure happens, the statements are always rolled back.
-  # The transactions are all in read/write mode, no SQL introspection is done.
+  # The transactions are all in read/write mode, except if all SQL statements start with `SELECT` - in taht case, the transaction is executed in read-only mode.
+  # We have *no way* yet to handle input collections. Need some thinking here!!
