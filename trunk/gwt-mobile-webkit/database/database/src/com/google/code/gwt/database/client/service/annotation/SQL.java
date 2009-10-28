@@ -37,14 +37,14 @@ import java.lang.annotation.Target;
  * 
  * <p>
  * The SQL annotation can also be used to repeat a (set of) SQL statement(s) for
- * each item in a {@link java.util.Collection}. This mechanism is expressed like
- * this:
+ * each item in an {@link Iterable} collection or an Array. This mechanism is
+ * expressed like this:
  * </p>
  * 
  * <pre>
- * &#x40;SQL(stmt="INSERT INTO mytable (when, name) VALUES (<b>{when.getTime()}</b>, {name})",
- *     foreach="<b>dates</b>", variable="<b>when</b>")
- * void insertData(Collection&lt;Date&gt; <b>dates</b>, VoidCallback callback);
+ * &#x40;SQL(stmt="INSERT INTO mytable (when, name) VALUES (<b>{#.getTime()}</b>, {name})",
+ *     foreach="<b>dates</b>")
+ * void insertData(Iterable&lt;Date&gt; <b>dates</b>, VoidCallback callback);
  * </pre>
  * 
  * <p>
@@ -53,12 +53,15 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <pre>
- * for (Date <b>when</b> : <b>dates</b>) {
- *   tx.executeSql("INSERT INTO mytable (when, name) VALUES (<b>?</b>, ?)", new Object[] {<b>when.getTime()</b>, name}, aCallback);
+ * for (Date <b>value</b> : <b>dates</b>) {
+ *   tx.executeSql("INSERT INTO mytable (when, name) VALUES (<b>?</b>, ?)",
+ *       new Object[] {<b>value.getTime()</b>, name});
  * }
  * </pre>
  * 
+ * <p>
  * All statements are executed within the same database transaction.
+ * </p>
  * 
  * <h3>SQL dialect</h3>
  * 
@@ -83,26 +86,16 @@ public @interface SQL {
   String[] stmt();
 
   /**
-   * Specifies the name of the service method parameter representing a
-   * {@link java.util.Collection} of input values to process.
+   * Specifies the name of the service method parameter representing an
+   * {@link Iterable} (or Array) collection of input values to process.
    * 
    * <p>
    * If this attribute is specified, the statement(s) from {@link #stmt()} are
-   * executed in a loop iterating over this {@link java.util.Collection}.
-   * </p>
-   * 
-   * <p>
-   * If you specify a value for this attribute, you must also specify a value
-   * for the {@link #variable()} attribute.
+   * executed in a loop iterating over this Collection. If you
+   * want to provide the 'current' Collection item to the statement as
+   * parameter, use the 'hash' character (<code>#</code>) as a substitute as in
+   * e.g. <code>{#.getTime()}</code>.
    * </p>
    */
   String foreach() default "";
-
-  /**
-   * Specifies the name of the variable containing the value of an item from the
-   * Collection specified at the {@link #foreach()} attribute. This variable
-   * should be referred to in the SQL statement(s) as specified by the
-   * {@link #stmt()} attribute.
-   */
-  String variable() default "";
 }

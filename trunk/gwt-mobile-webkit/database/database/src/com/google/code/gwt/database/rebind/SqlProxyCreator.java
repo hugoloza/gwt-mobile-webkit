@@ -229,33 +229,29 @@ public class SqlProxyCreator {
     if (sql.foreach().trim().length() > 0) {
       // Loop over a collection to create a tx.executeSql() call for each item.
       // Find the types, parameters, assert not-nulls, etc.:
-      JType collection = findType(sql.foreach(), service.getParameters());
+      JType collection = findType(sql.foreach(), params);
       if (collection == null) {
         logger.log(TreeLogger.ERROR, "The method " + service.getName()
             + " has no parameter named '" + sql.foreach() + "'!");
         throw new UnableToCompleteException();
       }
-      if (sql.variable().trim().length() == 0) {
-        logger.log(TreeLogger.ERROR, "The @SQL annotation " + service.getName()
-            + " has no value declared for the 'variable' attribute!");
-        throw new UnableToCompleteException();
-      }
       String forEachType = getTypeParameter(collection);
+      String varName = getVariableName("value", params);
       if (forEachType == null) {
         forEachType = "Object";
       }
-      sw.println("for (" + forEachType + " " + sql.variable() + " : "
-          + sql.foreach() + ") {");
+      sw.println("for (" + forEachType + " " + varName + " : " + sql.foreach()
+          + ") {");
       sw.indent();
 
-      generateExecuteSqlStatements(service, callback, sql);
+      generateExecuteSqlStatements(service, callback, sql, varName);
 
       // ends for-each loop
       sw.outdent();
       sw.println("}");
     } else {
       // Just create the 'static' tx.executeSql() calls:
-      generateExecuteSqlStatements(service, callback, sql);
+      generateExecuteSqlStatements(service, callback, sql, null);
     }
 
     // ends onTransactionStart()
@@ -273,15 +269,6 @@ public class SqlProxyCreator {
     // ends service method
     sw.outdent();
     sw.println("}");
-  }
-
-  private void generateExecuteSqlStatements(JMethod service,
-      JParameter callback, SQL sql) throws UnableToCompleteException {
-    // Write a tx.executeSql() call for each SQL statement:
-    for (int i = 0; i < sql.stmt().length; i++) {
-      generateExecuteSqlStatement(service, callback,
-          i == (sql.stmt().length - 1), sql.stmt()[i]);
-    }
   }
 
   /**
@@ -311,6 +298,16 @@ public class SqlProxyCreator {
     sw.endJavaDocComment();
   }
 
+  private void generateExecuteSqlStatements(JMethod service,
+      JParameter callback, SQL sql, String iteratedVarName)
+      throws UnableToCompleteException {
+    // Write a tx.executeSql() call for each SQL statement:
+    for (int i = 0; i < sql.stmt().length; i++) {
+      generateExecuteSqlStatement(service, callback,
+          i == (sql.stmt().length - 1), sql.stmt()[i], iteratedVarName);
+    }
+  }
+
   /**
    * Generates a <code>tx.executeSql(...);</code> call statement.
    * 
@@ -322,8 +319,8 @@ public class SqlProxyCreator {
    * @throws UnableToCompleteException
    */
   private void generateExecuteSqlStatement(JMethod service,
-      JParameter callback, boolean isLastStatement, String stmt)
-      throws UnableToCompleteException {
+      JParameter callback, boolean isLastStatement, String stmt,
+      String iteratedVarName) throws UnableToCompleteException {
     List<String> prepStmt = getPreparedStatementSql(stmt);
     sw.print(getVariableName("tx", service.getParameters()) + ".executeSql(\""
         + Generator.escape(prepStmt.get(0)) + "\", ");
@@ -335,7 +332,12 @@ public class SqlProxyCreator {
         if (i > 1) {
           sw.print(", ");
         }
-        sw.print(prepStmt.get(i));
+        String expression = prepStmt.get(i);
+        if (iteratedVarName != null) {
+          // Substitute '#' for the iterated variable name:
+          expression = expression.replace("#", iteratedVarName);
+        }
+        sw.print(expression);
       }
       sw.print("}");
     }
