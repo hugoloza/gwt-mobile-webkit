@@ -30,6 +30,22 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
 /**
  * Generates the proxy code for the {@link DataService} definitions.
  * 
+ * <p>
+ * To use this Generator, you need a GWT module with the following XML
+ * configuration:
+ * </p>
+ * 
+ * <pre>
+ * &lt;generate-with class="com.google.code.gwt.database.rebind.DataServiceGenerator"&gt;
+ *   &lt;when-type-assignable class="com.google.code.gwt.database.client.service.DataService" /&gt;
+ * &lt;/generate-with&gt;
+ * </pre>
+ * 
+ * <p>
+ * The <code>Html5Database</code> module is already configured to use this
+ * Generator.
+ * </p>
+ * 
  * @see DataService
  * 
  * @author bguijt
@@ -75,7 +91,8 @@ public class DataServiceGenerator extends Generator {
   }
 
   /**
-   * Finds the specified annotation on the inheritance tree of the specified type.
+   * Finds the specified annotation on the inheritance tree of the specified
+   * type.
    */
   private <T extends Annotation> T getAnnotation(JClassType type, Class<T> clazz) {
     T a = type.getAnnotation(clazz);

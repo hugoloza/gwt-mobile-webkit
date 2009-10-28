@@ -28,11 +28,14 @@ import java.lang.annotation.Target;
  * Provide any statement parameters between curly braces, e.g.:
  * </p>
  * 
- * <pre>INSERT INTO mytable (when) VALUES({System.currentTimeMillis()})</pre>
+ * <pre>
+ * &#x40;SQL("INSERT INTO mytable (when, name) VALUES(<b>{when.getTime()}</b>, <b>{name}</b>)")
+ * void insertData(Date <b>when</b>, String <b>name</b>, VoidCallback callback);
+ * </pre>
  * 
  * <p>
  * Up to now (oct. 2009) all HTML5 Database implementations use SQLite, which
- * has its own <a href="http://www.sqlite.org/lang.html">SQL flavour</a>.
+ * has its own <a href="http://www.sqlite.org/lang.html">SQL flavor</a>.
  * </p>
  * 
  * @see <a href="http://www.sqlite.org/lang.html">SQLite3 SQL Language
