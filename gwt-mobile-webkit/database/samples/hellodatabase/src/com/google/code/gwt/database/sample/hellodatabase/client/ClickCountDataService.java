@@ -55,8 +55,8 @@ public interface ClickCountDataService extends DataService {
   /**
    * Records a collection of click values
    */
-  @SQL(stmt="INSERT INTO clickcount (clicked) VALUES ({when.getTime()})",
-      foreach="clicks", variable="when")
+  @SQL(stmt="INSERT INTO clickcount (clicked) VALUES ({#.getTime()})",
+      foreach="clicks")
   void insertClicks(Collection<Date> clicks, VoidCallback callback);
 
   /**
