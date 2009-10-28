@@ -79,10 +79,10 @@ public final class Database extends JavaScriptObject {
    * 
    * @see <a href="http://www.w3.org/TR/webdatabase/#dom-opendatabase">W3C Web
    *      Database - openDatabase</a>
-   * @param shortName
-   * @param version
-   * @param displayName
-   * @param maxSizeBytes
+   * @param shortName (Short) name of the database
+   * @param version Version of the database
+   * @param displayName Descriptive name of the database
+   * @param maxSizeBytes The estimated number of bytes reserved for the database
    * @return a Database instance
    * @throws DatabaseException if the User Agent disallows Database access, or
    *           if the version is incorrect

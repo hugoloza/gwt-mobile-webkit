@@ -133,6 +133,9 @@ import com.google.code.gwt.database.client.service.annotation.SQL;
  * @see VoidCallback
  * @see ScalarCallback
  * @see ListCallback
+ * @see <a
+ *      href="http://code.google.com/p/gwt-mobile-webkit/wiki/DataServiceUserGuide">Wiki:
+ *      User Guide</a>
  * 
  * @author bguijt
  */

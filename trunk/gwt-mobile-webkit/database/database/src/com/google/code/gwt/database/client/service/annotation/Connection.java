@@ -20,10 +20,16 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
+import com.google.code.gwt.database.client.Database;
+
 /**
  * Marks a Java interface as a Database Service with connection parameters.
  * 
- * <p>Use the parameters to specify the connection details to the local database.</p>
+ * <p>
+ * Use the parameters to specify the connection details to the local database.
+ * The parameters are exactly the same as provided to
+ * {@link Database#openDatabase(String, String, String, int)}.
+ * </p>
  * 
  * @author bguijt
  */
@@ -35,19 +41,19 @@ public @interface Connection {
    * (Short) name of the database
    */
   String name();
-  
+
   /**
    * Version of the database
    */
   String version();
-  
+
   /**
-   * Description of the database
+   * Descriptive name of the database
    */
   String description();
-  
+
   /**
-   * The maximum number of bytes reserved for the database
+   * The estimated number of bytes reserved for the database
    */
   int maxsize();
 }
