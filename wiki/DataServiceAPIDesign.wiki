@@ -122,7 +122,6 @@ The other is to add additional annotation grammar to get the same result:
   stmt="INSERT INTO clickcount (clicked) VALUES ({click.getTime()}"
   foreach="clicks"
   variable="click"
-  join=";"
 )
 void insertData(Collection<Date> clicks, VoidCallback callback);
 }}}
