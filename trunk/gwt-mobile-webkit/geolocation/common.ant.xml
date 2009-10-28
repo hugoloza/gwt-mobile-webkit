@@ -102,7 +102,11 @@
   <fail unless="build.host.platform" message="Building on ${os.name} is not supported" />
 
   <!-- References to files from the GWT_HOME directory -->
-        <property name="gwt.dev.jar" location="${gwt.home}/gwt-dev-${build.host.platform}.jar" />
+        <condition property="dev.jar" value="${gwt.home}/gwt-dev.jar"
+                   else="${gwt.home}/gwt-dev-${build.host.platform}.jar">
+          <available file="${gwt.home}/gwt-dev.jar" />
+        </condition>
+        <property name="gwt.dev.jar" location="${dev.jar}" />
         <property name="gwt.user.jar" location="${gwt.home}/gwt-user.jar" />
 
         <!--  Reference to jars produced by this build -->
