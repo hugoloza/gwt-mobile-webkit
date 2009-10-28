@@ -111,7 +111,7 @@ There are two kinds of collections: One kind mandates a SQL statement for each i
 We can express 'iterations' in two ways. One way is to define some additional grammar within the SQL statement string:
 
 {{{
-@SQL("{repeat(clicks, ';') {INSERT INTO clickcount (clicked) VALUES ({*.getTime()})}")
+@SQL("{repeat(clicks, ';') {INSERT INTO clickcount (clicked) VALUES ({#.getTime()})}")
 void insertData(Collection<Date> clicks, VoidCallback callback);
 }}}
 
@@ -119,9 +119,8 @@ The other is to add additional annotation grammar to get the same result:
 
 {{{
 @SQL(
-  stmt="INSERT INTO clickcount (clicked) VALUES ({click.getTime()}"
+  stmt="INSERT INTO clickcount (clicked) VALUES ({#.getTime()}"
   foreach="clicks"
-  variable="click"
 )
 void insertData(Collection<Date> clicks, VoidCallback callback);
 }}}
@@ -131,7 +130,7 @@ For repeating SQL statements, the annotation version seems clearer and more expr
 However, for repeating expressions inside SQL I am not so sure. This is the String grammar version:
 
 {{{
-@SQL("SELECT id FROM clickcount WHERE clicked IN({repeat(clicks, ',') {*.getTime()}})")
+@SQL("SELECT id FROM clickcount WHERE clicked IN({repeat(clicks, ',') {#.getTime()}})")
 void getClickIds(Collection<Date> clicks, ListCallback<GenericRow> callback);
 }}}
 
@@ -140,7 +139,7 @@ This is how the heavily annotated version would look like:
 {{{
 @Concat({
   @SQL(stmt="SELECT id FROM clickcount WHERE clicked IN("),
-  @SQL(stmt="{click.getTime()}", foreach="clicks", variable="click", join=","),
+  @SQL(stmt="{#.getTime()}", foreach="clicks", join=","),
   @SQL(stmt=")")
 })
 void getClickIds(Collection<Date> clicks, ListCallback<GenericRow> callback);
