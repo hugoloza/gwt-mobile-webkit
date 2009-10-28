@@ -85,12 +85,72 @@ The !DataService API makes several improvements over the regular Database API:
 = Design issues =
 
 Although the design looks clean and should be able to do the job, there are a few caveats:
-  # The service expects the Database API to just 'be there'. How should we cope with the fact no database is available - throw an Exception at each service method, checked or unchecked? Go straight to the `onFailure()` callback?
-  # The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the `insertClick()` call must be *copied* before the transaction ends, and then provided to the `onSuccess()` method - or, a third callback method should be provided;
-  # The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
-  # The regular !StatementCallback enables the user to rollback a transaction when something went wrong. Should the user somehow be able to specify how to handle failures, or should we just always mandate a rollback?
-  # The Database API offers two transaction modes: One is read/write, the other is readonly. Should the !DataService API always, for simplicity sake, use the read/write transaction mode, or should we introspect the SQL statements to decide what mode to use?
-  # How do we cope with Collections of data as *input*? For instance, adding any number of records to a table using a collection, or providing values for a SQL `IN()` expression from a Collection.
+
+== 1. Handling exceptions and failures ===
+The service expects the Database API to just 'be there'. How should we cope with the fact no database is available - throw an Exception at each service method, checked or unchecked? Go straight to the `onFailure()` callback?
+
+== 2. Moving resultSet data *out* of the transaction ==
+The callback methods should be called after the transaction is finished. In the example above, this probably means (needs investigation) that the resultSet of the `insertClick()` call must be *copied* before the transaction ends, and then provided to the `onSuccess()` method - or, a third callback method should be provided.
+
+== 3. Hidden transaction context ==
+The transaction context is totally hidden from the programmer. Each service method creates its own transaction. This is done to remove a callback level, and greatly simplifies Database programming. However, this also means that multiple service calls cannot efficiently use a single transaction context.
+
+== 4. How to handle SQL failures - optional rollback? ==
+The regular !StatementCallback enables the user to rollback a transaction when something went wrong. Should the user somehow be able to specify how to handle failures, or should we just always mandate a rollback?
+
+== 5. Transaction mode: readonly and read/write ==
+The Database API offers two transaction modes: One is read/write, the other is readonly. Should the !DataService API always, for simplicity sake, use the read/write transaction mode, or should we introspect the SQL statements to decide what mode to use?
+
+== 6. Collection input parameters ==
+How do we cope with Collections of data as *input*? For instance, adding any number of records to a table using a collection, or providing values for a SQL `IN()` expression from a Collection.
+
+The usecase is to efficiently provide collection data to a SQL statement, without resorting to invoking additional transactions.
+
+There are two kinds of collections: One kind mandates a SQL statement for each item in the collection (e.g. `INSERT` statements), and the other kind needs to repeat parts of the SQL statement _in situ_ (e.g. `IN()` expressions).
+
+We can express 'iterations' in two ways. One way is to define some additional grammar within the SQL statement string:
+
+{{{
+@SQL("{repeat(clicks, ';') {INSERT INTO clickcount (clicked) VALUES ({*.getTime()})}")
+void insertData(Collection<Date> clicks, VoidCallback callback);
+}}}
+
+The other is to add additional annotation grammar to get the same result:
+
+{{{
+@SQL(
+  stmt="INSERT INTO clickcount (clicked) VALUES ({click.getTime()}"
+  foreach="clicks"
+  variable="click"
+  join=";"
+)
+void insertData(Collection<Date> clicks, VoidCallback callback);
+}}}
+
+For repeating SQL statements, the annotation version seems clearer and more expressive. It is more true to the Java language we're programming in.
+
+However, for repeating expressions inside SQL I am not so sure. This is the String grammar version:
+
+{{{
+@SQL("SELECT id FROM clickcount WHERE clicked IN({repeat(clicks, ',') {*.getTime()}})")
+void getClickIds(Collection<Date> clicks, ListCallback<GenericRow> callback);
+}}}
+
+This is how the heavily annotated version would look like:
+
+{{{
+@Concat({
+  @SQL(stmt="SELECT id FROM clickcount WHERE clicked IN("),
+  @SQL(stmt="{click.getTime()}", foreach="clicks", variable="click", join=","),
+  @SQL(stmt=")")
+})
+void getClickIds(Collection<Date> clicks, ListCallback<GenericRow> callback);
+}}}
+
+Ouch!
+
+In summary, it seems that the annotated version is perfectly suited for `INSERT`-like statements which need to be repeated for each item in the Collection, and the String grammar version seems best suited for `IN()`-like expression repetitions.
+
 
 = Experimental version =
 
