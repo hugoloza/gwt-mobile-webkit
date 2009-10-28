@@ -174,7 +174,7 @@ public class SqlProxyCreator {
           + " has no @SQL annotation");
       throw new UnableToCompleteException();
     }
-    if (sql.value() == null || sql.value().length == 0) {
+    if (sql.stmt() == null || sql.stmt().length == 0) {
       logger.log(TreeLogger.ERROR, service.getName()
           + ": @SQL annotation has no SQL statement(s)");
       throw new UnableToCompleteException();
@@ -225,10 +225,37 @@ public class SqlProxyCreator {
     sw.println("public void onTransactionStart("
         + getClassName(SQLTransaction.class) + " " + txVarName + ") {");
     sw.indent();
-    // Write a tx.executeSql() call for each SQL statement:
-    for (int i = 0; i < sql.value().length; i++) {
-      generateExecuteSqlStatement(service, callback,
-          i == (sql.value().length - 1), sql.value()[i]);
+
+    if (sql.foreach().trim().length() > 0) {
+      // Loop over a collection to create a tx.executeSql() call for each item.
+      // Find the types, parameters, assert not-nulls, etc.:
+      JType collection = findType(sql.foreach(), service.getParameters());
+      if (collection == null) {
+        logger.log(TreeLogger.ERROR, "The method " + service.getName()
+            + " has no parameter named '" + sql.foreach() + "'!");
+        throw new UnableToCompleteException();
+      }
+      if (sql.variable().trim().length() == 0) {
+        logger.log(TreeLogger.ERROR, "The @SQL annotation " + service.getName()
+            + " has no value declared for the 'variable' attribute!");
+        throw new UnableToCompleteException();
+      }
+      String forEachType = getTypeParameter(collection);
+      if (forEachType == null) {
+        forEachType = "Object";
+      }
+      sw.println("for (" + forEachType + " " + sql.variable() + " : "
+          + sql.foreach() + ") {");
+      sw.indent();
+
+      generateExecuteSqlStatements(service, callback, sql);
+
+      // ends for-each loop
+      sw.outdent();
+      sw.println("}");
+    } else {
+      // Just create the 'static' tx.executeSql() calls:
+      generateExecuteSqlStatements(service, callback, sql);
     }
 
     // ends onTransactionStart()
@@ -248,6 +275,15 @@ public class SqlProxyCreator {
     sw.println("}");
   }
 
+  private void generateExecuteSqlStatements(JMethod service,
+      JParameter callback, SQL sql) throws UnableToCompleteException {
+    // Write a tx.executeSql() call for each SQL statement:
+    for (int i = 0; i < sql.stmt().length; i++) {
+      generateExecuteSqlStatement(service, callback,
+          i == (sql.stmt().length - 1), sql.stmt()[i]);
+    }
+  }
+
   /**
    * Generates the Javadoc for the specified service method. The usefulness of
    * this code is arguable low :-)
@@ -257,10 +293,10 @@ public class SqlProxyCreator {
     SQL sql = service.getAnnotation(SQL.class);
     sw.beginJavaDocComment();
     sw.println("Executes the following "
-        + (sql.value().length == 1 ? "SQL statement" : sql.value().length
+        + (sql.stmt().length == 1 ? "SQL statement" : sql.stmt().length
             + " SQL statements") + ":");
     sw.println("<ul>");
-    for (String s : sql.value()) {
+    for (String s : sql.stmt()) {
       // Add a line for each SQL statement, including some nice markup:
       List<String> prepStmt = getPreparedStatementSql(s);
       String code = Util.escapeXml(prepStmt.get(0));
@@ -322,8 +358,8 @@ public class SqlProxyCreator {
     else if (isType(callback.getType(), ScalarCallback.class)) {
       String scalarType = getTypeParameter(callback.getType());
       sw.print(", new "
-          + getClassName(DataServiceStatementCallbackScalarCallback.class) + "<"
-          + scalarType + ">(this)");
+          + getClassName(DataServiceStatementCallbackScalarCallback.class)
+          + "<" + scalarType + ">(this)");
     }
 
     // No expected callback found:
@@ -418,7 +454,7 @@ public class SqlProxyCreator {
    * depending in the nature of the provided SQL statements.
    */
   private String getTxMethod(SQL sql) {
-    for (String s : sql.value()) {
+    for (String s : sql.stmt()) {
       if (s.trim().toUpperCase().indexOf("SELECT") == -1) {
         return "transaction";
       }
@@ -448,6 +484,19 @@ public class SqlProxyCreator {
     // TransactionCallback for the ScalarCallback:
     return getClassName(DataServiceTransactionCallbackScalarCallback.class)
         + "<" + getTypeParameter(callbackType) + ">";
+  }
+
+  /**
+   * Returns the Type of the parameter with the specified name, or
+   * <code>null</code> if not found.
+   */
+  private JType findType(String name, JParameter[] parameters) {
+    for (JParameter param : parameters) {
+      if (param.getName().equals(name)) {
+        return param.getType();
+      }
+    }
+    return null;
   }
 
   /**

@@ -16,6 +16,7 @@
 
 package com.google.code.gwt.database.sample.hellodatabase.client;
 
+import java.util.Collection;
 import java.util.Date;
 
 import com.google.code.gwt.database.client.service.DataService;
@@ -30,29 +31,37 @@ import com.google.code.gwt.database.client.service.annotation.SQL;
  * 
  * @author bguijt
  */
-@Connection(name = "ClckCnt", version = "1.0", description = "Click Counter", maxsize = 10000)
+@Connection(name="ClckCnt", version="1.0", description="Click Counter",
+    maxsize=10000)
 public interface ClickCountDataService extends DataService {
 
   /**
    * Makes sure that the 'clickcount' table exists in the Database.
    */
-  @SQL("CREATE TABLE IF NOT EXISTS clickcount ("
-            + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-            + "clicked INTEGER)")
+  @SQL(stmt="CREATE TABLE IF NOT EXISTS clickcount ("
+      + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+      + "clicked INTEGER)")
   void initTable(VoidCallback callback);
-  
+
   /**
    * Records a Click value, and obtains the list of all recorded clicks.
    */
-  @SQL({
-    "INSERT INTO clickcount (clicked) VALUES ({when.getTime()})",
-    "SELECT clicked FROM clickcount"
-    })
+  @SQL(stmt={
+      "INSERT INTO clickcount (clicked) VALUES ({when.getTime()})",
+      "SELECT clicked FROM clickcount"
+      })
   void insertClick(Date when, ListCallback<ClickRow> callback);
+
+  /**
+   * Records a collection of click values
+   */
+  @SQL(stmt="INSERT INTO clickcount (clicked) VALUES ({when.getTime()})",
+      foreach="clicks", variable="when")
+  void insertClicks(Collection<Date> clicks, VoidCallback callback);
 
   /**
    * Obtains the number of clicks recorded in the database.
    */
-  @SQL("SELECT count(*) FROM clickcount")
+  @SQL(stmt="SELECT count(*) FROM clickcount")
   void getClickCount(ScalarCallback<Integer> callback);
 }
