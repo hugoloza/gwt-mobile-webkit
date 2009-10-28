@@ -29,9 +29,38 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <pre>
- * &#x40;SQL("INSERT INTO mytable (when, name) VALUES(<b>{when.getTime()}</b>, <b>{name}</b>)")
+ * &#x40;SQL(stmt="INSERT INTO mytable (when, name) VALUES(<b>{when.getTime()}</b>, <b>{name}</b>)")
  * void insertData(Date <b>when</b>, String <b>name</b>, VoidCallback callback);
  * </pre>
+ * 
+ * <h3>Collection input parameters</h3>
+ * 
+ * <p>
+ * The SQL annotation can also be used to repeat a (set of) SQL statement(s) for
+ * each item in a {@link java.util.Collection}. This mechanism is expressed like
+ * this:
+ * </p>
+ * 
+ * <pre>
+ * &#x40;SQL(stmt="INSERT INTO mytable (when, name) VALUES (<b>{when.getTime()}</b>, {name})",
+ *     foreach="<b>dates</b>", variable="<b>when</b>")
+ * void insertData(Collection&lt;Date&gt; <b>dates</b>, VoidCallback callback);
+ * </pre>
+ * 
+ * <p>
+ * The important parts are emphasized in <b>bold</b>. The above specification is
+ * translated to Java like this:
+ * </p>
+ * 
+ * <pre>
+ * for (Date <b>when</b> : <b>dates</b>) {
+ *   tx.executeSql("INSERT INTO mytable (when, name) VALUES (<b>?</b>, ?)", new Object[] {<b>when.getTime()</b>, name}, aCallback);
+ * }
+ * </pre>
+ * 
+ * All statements are executed within the same database transaction.
+ * 
+ * <h3>SQL dialect</h3>
  * 
  * <p>
  * Up to now (oct. 2009) all HTML5 Database implementations use SQLite, which
@@ -51,5 +80,29 @@ public @interface SQL {
    * <code>INSERT</code>, <code>UPDATE</code> etc. type) to be executed whenever
    * the annotated method is called.
    */
-  String[] value();
+  String[] stmt();
+
+  /**
+   * Specifies the name of the service method parameter representing a
+   * {@link java.util.Collection} of input values to process.
+   * 
+   * <p>
+   * If this attribute is specified, the statement(s) from {@link #stmt()} are
+   * executed in a loop iterating over this {@link java.util.Collection}.
+   * </p>
+   * 
+   * <p>
+   * If you specify a value for this attribute, you must also specify a value
+   * for the {@link #variable()} attribute.
+   * </p>
+   */
+  String foreach() default "";
+
+  /**
+   * Specifies the name of the variable containing the value of an item from the
+   * Collection specified at the {@link #foreach()} attribute. This variable
+   * should be referred to in the SQL statement(s) as specified by the
+   * {@link #stmt()} attribute.
+   */
+  String variable() default "";
 }
