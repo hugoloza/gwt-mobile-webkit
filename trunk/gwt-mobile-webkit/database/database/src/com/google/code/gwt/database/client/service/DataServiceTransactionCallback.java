@@ -25,8 +25,8 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * code.
  * 
  * <p>
- * The Generator implements the onTransactionStart() and onTransactionSuccess()
- * method bodies.
+ * The Generator implements the onTransactionStart() method body. Subclasses
+ * implement the onTransactionSuccess() method body.
  * </p>
  * 
  * @param <C> the {@link Callback} type use for this transaction

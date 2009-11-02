@@ -20,29 +20,31 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
+import com.google.code.gwt.database.client.SQLResultSet;
+import com.google.code.gwt.database.client.service.RowIdListCallback;
+
 /**
- * Provides the SQL statement(s) to be executed when the annotated method is
- * called.
+ * Provides the SQL update statement to be executed when the annotated method is
+ * called. This annotation mandates a read/write transaction.
  * 
  * <p>
  * Provide any statement parameters between curly braces, e.g.:
  * </p>
  * 
  * <pre>
- * &#x40;SQL(stmt="INSERT INTO mytable (when, name) VALUES(<b>{when.getTime()}</b>, <b>{name}</b>)")
+ * &#x40;Update("INSERT INTO mytable (when, name) VALUES(<b>{when.getTime()}</b>, <b>{name}</b>)")
  * void insertData(Date <b>when</b>, String <b>name</b>, VoidCallback callback);
  * </pre>
  * 
  * <h3>Collection input parameters</h3>
- * 
  * <p>
- * The SQL annotation can also be used to repeat a (set of) SQL statement(s) for
- * each item in an {@link Iterable} collection or an Array. This mechanism is
- * expressed like this:
+ * The SQL annotation can also be used to repeat a SQL statement for each item
+ * in an {@link Iterable} collection or an Array. This mechanism is expressed
+ * like this:
  * </p>
  * 
  * <pre>
- * &#x40;SQL(stmt="INSERT INTO mytable (when, name) VALUES (<b>{#.getTime()}</b>, {name})",
+ * &#x40;Update(sql="INSERT INTO mytable (when, name) VALUES (<b>{_.getTime()}</b>, {name})",
  *     foreach="<b>dates</b>")
  * void insertData(Iterable&lt;Date&gt; <b>dates</b>, VoidCallback callback);
  * </pre>
@@ -53,14 +55,28 @@ import java.lang.annotation.Target;
  * </p>
  * 
  * <pre>
- * for (Date <b>value</b> : <b>dates</b>) {
+ * for (Date <b>_</b> : <b>dates</b>) {
  *   tx.executeSql("INSERT INTO mytable (when, name) VALUES (<b>?</b>, ?)",
- *       new Object[] {<b>value.getTime()</b>, name});
+ *       new Object[] {<b>_.getTime()</b>, name});
  * }
  * </pre>
  * 
+ * <h3>Return values</h3>
  * <p>
- * All statements are executed within the same database transaction.
+ * An INSERT statement returns information about the
+ * {@link SQLResultSet#getInsertId() ID of an inserted record}. Use the
+ * {@link RowIdListCallback} callback to get the inserted ROWID's:
+ * </p>
+ * 
+ * <pre>
+ * &#x40;Update(sql="INSERT INTO mytable (when, name) VALUES (<b>{_.getTime()}</b>, {name})",
+ *     foreach="<b>dates</b>")
+ * void insertData(Iterable&lt;Date&gt; <b>dates</b>, RowIdsCallback callback);
+ * </pre>
+ * 
+ * <p>
+ * The iterated statements are all executed within the same database
+ * transaction.
  * </p>
  * 
  * <h3>SQL dialect</h3>
@@ -76,26 +92,23 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Target(ElementType.METHOD)
-public @interface SQL {
+public @interface Update {
 
   /**
-   * Provides one or more SQL statements (of any <code>SELECT</code>,
-   * <code>INSERT</code>, <code>UPDATE</code> etc. type) to be executed whenever
-   * the annotated method is called.
+   * Represents the SQL statement to execute. Either this attribute or
+   * {@link #sql()} must be specified.
    */
-  String[] stmt();
+  String value() default "";
 
   /**
-   * Specifies the name of the service method parameter representing an
-   * {@link Iterable} (or Array) collection of input values to process.
-   * 
-   * <p>
-   * If this attribute is specified, the statement(s) from {@link #stmt()} are
-   * executed in a loop iterating over this Collection. If you
-   * want to provide the 'current' Collection item to the statement as
-   * parameter, use the 'hash' character (<code>#</code>) as a substitute as in
-   * e.g. <code>{#.getTime()}</code>.
-   * </p>
+   * Represents the SQL statement to execute. Either this attribute or
+   * {@link #value()} must be specified.
+   */
+  String sql() default "";
+
+  /**
+   * Represents a Collection of items, over which the service method will
+   * iterate. This attribute is optional.
    */
   String foreach() default "";
 }
