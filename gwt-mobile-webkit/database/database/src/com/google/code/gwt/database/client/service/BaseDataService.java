@@ -61,7 +61,6 @@ public abstract class BaseDataService implements DataService {
       } catch (DatabaseException e) {
         callFailure(callback, ERR_MSG + getDatabaseDetails() + ": "
             + e.getMessage());
-        return null;
       }
     }
     return database;
@@ -83,9 +82,35 @@ public abstract class BaseDataService implements DataService {
    */
   protected abstract String getDatabaseDetails();
 
+  /**
+   * Call the callback's onFailure() with the specified message.
+   * 
+   * @param callback (may be <code>null</code>)
+   * @param msg the error message
+   */
   private void callFailure(Callback callback, String msg) {
     if (callback != null) {
       callback.onFailure(new DataServiceException(msg));
+    }
+  }
+  
+  /**
+   * Invokes a transaction in read/write mode on the {@link #getDatabase()} instance.
+   */
+  protected void transaction(DataServiceTransactionCallback<?> txCallback) {
+    Database db = getDatabase(txCallback.getCallback());
+    if (db != null) {
+      db.transaction(txCallback);
+    }
+  }
+  
+  /**
+   * Invokes a transaction in read-only mode on the {@link #getDatabase()} instance.
+   */
+  protected void readTransaction(DataServiceTransactionCallback<?> txCallback) {
+    Database db = getDatabase(txCallback.getCallback());
+    if (db != null) {
+      db.readTransaction(txCallback);
     }
   }
 }

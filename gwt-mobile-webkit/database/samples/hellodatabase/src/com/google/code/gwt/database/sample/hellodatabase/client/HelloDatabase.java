@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.code.gwt.database.client.Database;
 import com.google.code.gwt.database.client.service.DataServiceException;
 import com.google.code.gwt.database.client.service.ListCallback;
+import com.google.code.gwt.database.client.service.RowIdListCallback;
 import com.google.code.gwt.database.client.service.ScalarCallback;
 import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.gwt.core.client.EntryPoint;
@@ -42,6 +43,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class HelloDatabase implements EntryPoint {
 
   ClickCountDataService dbService = GWT.create(ClickCountDataService.class);
+  private VerticalPanel vPanel;
 
   /**
    * This is the entry point method.
@@ -51,18 +53,6 @@ public class HelloDatabase implements EntryPoint {
       Window.alert("HTML 5 Database is NOT supported in this browser!");
       return;
     }
-
-    // Create table 'clickcount' if it doesn't exist already:
-    dbService.initTable(new VoidCallback() {
-      public void onFailure(DataServiceException error) {
-        Window.alert("Failed to initialize table! Code: " + error.getCode()
-            + ", msg: " + error.getMessage());
-      }
-
-      public void onSuccess() {
-        Window.alert("Database initialized successfully.");
-      }
-    });
 
     // Create the dialog box
     final DialogBox dialogBox = new DialogBox();
@@ -83,37 +73,68 @@ public class HelloDatabase implements EntryPoint {
     dialogBox.setWidget(dialogVPanel);
 
     Image img = new Image("http://code.google.com/webtoolkit/logo-185x175.png");
-    Button button = new Button("Click me", new ClickHandler() {
+    Button addClickButton = new Button("Add Click", new ClickHandler() {
       public void onClick(ClickEvent event) {
-        dbService.insertClick(new Date(), new ListCallback<ClickRow>() {
+        dbService.insertClick(new Date(), new RowIdListCallback() {
           public void onFailure(DataServiceException error) {
             Window.alert("Failed to add click! Code: " + error.getCode()
                 + ", msg: " + error.getMessage());
           }
 
-          public void onSuccess(List<ClickRow> result) {
-            clickedData.clear();
-            for (ClickRow row : result) {
-              clickedData.add(new Label("Clicked on " + row.getClicked()));
-            }
+          public void onSuccess(final List<Integer> rowIds) {
+            dbService.getClicks(new ListCallback<ClickRow>() {
+              public void onFailure(DataServiceException error) {
+                Window.alert("Failed to query clicks! Code: " + error.getCode()
+                    + ", msg: " + error.getMessage());
+              }
+
+              public void onSuccess(List<ClickRow> result) {
+                clickedData.clear();
+                clickedData.add(new Label("Last click insert ID: "
+                    + rowIds.get(0)));
+                for (ClickRow row : result) {
+                  clickedData.add(new Label("Clicked on " + row.getClicked()));
+                }
+                dialogBox.center();
+                dialogBox.show();
+              }
+            });
           }
         });
-
-        dialogBox.center();
-        dialogBox.show();
+      }
+    });
+    Button getCountButton = new Button("Get Counts", new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        getCount();
       }
     });
 
-    final VerticalPanel vPanel = new VerticalPanel();
+    vPanel = new VerticalPanel();
     // We can add style names.
     vPanel.addStyleName("widePanel");
     vPanel.setHorizontalAlignment(VerticalPanel.ALIGN_CENTER);
     vPanel.add(img);
-    vPanel.add(button);
+    vPanel.add(addClickButton);
+    vPanel.add(getCountButton);
 
     // Add image and button to the RootPanel
     RootPanel.get().add(vPanel);
 
+    // Create table 'clickcount' if it doesn't exist already:
+    dbService.initTable(new VoidCallback() {
+      public void onFailure(DataServiceException error) {
+        Window.alert("Failed to initialize table! Code: " + error.getCode()
+            + ", msg: " + error.getMessage());
+      }
+
+      public void onSuccess() {
+        Window.alert("Database initialized successfully.");
+        getCount();
+      }
+    });
+  }
+
+  protected void getCount() {
     dbService.getClickCount(new ScalarCallback<Integer>() {
       public void onFailure(DataServiceException error) {
         Window.alert("Failed to get count! Code: " + error.getCode()
@@ -121,8 +142,7 @@ public class HelloDatabase implements EntryPoint {
       }
 
       public void onSuccess(Integer result) {
-        vPanel.add(new Label("At start, there are " + result
-            + " clicks registered."));
+        vPanel.add(new Label("There are " + result + " recorded clicks."));
       }
     });
   }
