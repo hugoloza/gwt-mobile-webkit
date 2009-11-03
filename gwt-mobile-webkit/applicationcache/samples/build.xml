@@ -13,6 +13,12 @@
 
   <target name="-do" depends="sample" description="Run all subprojects" />
 
+  <target name="prepare.hosted" description="Prepares for hosted mode">
+    <antcall target="-do">
+      <param name="target" value="prepare.hosted" />
+    </antcall>
+  </target>
+
   <target name="build" description="Builds library samples">
     <antcall target="-do">
       <param name="target" value="build" />
@@ -36,13 +42,13 @@
     <delete dir="${gwt.build.out}/samples-scripts" />
   </target>
 
-  <target name="hosted" description="Run sample in hosted mode">
+  <target name="hosted" depends="prepare.hosted" description="Run sample in hosted mode">
     <antcall target="-do">
       <param name="target" value="hosted" />
     </antcall>
   </target>
 
-  <target name="run" description="Run sample in compiled mode">
+  <target name="run" depends="build" description="Run sample in compiled mode">
     <antcall target="-do">
       <param name="target" value="run" />
     </antcall>
