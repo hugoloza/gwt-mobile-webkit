@@ -102,12 +102,16 @@
   <fail unless="build.host.platform" message="Building on ${os.name} is not supported" />
 
   <!-- References to files from the GWT_HOME directory -->
+        <condition property="is.gwt2">
+          <available file="${gwt.home}/gwt-dev.jar" />
+        </condition>
         <condition property="dev.jar" value="${gwt.home}/gwt-dev.jar"
                    else="${gwt.home}/gwt-dev-${build.host.platform}.jar">
-          <available file="${gwt.home}/gwt-dev.jar" />
+          <isset property="is.gwt2" />
         </condition>
         <property name="gwt.dev.jar" location="${dev.jar}" />
         <property name="gwt.user.jar" location="${gwt.home}/gwt-user.jar" />
+        <property name="gwt.servlet.jar" location="${gwt.home}/gwt-servlet.jar" />
 
         <!--  Reference to jars produced by this build -->
         <property name="ant.gwt.jar" location="${gwt.home}/ant-gwt.jar" />
@@ -123,7 +127,12 @@
 
 
   <condition property="hostedmode.platform.args" value="-d32 -XstartOnFirstThread" else="">
-    <isset property="build.host.ismac" />
+    <and>
+      <isset property="build.host.ismac" />
+      <not>
+        <isset property="is.gwt2" />
+      </not>
+    </and>
   </condition>
 
   <!-- JUnit support -->

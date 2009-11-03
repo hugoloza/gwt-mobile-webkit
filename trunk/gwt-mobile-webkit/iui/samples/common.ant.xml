@@ -34,7 +34,7 @@
     <mkdir dir="${sample.build}/war/WEB-INF/classes" />
     <gwt.javac destdir="${sample.build}/war/WEB-INF/classes">
       <classpath>
-        <pathelement location="${mobile.webkit.api.jar}"/>
+        <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
       </classpath>
@@ -42,11 +42,15 @@
   </target>
 
   <target name="gwtc" description="Compile to JavaScript">
+    <!-- option "-XdisableCastChecking" is needed for GWT2.0 to overcome dynamicCast bug: -->
+    <condition property="compile.gwt.args" value="-XdisableCastChecking -XdisableClassMetadata" else="">
+      <isset property="is.gwt2" />
+    </condition>
     <outofdate>
       <sourcefiles>
         <fileset dir="src" />
         <fileset dir="${sample.build}/war/WEB-INF/classes" />
-        <fileset file="${mobile.webkit.api.jar}"/>
+        <fileset file="${mobile.webkit.api.jar}" />
         <fileset file="${gwt.user.jar}" />
         <fileset file="${gwt.dev.jar}" />
       </sourcefiles>
@@ -60,10 +64,13 @@
             <arg value="${gwt.samples.localworkers}" />
             <arg value="-war" />
             <arg file="${sample.build}/war" />
+            <arg value="-gen" />
+            <arg value=".gwt-gen" />
             <!--arg value="-logLevel" />
-            <arg value="DEBUG" />
+            <arg value="INFO" />
             <arg value="-style" />
             <arg value="PRETTY" /-->
+            <arg line="${compile.gwt.args}" />
             <arg value="com.google.code.gwt.${sample.api}.sample.${sample.lower}.${sample.module}" />
           </java>
         </gwt.timer>
@@ -84,6 +91,8 @@
 
   <target name="build" depends="source, compile, gwtc, scripts" description="Build and package this project" />
 
+  <target name="prepare.hosted" depends="source, compile" description="Prepares this project for running hosted mode" />
+
   <target name="checkstyle" description="Static analysis of source">
     <gwt.checkstyle outputdirectory="${sample.build}">
       <fileset dir="src" />
@@ -100,22 +109,41 @@
   </target>
   
   <target name="hosted" description="Run hosted mode">
-    <java failonerror="true" fork="true" classname="com.google.gwt.dev.HostedMode">
+    <condition property="hostedmode.class" value="com.google.gwt.dev.DevMode" else="com.google.gwt.dev.HostedMode">
+      <isset property="is.gwt2" />
+    </condition>
+    <java failonerror="true" fork="true" classname="${hostedmode.class}">
       <classpath>
         <pathelement location="src" />
-        <pathelement location="${sample.build}/war/WEB-INF/classes" />
-        <pathelement location="${mobile.webkit.api.jar}"/>
+        <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
       </classpath>
       <jvmarg line="${hostedmode.platform.args}" />
       <jvmarg value="-Xmx256M" />
+      <!--arg value="-logLevel" />
+      <arg value="INFO" />
+      <arg value="-style" />
+      <arg value="PRETTY" /-->
       <arg value="-war" />
       <arg value="${sample.build}/war" />
       <arg value="-startupUrl" />
       <arg value="${sample.module}.html" />
-      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
       <arg value="com.google.code.gwt.${sample.api}.sample.${sample.lower}.${sample.module}" />
+    </java>
+  </target>
+  
+  <target name="run" description="Run compiled">
+    <java failonerror="true" fork="true" classname="org.mortbay.jetty.Main">
+      <classpath>
+        <pathelement location="${mobile.webkit.api.jar}" />
+        <pathelement location="${gwt.dev.jar}" />
+        <pathelement location="${gwt.servlet.jar}" />
+      </classpath>
+      <jvmarg value="-Xmx256M" />
+      <arg value="8080" />
+      <arg value="-webapp" />
+      <arg value="${sample.build}/war" />
     </java>
   </target>
 

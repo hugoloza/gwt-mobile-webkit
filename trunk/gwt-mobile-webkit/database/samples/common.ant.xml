@@ -34,7 +34,7 @@
     <mkdir dir="${sample.build}/war/WEB-INF/classes" />
     <gwt.javac destdir="${sample.build}/war/WEB-INF/classes">
       <classpath>
-        <pathelement location="${mobile.webkit.api.jar}"/>
+        <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
       </classpath>
@@ -50,7 +50,7 @@
       <sourcefiles>
         <fileset dir="src" />
         <fileset dir="${sample.build}/war/WEB-INF/classes" />
-        <fileset file="${mobile.webkit.api.jar}"/>
+        <fileset file="${mobile.webkit.api.jar}" />
         <fileset file="${gwt.user.jar}" />
         <fileset file="${gwt.dev.jar}" />
       </sourcefiles>
@@ -91,6 +91,8 @@
 
   <target name="build" depends="source, compile, gwtc, scripts" description="Build and package this project" />
 
+  <target name="prepare.hosted" depends="source, compile" description="Prepares this project for running hosted mode" />
+
   <target name="checkstyle" description="Static analysis of source">
     <gwt.checkstyle outputdirectory="${sample.build}">
       <fileset dir="src" />
@@ -113,7 +115,7 @@
     <java failonerror="true" fork="true" classname="${hostedmode.class}">
       <classpath>
         <pathelement location="src" />
-        <pathelement location="${mobile.webkit.api.jar}"/>
+        <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
       </classpath>
@@ -134,7 +136,7 @@
   <target name="run" description="Run compiled">
     <java failonerror="true" fork="true" classname="org.mortbay.jetty.Main">
       <classpath>
-        <pathelement location="${mobile.webkit.api.jar}"/>
+        <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.dev.jar}" />
         <pathelement location="${gwt.servlet.jar}" />
       </classpath>
