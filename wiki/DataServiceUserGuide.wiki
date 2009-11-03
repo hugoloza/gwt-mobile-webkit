@@ -96,7 +96,7 @@ Under the hood, the expressions with their curly braces are replaced with a ques
 
 === Collection parameters ===
 There are two usecases for Collection parameters:
-  # Create an SQL statement for each item in the collection (see [#Multiple_SQL_statements_in_a_single_transaction]);
+  # Create an SQL statement for each item in the collection (see [#Multiple_SQL_statements_in_a_single_transaction Multiple SQL statements in a single transaction]);
   # Create an SQL `IN(...)` statement with a value for each item in the collection.
 
 The collection is expanded runtime with its values in the SQL statement (regardless of its placement in an `IN()` statement BTW). For instance:
@@ -199,11 +199,9 @@ public final class TestTableRow extends JavaScriptObject {
 }
 }}}
 
-The references in the [http://code.google.com/webtoolkit/doc/1.6/FAQ_Client.html#JavaScript_Native_Interface JSNI] code `this.name` and `this.adate` refer to the properties of a resultSet record. By means of a JavaScript overlay type, we can access these properties.
+The references in the [http://code.google.com/webtoolkit/doc/1.6/FAQ_Client.html#JavaScript_Native_Interface JSNI] code `this.name` and `this.adate` refer to the properties of a resultSet record. By means of a !JavaScript overlay type, we can access these properties.
 
 If you think creating your own row type is too complex, you can always fall back to the generic row type `GenericRow`, just like in the example above. That type is a bit like the `ResultSet` type in JDBC: you access the data with methods like `getInteger(String columnName)` and `getString(String columnName)`. For most data types there is an accessor method.
-
-If the transaction executes multiple SQL statements, *only the last* statement is considered for providing the resultSet.
 
 === Anticipating primary key ID's (ROWID's): !RowIdListCallback ===
 The `@Update` annotation enables the use of a fourth Callback type: the `RowIdListCallback`. This callback type *only* works with SQL INSERT statements.
@@ -215,7 +213,7 @@ Example:
 void insertDate(Date when, RowIdListCallback callback);
 }}}
 
-Note the use of a `List`-kind Callback, when in fact you want a single value. Maybe later we have a RowIdScalarCallback for this purpose, but for now, this will suffice just fine:
+Note the use of a `List`-kind Callback, when in fact you want a single value. Maybe later we have a `RowIdScalarCallback` for this purpose, but for now, this will suffice just fine:
 
 {{{
 dbService.insertDate(new RowIdCallback() {
