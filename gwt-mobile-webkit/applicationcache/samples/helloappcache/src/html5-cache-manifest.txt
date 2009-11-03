@@ -6,6 +6,9 @@ CACHE MANIFEST
 CACHE:
 # Use @CACHE_ENTRIES@ as a placeholder for generated cachable URLs:
 @CACHE_ENTRIES@
+http://code.google.com/webtoolkit/logo-185x175.png
+/HelloApplicationCache.html
+/HelloApplicationCache.css
 # Your additional URLs:
 #myResource.txt
 #myImage.png
