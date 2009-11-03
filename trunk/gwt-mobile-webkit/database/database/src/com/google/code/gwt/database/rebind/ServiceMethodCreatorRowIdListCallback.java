@@ -19,9 +19,7 @@ package com.google.code.gwt.database.rebind;
 import com.google.code.gwt.database.client.service.callback.rowid.RowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.StatementCallbackRowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.TransactionCallbackRowIdListCallback;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.typeinfo.JType;
 
 /**
  * Represents a ServiceMethodCreator for the {@link RowIdListCallback} type.
@@ -44,28 +42,7 @@ public class ServiceMethodCreatorRowIdListCallback extends ServiceMethodCreator 
         + " = new " + stmtCallbackName + "(this);");
 
     if (foreach != null && foreach.trim().length() > 0) {
-      // Generate code to loop over a collection to create a tx.executeSql()
-      // call for each item.
-
-      // Find the types, parameters, assert not-nulls, etc.:
-      JType collection = GeneratorUtils.findType(foreach,
-          service.getParameters());
-      if (collection == null) {
-        logger.log(TreeLogger.WARN, "The method " + service.getName()
-            + " has no parameter named '" + foreach
-            + "'. Using Object as the type for the loop variable '_'");
-      }
-      String forEachType = collection != null ? genUtils.getTypeParameter(
-          service, collection) : null;
-      if (forEachType == null) {
-        forEachType = "Object";
-      }
-
-      sw.println("for (" + forEachType + " _ : " + foreach + ") {");
-      sw.indent();
-      generateExecuteSqlStatement(callbackInstanceName);
-      sw.outdent();
-      sw.println("}");
+      generateExecuteIteratedSqlStatements(callbackInstanceName);
     } else {
       generateExecuteSqlStatement(callbackInstanceName);
     }
