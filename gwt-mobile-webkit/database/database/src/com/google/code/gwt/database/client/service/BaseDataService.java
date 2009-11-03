@@ -18,6 +18,8 @@ package com.google.code.gwt.database.client.service;
 
 import com.google.code.gwt.database.client.Database;
 import com.google.code.gwt.database.client.DatabaseException;
+import com.google.code.gwt.database.client.service.callback.Callback;
+import com.google.code.gwt.database.client.service.callback.DataServiceTransactionCallback;
 
 /**
  * Base class for all generated {@link DataService} implementations using the

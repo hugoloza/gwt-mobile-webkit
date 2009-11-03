@@ -14,38 +14,39 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.scalar;
 
 import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
  * code.
  * 
- * <p>This StatementCallback impl is applied specifically to the {@link ListCallback}
+ * <p>This StatementCallback impl is applied specifically to the {@link ScalarCallback}
  * service methods.</p>
  * 
  * @author bguijt
  */
-public class DataServiceStatementCallbackListCallback<T extends JavaScriptObject> extends
-    DataServiceStatementCallback<T> {
+public class StatementCallbackScalarCallback<T> extends
+    DataServiceStatementCallback<ScalarRow<T>> {
 
-  private DataServiceTransactionCallbackListCallback<T> txCallback;
+  private TransactionCallbackScalarCallback<T> txCallback;
 
   /**
-   * Creates a StatementCallback with a ListCallback-specific TransactionCallback
+   * Creates a StatementCallback with a ScalarCallback-specific TransactionCallback
    */
-  public DataServiceStatementCallbackListCallback(DataServiceTransactionCallbackListCallback<T> txCallback) {
+  public StatementCallbackScalarCallback(TransactionCallbackScalarCallback<T> txCallback) {
     this.txCallback = txCallback;
   }
 
   /**
-   * Stores the resultSet in the TransactionCallback
+   * Stores the value from the resultSet in the TransactionCallback
    */
-  public void onSuccess(SQLTransaction transaction, SQLResultSet<T> resultSet) {
-    txCallback.storeResultSet(resultSet);
+  public void onSuccess(SQLTransaction transaction,
+      SQLResultSet<ScalarRow<T>> resultSet) {
+    txCallback.storeValue(resultSet.getRows().getItem(0).getValue());
   }
 }

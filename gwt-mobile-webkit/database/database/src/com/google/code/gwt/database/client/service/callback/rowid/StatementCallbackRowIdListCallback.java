@@ -14,38 +14,46 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.rowid;
 
+import com.google.code.gwt.database.client.GenericRow;
 import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 
 /**
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
  * code.
  * 
- * <p>This StatementCallback impl is applied specifically to the {@link ScalarCallback}
- * service methods.</p>
+ * <p>
+ * This StatementCallback impl is applied specifically to the
+ * {@link RowIdListCallback} service methods.
+ * </p>
  * 
  * @author bguijt
  */
-public class DataServiceStatementCallbackScalarCallback<T> extends
-    DataServiceStatementCallback<ScalarRow<T>> {
+public class StatementCallbackRowIdListCallback extends
+    DataServiceStatementCallback<GenericRow> {
 
-  private DataServiceTransactionCallbackScalarCallback<T> txCallback;
+  private TransactionCallbackRowIdListCallback txCallback;
 
   /**
-   * Creates a StatementCallback with a ScalarCallback-specific TransactionCallback
+   * Creates a new TransactionCallback with the specified DataService' ROWIDs
+   * callback.
    */
-  public DataServiceStatementCallbackScalarCallback(DataServiceTransactionCallbackScalarCallback<T> txCallback) {
+  public StatementCallbackRowIdListCallback(
+      TransactionCallbackRowIdListCallback txCallback) {
     this.txCallback = txCallback;
   }
 
   /**
-   * Stores the value from the resultSet in the TransactionCallback
+   * Adds the generated ROWID to the transactionCallback's
+   * {@link TransactionCallbackRowIdListCallback#addRowId(Integer)
+   * rowIds}
    */
   public void onSuccess(SQLTransaction transaction,
-      SQLResultSet<ScalarRow<T>> resultSet) {
-    txCallback.storeValue(resultSet.getRows().getItem(0).getValue());
+      SQLResultSet<GenericRow> resultSet) {
+    txCallback.addRowId(resultSet.getInsertId());
   }
 }

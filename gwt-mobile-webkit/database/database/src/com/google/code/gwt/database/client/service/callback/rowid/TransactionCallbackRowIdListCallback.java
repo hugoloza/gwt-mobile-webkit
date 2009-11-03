@@ -14,11 +14,13 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.rowid;
 
-import com.google.code.gwt.database.client.SQLResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.code.gwt.database.client.service.callback.DataServiceTransactionCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
@@ -30,32 +32,31 @@ import com.google.gwt.core.client.JavaScriptObject;
  * 
  * @author bguijt
  */
-public abstract class DataServiceTransactionCallbackListCallback<T extends JavaScriptObject>
-    extends DataServiceTransactionCallback<ListCallback<T>> {
+public abstract class TransactionCallbackRowIdListCallback extends
+    DataServiceTransactionCallback<RowIdListCallback> {
 
-  private ResultSetList<T> store;
+  private List<Integer> rowIds = new ArrayList<Integer>();
 
   /**
    * Creates a new TransactionCallback with the specified DataService' List
    * callback.
    */
-  public DataServiceTransactionCallbackListCallback(ListCallback<T> callback) {
+  public TransactionCallbackRowIdListCallback(RowIdListCallback callback) {
     super(callback);
   }
 
   /**
    * Store the resultSet for later retrieval when the transaction has ended.
    */
-  protected void storeResultSet(SQLResultSet<T> resultSet) {
-    store = new ResultSetList<T>(resultSet);
+  protected void addRowId(Integer rowId) {
+    rowIds.add(rowId);
   }
 
   /**
-   * Invokes the DataService' {@link ListCallback#onSuccess(java.util.List)}
-   * callback method with the value stored at
-   * {@link #storeResultSet(SQLResultSet)}.
+   * Invokes the DataService' {@link RowIdListCallback#onSuccess(List)} callback
+   * method with the List accumulated at {@link #addRowId(Integer)}.
    */
   public void onTransactionSuccess() {
-    getCallback().onSuccess(store);
+    getCallback().onSuccess(rowIds);
   }
 }

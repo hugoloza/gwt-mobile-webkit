@@ -14,45 +14,39 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.list;
 
-import com.google.code.gwt.database.client.GenericRow;
 import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
  * code.
  * 
- * <p>
- * This StatementCallback impl is applied specifically to the
- * {@link RowIdListCallback} service methods.
- * </p>
+ * <p>This StatementCallback impl is applied specifically to the {@link ListCallback}
+ * service methods.</p>
  * 
  * @author bguijt
  */
-public class DataServiceStatementCallbackRowIdListCallback extends
-    DataServiceStatementCallback<GenericRow> {
+public class StatementCallbackListCallback<T extends JavaScriptObject> extends
+    DataServiceStatementCallback<T> {
 
-  private DataServiceTransactionCallbackRowIdListCallback txCallback;
+  private TransactionCallbackListCallback<T> txCallback;
 
   /**
-   * Creates a new TransactionCallback with the specified DataService' ROWIDs
-   * callback.
+   * Creates a StatementCallback with a ListCallback-specific TransactionCallback
    */
-  public DataServiceStatementCallbackRowIdListCallback(
-      DataServiceTransactionCallbackRowIdListCallback txCallback) {
+  public StatementCallbackListCallback(TransactionCallbackListCallback<T> txCallback) {
     this.txCallback = txCallback;
   }
 
   /**
-   * Adds the generated ROWID to the transactionCallback's
-   * {@link DataServiceTransactionCallbackRowIdListCallback#addRowId(Integer)
-   * rowIds}
+   * Stores the resultSet in the TransactionCallback
    */
-  public void onSuccess(SQLTransaction transaction,
-      SQLResultSet<GenericRow> resultSet) {
-    txCallback.addRowId(resultSet.getInsertId());
+  public void onSuccess(SQLTransaction transaction, SQLResultSet<T> resultSet) {
+    txCallback.storeResultSet(resultSet);
   }
 }
