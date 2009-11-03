@@ -162,4 +162,4 @@ The current version implements the design issues as follows:
   # The Transaction context is completely hidden from the service user;
   # Whenever a SQL failure happens, the statements are always rolled back.
   # The transactions are all in read/write mode, except if all SQL statements start with `SELECT` - in taht case, the transaction is executed in read-only mode.
-  # We have *no way* yet to handle input collections. Need some thinking here!!
+  # Input collections are dealt with in two different ways. 1st: The `@Update` annotation has a `foreach` attribute. This attribute can contain an expression resolving to a Java `Iterable` type or an Array. The specified SQL statement is executed for each item in the collection, and the value of the item is assigned to the identifier `_`. 2nd: If a collection value is used in a parameter to the SQL statement (e.g. `... WHERE x IN({listOfNrs})`), the query is expanded to all values of the provided collection at runtime.
