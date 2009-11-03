@@ -1,44 +1,48 @@
 <project name="Google API Library for GWT" default="build" basedir=".">
-	<!-- "build" is the default when subprojects are directly targeted -->
-	<property name="target" value="build" />
+  <!-- "build" is the default when subprojects are directly targeted -->
+  <property name="target" value="build" />
 
   <!-- API library builds: -->
-	<target name="database" description="Build HTML5 Database API">
-		<ant dir="database" target="${target}" />
-	</target>
+  <target name="database" description="Build HTML5 Database API">
+    <ant dir="database" target="${target}" />
+  </target>
 
-    <target name="storage" description="Build HTML5 Storage API">
-        <ant dir="storage" target="${target}" />
-    </target>
+  <target name="applicationcache" description="Build HTML5 Application Cache API">
+    <ant dir="applicationcache" target="${target}" />
+  </target>
 
-    <target name="geolocation" description="Build HTML5 Geolocation API">
-        <ant dir="geolocation" target="${target}" />
-    </target>
+  <target name="storage" description="Build HTML5 Storage API">
+    <ant dir="storage" target="${target}" />
+  </target>
 
-	<target name="-do" depends="database, storage, geolocation" description="Run all subprojects" />
+  <target name="geolocation" description="Build HTML5 Geolocation API">
+    <ant dir="geolocation" target="${target}" />
+  </target>
+
+  <target name="-do" depends="applicationcache, database, storage, geolocation" description="Run all subprojects" />
 
   <!-- Generic targets: -->
-	<target name="build" description="Builds all of the APIs that make up the GWT Mobile Webkit library">
-		<antcall target="-do">
-			<param name="target" value="build" />
-		</antcall>
-	</target>
+  <target name="build" description="Builds all of the APIs that make up the GWT Mobile Webkit library">
+    <antcall target="-do">
+      <param name="target" value="build" />
+    </antcall>
+  </target>
 
-	<target name="checkstyle" description="Static analysis of GWT Mobile Webkit library source">
-		<antcall target="-do">
-			<param name="target" value="checkstyle" />
-		</antcall>
-	</target>
+  <target name="checkstyle" description="Static analysis of GWT Mobile Webkit library source">
+    <antcall target="-do">
+      <param name="target" value="checkstyle" />
+    </antcall>
+  </target>
 
-	<target name="test" depends="build" description="Test GWT Mobile Webkit library">
-		<antcall target="-do">
-			<param name="target" value="test" />
-		</antcall>
-	</target>
+  <target name="test" depends="build" description="Test GWT Mobile Webkit library">
+    <antcall target="-do">
+      <param name="target" value="test" />
+    </antcall>
+  </target>
 
-	<target name="clean" description="Cleans the entire GWT Mobile Webkit library build">
-		<antcall target="-do">
-			<param name="target" value="clean" />
-		</antcall>
-	</target>
+  <target name="clean" description="Cleans the entire GWT Mobile Webkit library build">
+    <antcall target="-do">
+      <param name="target" value="clean" />
+    </antcall>
+  </target>
 </project>
