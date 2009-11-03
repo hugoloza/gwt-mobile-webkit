@@ -14,12 +14,12 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.list;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.code.gwt.database.client.SQLResultSet;
+import com.google.code.gwt.database.client.service.callback.DataServiceTransactionCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
@@ -31,31 +31,32 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * 
  * @author bguijt
  */
-public abstract class DataServiceTransactionCallbackRowIdListCallback extends
-    DataServiceTransactionCallback<RowIdListCallback> {
+public abstract class TransactionCallbackListCallback<T extends JavaScriptObject>
+    extends DataServiceTransactionCallback<ListCallback<T>> {
 
-  private List<Integer> rowIds = new ArrayList<Integer>();
+  private ResultSetList<T> store;
 
   /**
    * Creates a new TransactionCallback with the specified DataService' List
    * callback.
    */
-  public DataServiceTransactionCallbackRowIdListCallback(RowIdListCallback callback) {
+  public TransactionCallbackListCallback(ListCallback<T> callback) {
     super(callback);
   }
 
   /**
    * Store the resultSet for later retrieval when the transaction has ended.
    */
-  protected void addRowId(Integer rowId) {
-    rowIds.add(rowId);
+  protected void storeResultSet(SQLResultSet<T> resultSet) {
+    store = new ResultSetList<T>(resultSet);
   }
 
   /**
-   * Invokes the DataService' {@link RowIdListCallback#onSuccess(List)} callback
-   * method with the List accumulated at {@link #addRowId(Integer)}.
+   * Invokes the DataService' {@link ListCallback#onSuccess(java.util.List)}
+   * callback method with the value stored at
+   * {@link #storeResultSet(SQLResultSet)}.
    */
   public void onTransactionSuccess() {
-    getCallback().onSuccess(rowIds);
+    getCallback().onSuccess(store);
   }
 }

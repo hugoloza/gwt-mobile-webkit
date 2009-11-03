@@ -14,30 +14,36 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.voyd;
 
-import com.google.code.gwt.database.client.SQLError;
-import com.google.code.gwt.database.client.SQLTransaction;
-import com.google.code.gwt.database.client.StatementCallback;
+import com.google.code.gwt.database.client.service.callback.DataServiceTransactionCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
  * code.
  * 
+ * <p>
+ * The Generator implements the onTransactionStart() method body.
+ * </p>
+ * 
  * @author bguijt
  */
-public abstract class DataServiceStatementCallback<T extends JavaScriptObject>
-    implements StatementCallback<T> {
+public abstract class TransactionCallbackVoidCallback extends
+    DataServiceTransactionCallback<VoidCallback> {
 
   /**
-   * The onFailure method, once called, always signals the database to rollback
-   * the transaction.
-   * 
-   * @return <code>true</code>
+   * Creates a new TransactionCallback with the specified DataService' Void
+   * callback.
    */
-  public boolean onFailure(SQLTransaction transaction, SQLError error) {
-    return true;
+  public TransactionCallbackVoidCallback(VoidCallback callback) {
+    super(callback);
+  }
+
+  /**
+   * Invokes the DataService' {@link VoidCallback#onSuccess()} callback method.
+   */
+  public void onTransactionSuccess() {
+    getCallback().onSuccess();
   }
 }

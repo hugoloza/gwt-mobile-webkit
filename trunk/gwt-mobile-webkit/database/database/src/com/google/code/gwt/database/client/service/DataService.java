@@ -24,6 +24,10 @@ import com.google.code.gwt.database.client.SQLTransaction;
 import com.google.code.gwt.database.client.service.annotation.Connection;
 import com.google.code.gwt.database.client.service.annotation.Select;
 import com.google.code.gwt.database.client.service.annotation.Update;
+import com.google.code.gwt.database.client.service.callback.list.ListCallback;
+import com.google.code.gwt.database.client.service.callback.rowid.RowIdListCallback;
+import com.google.code.gwt.database.client.service.callback.scalar.ScalarCallback;
+import com.google.code.gwt.database.client.service.callback.voyd.VoidCallback;
 
 /**
  * Marks the interface as a DataService.

@@ -14,10 +14,11 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback;
 
 import com.google.code.gwt.database.client.SQLError;
 import com.google.code.gwt.database.client.TransactionCallback;
+import com.google.code.gwt.database.client.service.DataServiceException;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 
 /**
@@ -56,7 +57,7 @@ public abstract class DataServiceTransactionCallback<C extends Callback>
   /**
    * Returns the DataService callback associated with this transaction.
    */
-  protected C getCallback() {
+  public C getCallback() {
     return callback;
   }
 }

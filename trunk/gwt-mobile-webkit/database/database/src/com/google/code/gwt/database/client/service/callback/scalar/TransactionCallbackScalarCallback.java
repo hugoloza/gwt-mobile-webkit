@@ -14,8 +14,9 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.scalar;
 
+import com.google.code.gwt.database.client.service.callback.DataServiceTransactionCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 
 /**
@@ -30,7 +31,7 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * 
  * @author bguijt
  */
-public abstract class DataServiceTransactionCallbackScalarCallback<T> extends
+public abstract class TransactionCallbackScalarCallback<T> extends
     DataServiceTransactionCallback<ScalarCallback<T>> {
 
   private T store = null;
@@ -39,7 +40,7 @@ public abstract class DataServiceTransactionCallbackScalarCallback<T> extends
    * Creates a new TransactionCallback with the specified DataService' Scalar
    * callback.
    */
-  public DataServiceTransactionCallbackScalarCallback(ScalarCallback<T> callback) {
+  public TransactionCallbackScalarCallback(ScalarCallback<T> callback) {
     super(callback);
   }
 

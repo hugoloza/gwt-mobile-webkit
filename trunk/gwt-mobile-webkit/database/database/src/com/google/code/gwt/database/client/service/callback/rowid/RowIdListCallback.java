@@ -14,32 +14,28 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.rowid;
 
-import com.google.code.gwt.database.rebind.DataServiceGenerator;
-import com.google.gwt.core.client.JavaScriptObject;
+import java.util.List;
+
+import com.google.code.gwt.database.client.service.callback.Callback;
 
 /**
- * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
- * code.
- * 
- * <p>
- * This Row type is used to obtain a scalar value from the resultset.
- * </p>
+ * Database service callback which expects a collection of ROWID's from executed
+ * INSERT statements as resultSet.
  * 
  * @author bguijt
  */
-public final class ScalarRow<T> extends JavaScriptObject {
-
-  protected ScalarRow() {
-  }
+public interface RowIdListCallback extends Callback {
 
   /**
-   * Returns the first value from the row as type T.
+   * This callback method is invoked if the SQL is executed successfully.
+   * 
+   * <p>
+   * The inserted ROWID's are provided in the rowIds list.
+   * </p>
+   * 
+   * @param rowIds the list of ROWID integers.
    */
-  public native T getValue() /*-{
-    for (var n in this) {
-      return this[n];
-    }
-  }-*/;
+  void onSuccess(List<Integer> rowIds);
 }

@@ -14,22 +14,32 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.scalar;
 
+import com.google.code.gwt.database.rebind.DataServiceGenerator;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * All DataServiceXxxCallback interfaces mandate the same
- * {@link #onFailure(DataServiceException)} method, which is defined here.
+ * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
+ * code.
+ * 
+ * <p>
+ * This Row type is used to obtain a scalar value from the resultset.
+ * </p>
  * 
  * @author bguijt
  */
-public interface Callback {
+public final class ScalarRow<T> extends JavaScriptObject {
+
+  protected ScalarRow() {
+  }
 
   /**
-   * This callback method is invoked if the SQL transaction fails.
-   * 
-   * @param error the SQL error causing the failure
+   * Returns the first value from the row as type T.
    */
-  void onFailure(DataServiceException error);
-
+  public native T getValue() /*-{
+    for (var n in this) {
+      return this[n];
+    }
+  }-*/;
 }

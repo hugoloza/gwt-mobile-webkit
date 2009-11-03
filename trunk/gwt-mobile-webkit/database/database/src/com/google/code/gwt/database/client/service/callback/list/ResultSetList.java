@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service;
+package com.google.code.gwt.database.client.service.callback.list;
 
 import java.util.AbstractList;
 

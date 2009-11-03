@@ -20,13 +20,13 @@ import java.util.Collection;
 import java.util.Date;
 
 import com.google.code.gwt.database.client.service.DataService;
-import com.google.code.gwt.database.client.service.ListCallback;
-import com.google.code.gwt.database.client.service.RowIdListCallback;
-import com.google.code.gwt.database.client.service.ScalarCallback;
-import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.code.gwt.database.client.service.annotation.Connection;
 import com.google.code.gwt.database.client.service.annotation.Select;
 import com.google.code.gwt.database.client.service.annotation.Update;
+import com.google.code.gwt.database.client.service.callback.list.ListCallback;
+import com.google.code.gwt.database.client.service.callback.rowid.RowIdListCallback;
+import com.google.code.gwt.database.client.service.callback.scalar.ScalarCallback;
+import com.google.code.gwt.database.client.service.callback.voyd.VoidCallback;
 
 /**
  * Demo database service to the 'ClckCnt' database.
