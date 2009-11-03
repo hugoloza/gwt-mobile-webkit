@@ -17,14 +17,14 @@ In your GWT client package, create an interface with a Connection annotation:
 package my.gwt.package.client;
 
 import com.google.code.gwt.database.client.service.DataService;
-import com.google.code.gwt.database.client.service.VoidCallback;
+import com.google.code.gwt.database.client.service.callback.voyd.VoidCallback;
 import com.google.code.gwt.database.client.service.annotation.Connection;
-import com.google.code.gwt.database.client.service.annotation.SQL;
+import com.google.code.gwt.database.client.service.annotation.Update;
 
 @Connection(name = "myDatabase", version = "1.0", description = "My Database", maxsize = 10000)
 public interface MyDataService extends DataService {
 
-  @SQL("CREATE TABLE IF NOT EXISTS testtable ("
+  @Update("CREATE TABLE IF NOT EXISTS testtable ("
             + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
             + "adate INTEGER)"
   void initDatabase(VoidCallback callback);
@@ -35,8 +35,8 @@ As you probably can imagine, a call to the `initDatabase()` will eventually run 
 
 Alright, let's review what is shown here.
   # the interface declaration: Your interface *must* extend `DataService` in order to be recognized as an actual !DataService. This is important for the GWT deferred binding process.
-  # the interface must be annotated with `@Connection`, and all four parameters must be provided. These are the exact same parameters as entered at the `Database.openDatabase()` method.
-  # the interface methods must have a `void` return type, a `@SQL` annotation and a list of parameter(s) which must *always* end with a `[Void|Scalar|List]Callback` declaration - almost like a GWT RPC service method.
+  # the interface must be annotated with `@Connection`, and all four parameters must be provided. These are the exact same parameters as provided to the `Database.openDatabase()` method.
+  # the interface methods must have a `void` return type, a `@Update` (or `@Select`) annotation and a list of parameter(s) which must *always* end with a `[Void|Scalar|List|RowIdList]Callback` declaration - almost like a GWT RPC service method.
 
 So how do we use this interface?
 
@@ -63,15 +63,18 @@ If you're used to the GWT RPC mechanism, you'll see a familiar structure here: a
 
 == Transactions ==
 === Multiple SQL statements in a single transaction ===
-The !DataService API supports transactions. Each method in the !DataService starts (and ends) its own transaction. To make this useful, you can specify multiple SQL statements in the `@SQL` annotation, e.g.:
+The !DataService API supports transactions. Each method in the !DataService starts (and ends) its own transaction. To make INSERT statements efficient, you can iterate over a collection and execute a SQL statement at each iteration in the `@Update` annotation, e.g.:
 
 {{{
-@SQL({
-  "INSERT INTO testtable (adate) VALUES ({when.getTime()})",
-  "SELECT adate FROM testtable"
-  })
-void insertDate(Date when, ListCallback<GenericRow> callback);
+@Update(sql="INSERT INTO testtable (adate) VALUES ({_.getTime()})", foreach="dates")
+void insertDate(Collection<Date> clicks, RowIdListCallback callback);
 }}}
+
+As you can see, the `foreach` attribute is added to the `@Update` annotation. This attribute contains a Java expression resolving to either an `Iterable` or an `Array` of anything. Normally this would just be the name of a parameter (in the example, it is the parameter named `clicks`). In the SQL statement, you use the value of the iteration expressed as an underscore (`_`), like in the example: `_.getTime()` returns the millisecs from Jan 1s, 1970 as the value for the date (SQLite doesn't support date types).
+
+All these statements are executed in a single transaction.
+
+The `RowIdListCallback` in the example returns the generated primary key ID's in a List.
 
 === What happens when a statement fails ===
 Whenever a SQL statement fails, the transaction is always rolled back, and the Callback's `onFailure()` method is called with an error code/message indicating the source of the error.
@@ -83,34 +86,56 @@ The Database API supports both read-only transactions and read-write transaction
 Obviously, a Java method can carry some parameters. Luckily that matches perfectly with what we can do with the SQL statements. For instance:
 
 {{{
-@SQL({
-  "INSERT INTO testtable (adate, name) VALUES ({when.getTime()}, {name})",
-  "SELECT adate FROM testtable WHERE {when.getTime()} < adate"
-  })
-void insertDate(String name, Date when, ListCallback<GenericRow> callback);
+@Update("INSERT INTO testtable (adate, name) VALUES ({when.getTime()}, {name})")
+void insertDate(String name, Date when, RowIdListCallback callback);
 }}}
 
 The method declares two parameters before the callback: a String called `name` and a Date called `when`. These parameters also found their way in the SQL statements - between the curly braces you can see the Java expressions (that's what they are eventually) `when.getTime()` and `name`. The method parameters can be (re)used as much as you like. You could also use expressions not depending on any parameter, e.g. `{System.currentTimeMillis()}`.
 
 Under the hood, the expressions with their curly braces are replaced with a question mark (`?`) and the expressions are moved to an `Object[]` array initializer (in this example, `new Object[] {when.getTime(), name}`).
 
+=== Collection parameters ===
+There are two usecases for Collection parameters:
+  # Create an SQL statement for each item in the collection (see [#Multiple_SQL_statements_in_a_single_transaction]);
+  # Create an SQL `IN(...)` statement with a value for each item in the collection.
+
+The collection is expanded runtime with its values in the SQL statement (regardless of its placement in an `IN()` statement BTW). For instance:
+
+{{{
+@Select("SELECT * FROM atable WHERE value IN({filterValues})")
+void getFilteredData(Collection<Integer> filterValues, ListCallback<GenericRow> callback);
+}}}
+
+The values in the provided collection are inserted in the SQL statement, like this:
+
+{{{
+filterValues = Arrays.asList(new Integer[] {1,4, 10});
+}}}
+
+becomes SQL:
+
+{{{
+SELECT * FROM atable WHERE value IN(1,4,10)
+}}}
+
+
 == Getting results ==
 
-=== Expecting no results: !VoidCallback ===
+=== Anticipating no results: !VoidCallback ===
 If you execute SQL and you don't want to handle any results, simply use the `VoidCallback` type:
 
 {{{
-@SQL("INSERT INTO testtable (adate) VALUES ({when.getTime()})")
+@Update("INSERT INTO testtable (adate) VALUES ({when.getTime()})")
 void insertDate(Date when, VoidCallback callback);
 }}}
 
 The `VoidCallback` still declares `onFailure()` and `onSuccess()` callbacks which must be provided by the caller. This is the simplest callback type.
 
-=== Expecting a single value result: !ScalarCallback ===
+=== Anticipating a single value result: !ScalarCallback ===
 Some SQL queries return just a single value in a resultSet of 1 row and 1 column. The `ScalarCallback` is designed for these cases. E.g.:
 
 {{{
-@SQL("SELECT COUNT(*) FROM testtable")
+@Select("SELECT COUNT(*) FROM testtable")
 void getCount(ScalarCallback<Integer> callback);
 }}}
 
@@ -131,11 +156,11 @@ The `result` value is obtained as the first column from the first record in the 
 
 If the transaction executes multiple SQL statements, *only the last* statement is considered for providing the value.
 
-=== Expecting multiple rows: !ListCallback ===
+=== Anticipating multiple rows: !ListCallback ===
 Most `SELECT` queries return a regular, tabular kind of resultSet. The `ListCallback` is designed for this usecase:
 
 {{{
-@SQL("SELECT * FROM testtable")
+@Select("SELECT * FROM testtable")
 void getData(ListCallback<GenericRow> callback);
 }}}
 
@@ -179,6 +204,32 @@ The references in the [http://code.google.com/webtoolkit/doc/1.6/FAQ_Client.html
 If you think creating your own row type is too complex, you can always fall back to the generic row type `GenericRow`, just like in the example above. That type is a bit like the `ResultSet` type in JDBC: you access the data with methods like `getInteger(String columnName)` and `getString(String columnName)`. For most data types there is an accessor method.
 
 If the transaction executes multiple SQL statements, *only the last* statement is considered for providing the resultSet.
+
+=== Anticipating primary key ID's (ROWID's): !RowIdListCallback ===
+The `@Update` annotation enables the use of a fourth Callback type: the `RowIdListCallback`. This callback type *only* works with SQL INSERT statements.
+
+Example:
+
+{{{
+@Update("INSERT INTO testtable (adate) VALUES ({when.getTime()})")
+void insertDate(Date when, RowIdListCallback callback);
+}}}
+
+Note the use of a `List`-kind Callback, when in fact you want a single value. Maybe later we have a RowIdScalarCallback for this purpose, but for now, this will suffice just fine:
+
+{{{
+dbService.insertDate(new RowIdCallback() {
+  public void onFailure(DataServiceException e) {
+     // Handle failure
+  }
+  public void onSuccess(List<Integer> rowIds) {
+    int id = rowIds.get(0);
+    // Do something with 'id'
+  }
+}
+}}}
+
+If you use the `RowIdListCallback` on a service which iterates over a collection to execute zero or more SQL INSERT statements, the returned `List<Integer>` contains primary keys for the items in the same order as the executed statements. It should be easy to 'weave' them to the objects in the source collection.
 
 == Using a !DataService inheritance tree ==
 Normally you would declare a !DataService with an interface extending the `DataService` interface.
