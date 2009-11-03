@@ -48,6 +48,7 @@ public class ApplicationCacheManifestServlet extends HttpServlet {
     out.print(getCacheManifest(req));
     out.flush();
     resp.flushBuffer();
+    log("Hitting a cache manifest: " + req.getRequestURI());
   }
 
   private String getCacheManifest(HttpServletRequest req)

@@ -1,44 +1,50 @@
 <project name="samples" default="build" basedir=".">
-	<property name="gwt.root" location=".." />
-    <property file="${gwt.root}/build.properties" />
-	<property name="project.tail" value="samples" />
-	<import file="${gwt.root}/common.ant.xml" />
+  <property name="gwt.root" location=".." />
+  <property file="${gwt.root}/build.properties" />
+  <property name="project.tail" value="samples" />
+  <import file="${gwt.root}/common.ant.xml" />
 
-	<!-- "build" is the default when subprojects are directly targetted -->
-	<property name="target" value="build" />
+  <!-- "build" is the default when subprojects are directly targetted -->
+  <property name="target" value="build" />
 
-	<target name="sample" description="Build the 'hello' sample">
-		<gwt.ant dir="hello${api.name}" />
-	</target>
+  <target name="sample" description="Build the 'hello' sample">
+    <gwt.ant dir="hello${api.name}" />
+  </target>
 
-	<target name="-do" depends="sample" description="Run all subprojects" />
+  <target name="-do" depends="sample" description="Run all subprojects" />
 
-	<target name="build" description="Builds library samples">
-		<antcall target="-do">
-			<param name="target" value="build" />
-		</antcall>
-	</target>
+  <target name="build" description="Builds library samples">
+    <antcall target="-do">
+      <param name="target" value="build" />
+    </antcall>
+  </target>
 
-	<target name="checkstyle" description="Static analysis of library source">
-		<antcall target="-do">
-			<param name="target" value="checkstyle" />
-		</antcall>
-	</target>
+  <target name="checkstyle" description="Static analysis of library source">
+    <antcall target="-do">
+      <param name="target" value="checkstyle" />
+    </antcall>
+  </target>
 
-	<target name="test" depends="build" description="Test the library">
-		<antcall target="-do">
-			<param name="target" value="test" />
-		</antcall>
-	</target>
+  <target name="test" depends="build" description="Test the library">
+    <antcall target="-do">
+      <param name="target" value="test" />
+    </antcall>
+  </target>
 
-	<target name="clean" description="Cleans this project's intermediate and output files">
-		<delete dir="${project.build}" />
-		<delete dir="${gwt.build.out}/samples-scripts" />
-	</target>
+  <target name="clean" description="Cleans this project's intermediate and output files">
+    <delete dir="${project.build}" />
+    <delete dir="${gwt.build.out}/samples-scripts" />
+  </target>
 
-    <target name="hosted" description="Run sample in hosted mode">
-        <antcall target="-do">
-            <param name="target" value="hosted" />
-        </antcall>
-    </target>
+  <target name="hosted" description="Run sample in hosted mode">
+    <antcall target="-do">
+      <param name="target" value="hosted" />
+    </antcall>
+  </target>
+
+  <target name="run" description="Run sample in compiled mode">
+    <antcall target="-do">
+      <param name="target" value="run" />
+    </antcall>
+  </target>
 </project>
