@@ -29,7 +29,11 @@ public class ServiceMethodCreatorVoidCallback extends ServiceMethodCreator {
 
   @Override
   public void generateOnTransactionStartBody() throws UnableToCompleteException {
-    generateExecuteSqlStatement(null);
+    if (foreach != null && foreach.trim().length() > 0) {
+      generateExecuteIteratedSqlStatements(null);
+    } else {
+      generateExecuteSqlStatement(null);
+    }
   }
 
   @Override

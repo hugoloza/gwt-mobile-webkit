@@ -110,6 +110,42 @@ public abstract class ServiceMethodCreator {
       throws UnableToCompleteException;
 
   /**
+   * Generates an iterating <code>tx.executeSql(...);</code> call statement.
+   * 
+   * @param callbackExpression the expression for an instantiated
+   *          StatementCallback class - or <code>null</code> if no callback
+   *          applies
+   * @throws UnableToCompleteException
+   */
+  protected void generateExecuteIteratedSqlStatements(String callbackExpression)
+      throws UnableToCompleteException {
+    if (foreach != null && foreach.trim().length() > 0) {
+      // Generate code to loop over a collection to create a tx.executeSql()
+      // call for each item.
+
+      // Find the types, parameters, assert not-nulls, etc.:
+      JType collection = GeneratorUtils.findType(foreach,
+          service.getParameters());
+      if (collection == null) {
+        logger.log(TreeLogger.WARN, "The method " + service.getName()
+            + " has no parameter named '" + foreach
+            + "'. Using Object as the type for the loop variable '_'");
+      }
+      String forEachType = collection != null ? genUtils.getTypeParameter(
+          service, collection) : null;
+      if (forEachType == null) {
+        forEachType = "Object";
+      }
+
+      sw.println("for (" + forEachType + " _ : " + foreach + ") {");
+      sw.indent();
+      generateExecuteSqlStatement(callbackExpression);
+      sw.outdent();
+      sw.println("}");
+    }
+  }
+
+  /**
    * Generates a <code>tx.executeSql(...);</code> call statement.
    * 
    * @param callbackExpression the expression for an instantiated
