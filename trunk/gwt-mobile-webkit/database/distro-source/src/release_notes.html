@@ -48,7 +48,10 @@
        </ul>
          <h3>Known Issues</h3>
 	   <ul>
-         <li>No known issues</li>
+         <li>In some cases GWT2.0 (hosted and compiled mode) throws ClassCastException errors.
+         This is especially the case if you use the ScalarCallback class. Add the
+         <code>-XdisableCastChecking</code> option to the commandline (app gets faster and
+         smaller all at the same time!)</li>
 	   </ul>
       <a name="Release_Notes_1_0_0"></a>
      <h2>Release Notes for 1.0.0</h2>
