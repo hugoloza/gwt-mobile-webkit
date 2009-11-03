@@ -19,26 +19,37 @@ public interface ClickCountDataService extends DataService {
    * Makes sure that the 'clickcount' table exists in the Database.
    * Uses the Void callback to ignore any resultSet.
    */
-  @SQL("CREATE TABLE IF NOT EXISTS clickcount ("
+  @Update("CREATE TABLE IF NOT EXISTS clickcount ("
             + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
             + "clicked INTEGER)")
   void initTable(VoidCallback callback);
   
   /**
-   * Records a Click value, and obtains the list of all recorded clicks.
+   * Records a Click value.
+   * Uses the RowId callback to get the primary key of the inserted record.
+   */
+  @Update("INSERT INTO clickcount (clicked) VALUES ({when.getTime()})")
+  void insertClick(Date when, RowIdListCallback callback);
+  
+  /**
+   * Records a set of Click values.
+   * Uses the RowId callback to get the primary keys of inserted records.
+   */
+  @Update(sql="INSERT INTO clickcount (clicked) VALUES ({_.getTime()})", foreach="clicks")
+  void insertClicks(Collection<Date> clicks, RowIdListCallback callback);
+  
+  /**
+   * Obtains the list of all recorded clicks.
    * Uses the List callback to handle a 'full' resultSet.
    */
-  @SQL({
-    "INSERT INTO clickcount (clicked) VALUES ({when.getTime()})",
-    "SELECT clicked FROM clickcount"
-    })
-  void insertClick(Date when, ListCallback<ClickRow> callback);
+  @Select("SELECT clicked FROM clickcount")
+  void getAllClicks(ListCallback<ClickRow> callback);
 
   /**
    * Obtains the number of clicks recorded in the database.
    * Uses the Scalar callback to get a single value as result.
    */
-  @SQL("SELECT count(*) FROM clickcount")
+  @Select("SELECT count(*) FROM clickcount")
   void getClickCount(ScalarCallback<Integer> callback);
 }
 }}}
@@ -57,8 +68,8 @@ service.initTable(new VoidCallback() {
 
   public void onSuccess() {
     // The clickcount table is certainly in the database.
-    // Insert a new record:
-    service.insertClick(new Date(), new ListCallback<ClickRow>() {
+    // Obtain all records:
+    service.getAllClicks(new ListCallback<ClickRow>() {
       public void onFailure(DataServiceException error) {
         // Something went wrong!
       }
