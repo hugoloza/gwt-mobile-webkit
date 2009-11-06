@@ -32,13 +32,13 @@ public class ServiceMethodCreatorScalarCallback extends ServiceMethodCreator {
   public void generateOnTransactionStartBody() throws UnableToCompleteException {
     generateExecuteSqlStatement("new "
         + genUtils.getClassName(StatementCallbackScalarCallback.class) + "<"
-        + genUtils.getTypeParameter(service, callback.getType()) + ">(this)");
+        + genUtils.getTypeParameter(callback.getType()) + ">(this)");
   }
 
   @Override
   protected String getTransactionCallbackClassName()
       throws UnableToCompleteException {
     return genUtils.getClassName(TransactionCallbackScalarCallback.class) + "<"
-        + genUtils.getTypeParameter(service, callback.getType()) + ">";
+        + genUtils.getTypeParameter(callback.getType()) + ">";
   }
 }

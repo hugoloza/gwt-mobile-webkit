@@ -19,6 +19,7 @@ package com.google.code.gwt.database.rebind;
 import com.google.code.gwt.database.client.service.RowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.StatementCallbackRowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.TransactionCallbackRowIdListCallback;
+import com.google.code.gwt.database.client.util.StringUtils;
 import com.google.gwt.core.ext.UnableToCompleteException;
 
 /**
@@ -41,7 +42,7 @@ public class ServiceMethodCreatorRowIdListCallback extends ServiceMethodCreator 
     sw.println("final " + stmtCallbackName + " " + callbackInstanceName
         + " = new " + stmtCallbackName + "(this);");
 
-    if (foreach != null && foreach.trim().length() > 0) {
+    if (StringUtils.isNotEmpty(foreach)) {
       generateExecuteIteratedSqlStatements(callbackInstanceName);
     } else {
       generateExecuteSqlStatement(callbackInstanceName);

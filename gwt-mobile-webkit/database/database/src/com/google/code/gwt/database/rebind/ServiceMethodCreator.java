@@ -120,20 +120,31 @@ public abstract class ServiceMethodCreator {
    */
   protected void generateExecuteIteratedSqlStatements(String callbackExpression)
       throws UnableToCompleteException {
-    if (foreach != null && foreach.trim().length() > 0) {
+    if (StringUtils.isNotEmpty(foreach)) {
       // Generate code to loop over a collection to create a tx.executeSql()
       // call for each item.
+
+      // Ensure no parameters are specified on the service method named '_':
+      if (!"_".equals(GeneratorUtils.getVariableName("_",
+          service.getParameters()))) {
+        logger.log(TreeLogger.ERROR,
+            "The service method cannot apply a parameter named '_' when "
+                + "the 'foreach' attribute is also specified on the @Update "
+                + "annotation");
+        throw new UnableToCompleteException();
+      }
 
       // Find the types, parameters, assert not-nulls, etc.:
       JType collection = GeneratorUtils.findType(foreach,
           service.getParameters());
       if (collection == null) {
-        logger.log(TreeLogger.WARN, "The method " + service.getName()
-            + " has no parameter named '" + foreach
-            + "'. Using Object as the type for the loop variable '_'");
+        logger.log(TreeLogger.WARN,
+            "no parameter on the service method named '" + foreach
+                + "' found. Using Object as the type for the loop variable '_'");
       }
-      String forEachType = collection != null ? genUtils.getTypeParameter(
-          service, collection) : null;
+
+      String forEachType = collection != null
+          ? genUtils.getTypeParameter(collection) : null;
       if (forEachType == null) {
         forEachType = "Object";
       }
@@ -159,9 +170,7 @@ public abstract class ServiceMethodCreator {
     List<String> tokenizedStmt = tokenizeSql(sql);
     if (tokenizedStmt.size() == 0) {
       // No SQL at all. Probably already captured earlier in the process.
-      logger.log(TreeLogger.ERROR,
-          "No SQL statement specified at service method '" + service.getName()
-              + "'");
+      logger.log(TreeLogger.ERROR, "No SQL statement specified");
       throw new UnableToCompleteException();
     }
 
@@ -184,7 +193,7 @@ public abstract class ServiceMethodCreator {
       for (int i = 0; i < tokenizedStmt.size(); i++) {
         if ((i % 2) == 0) {
           // SQL token:
-          // ignore
+          // ignore while determining parameters
         } else {
           // Parameter token:
           String expression = tokenizedStmt.get(i);
@@ -343,16 +352,15 @@ public abstract class ServiceMethodCreator {
             String s = token.toString().trim();
             if (s.length() == 0) {
               logger.log(TreeLogger.ERROR,
-                  "Parameter expression in SQL statement '" + stmt
-                      + "' is empty!");
+                  "Parameter expression in SQL statement is empty!");
               throw new UnableToCompleteException();
             }
             result.add(s);
             token = new StringBuilder();
           } else if (depth < 0) {
             logger.log(TreeLogger.ERROR,
-                "Parameter expression in SQL statement '" + stmt
-                    + "' is not closed correctly! Too many closing brace(s)");
+                "Parameter expression in SQL statement is not closed"
+                    + " correctly! Too many closing brace(s)");
             throw new UnableToCompleteException();
           } else {
             token.append(ch);
@@ -364,9 +372,8 @@ public abstract class ServiceMethodCreator {
       }
     }
     if (depth > 0) {
-      logger.log(TreeLogger.ERROR, "Parameter expression(s) in SQL statement '"
-          + stmt + "' is not closed correctly! Missing " + depth
-          + " closing brace(s)");
+      logger.log(TreeLogger.ERROR, "Parameter expression(s) in SQL statement"
+          + " is not closed correctly! Missing " + depth + " closing brace(s)");
       throw new UnableToCompleteException();
     }
     result.add(token.toString());
@@ -391,7 +398,7 @@ public abstract class ServiceMethodCreator {
     if (type != null) {
       if (genUtils.isAssignableToType(type, Iterable.class)) {
         // OK, we've got our collection. Is the Type parameter 'suitable'?
-        typeParam = genUtils.getTypeParameter(service, type);
+        typeParam = genUtils.getTypeParameter(type);
         for (String t : new String[] {
             "String", "Integer", "Number", "Long", "Short", "Double", "Float",
             "Boolean"}) {
@@ -401,10 +408,8 @@ public abstract class ServiceMethodCreator {
           }
         }
         if (!isSuitableDynamic) {
-          logger.log(TreeLogger.ERROR, "Service method named '"
-              + service.getName()
-              + "' has an expression in the SQL statement '" + expression
-              + "' which is defined as an Iterable, but its type "
+          logger.log(TreeLogger.ERROR, "The expression in the SQL statement '"
+              + expression + "' is defined as an Iterable, but its type "
               + "parameter " + typeParam
               + " is NOT one of String, Long, Integer, Short, Number, "
               + "Double, Float, Boolean");
@@ -423,11 +428,10 @@ public abstract class ServiceMethodCreator {
           }
         }
         if (!isSuitableDynamic) {
-          logger.log(TreeLogger.ERROR, "Service method named '"
-              + service.getName()
-              + "' has an expression in the SQL statement '" + expression
-              + "' which is defined as an Array, but its component type "
-              + typeParam + " is NOT one of String, Long/long, Integer/int, "
+          logger.log(TreeLogger.ERROR, "The expression in the SQL statement '"
+              + expression
+              + "' is defined as an Array, but its component type " + typeParam
+              + " is NOT one of String, Long/long, Integer/int, "
               + "Short/short, Number, Double/double, Float/float, "
               + "Boolean/boolean");
           throw new UnableToCompleteException();
