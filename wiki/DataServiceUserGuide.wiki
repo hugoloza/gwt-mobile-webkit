@@ -17,7 +17,7 @@ In your GWT client package, create an interface with a Connection annotation:
 package my.gwt.package.client;
 
 import com.google.code.gwt.database.client.service.DataService;
-import com.google.code.gwt.database.client.service.callback.voyd.VoidCallback;
+import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.code.gwt.database.client.service.annotation.Connection;
 import com.google.code.gwt.database.client.service.annotation.Update;
 
@@ -109,7 +109,7 @@ void getFilteredData(Collection<Integer> filterValues, ListCallback<GenericRow> 
 The values in the provided collection are inserted in the SQL statement, like this:
 
 {{{
-filterValues = Arrays.asList(new Integer[] {1,4, 10});
+filterValues = Arrays.asList(new Integer[] {1, 4, 10});
 }}}
 
 becomes SQL:
