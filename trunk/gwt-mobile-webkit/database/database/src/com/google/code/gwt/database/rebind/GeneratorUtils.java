@@ -20,7 +20,6 @@ import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JType;
 
@@ -44,6 +43,13 @@ public class GeneratorUtils {
     this.logger = logger;
     this.context = context;
     this.importedClasses = importedClasses;
+  }
+
+  /**
+   * Creates a new GeneratorUtils instance, with a branched TreeLogger.
+   */
+  public GeneratorUtils branchWithLogger(TreeLogger branchedLogger) {
+    return new GeneratorUtils(branchedLogger, context, importedClasses);
   }
 
   /**
@@ -126,13 +132,11 @@ public class GeneratorUtils {
   /**
    * Returns the (first) Type parameter of the specified type.
    */
-  public String getTypeParameter(JMethod service, JType type)
-      throws UnableToCompleteException {
+  public String getTypeParameter(JType type) throws UnableToCompleteException {
     JClassType[] typeArgs = type.isParameterized().getTypeArgs();
     if (typeArgs == null || typeArgs.length == 0) {
       logger.log(TreeLogger.ERROR, "Expected a type parameter on the type "
-          + type.getQualifiedSourceName() + " used at service named '"
-          + service.getName() + "'");
+          + type.getQualifiedSourceName());
       throw new UnableToCompleteException();
     }
     return shortenName(typeArgs[0].getQualifiedSourceName());
@@ -169,8 +173,6 @@ public class GeneratorUtils {
     if (type.isClassOrInterface() != null) {
       return type.isClassOrInterface().isAssignableTo(
           context.getTypeOracle().findType(assignableTo.getCanonicalName()));
-    } else if (type.isPrimitive() != null) {
-      return type.isPrimitive().getSimpleSourceName().equals(assignableTo.getSimpleName());
     }
     return false;
   }

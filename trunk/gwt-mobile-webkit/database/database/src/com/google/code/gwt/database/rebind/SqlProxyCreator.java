@@ -40,6 +40,7 @@ import com.google.code.gwt.database.client.service.callback.scalar.TransactionCa
 import com.google.code.gwt.database.client.service.callback.voyd.TransactionCallbackVoidCallback;
 import com.google.code.gwt.database.client.service.impl.BaseDataService;
 import com.google.code.gwt.database.client.service.impl.DataServiceUtils;
+import com.google.code.gwt.database.client.util.StringUtils;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -183,8 +184,8 @@ public class SqlProxyCreator {
           + " has no @Select nor @Update annotation");
       throw new UnableToCompleteException();
     }
-    if ((select == null || getSql(select).trim().length() == 0)
-        && (update == null || getSql(update).trim().length() == 0)) {
+    if ((select == null || StringUtils.isEmpty(getSql(select)))
+        && (update == null || StringUtils.isEmpty(getSql(update)))) {
       logger.log(TreeLogger.ERROR, service.getName()
           + ": @Select or @Update annotation has no SQL statement");
       throw new UnableToCompleteException();
@@ -246,40 +247,41 @@ public class SqlProxyCreator {
   }
 
   private String getSql(Select select) {
-    return (select.value() != null && select.value().trim().length() == 0)
-        ? select.sql() : select.value();
+    return (StringUtils.isEmpty(select.value())) ? select.sql()
+        : select.value();
   }
 
   private String getSql(Update update) {
-    return (update.value() != null && update.value().trim().length() == 0)
-        ? update.sql() : update.value();
+    return (StringUtils.isEmpty(update.value())) ? update.sql()
+        : update.value();
   }
 
   private ServiceMethodCreator createExecuteSqlCreator(JMethod service,
       String sql, String foreach, Annotation query)
       throws UnableToCompleteException {
     JParameter callback = service.getParameters()[service.getParameters().length - 1];
+    String serviceCreatorName = ServiceMethodCreator.class.getCanonicalName()
+        + callback.getType().getSimpleSourceName();
+    TreeLogger branchedLogger = logger.branch(TreeLogger.INFO,
+        "Generating service method '" + service.getName()
+            + "' with SQL statement expression '" + sql + "'");
     try {
-      Class<?> creatorClass = Class.forName(ServiceMethodCreator.class.getCanonicalName()
-          + callback.getType().getSimpleSourceName());
+      Class<?> creatorClass = Class.forName(serviceCreatorName);
       ServiceMethodCreator creator = (ServiceMethodCreator) creatorClass.newInstance();
-      creator.setContext(context, logger, sw, service, sql, foreach, query,
-          genUtils);
+      creator.setContext(context, branchedLogger, sw, service, sql, foreach,
+          query, genUtils.branchWithLogger(branchedLogger));
       return creator;
     } catch (ClassNotFoundException e) {
-      logger.log(TreeLogger.ERROR, "Cannot find "
-          + genUtils.getClassName(ServiceMethodCreator.class)
+      branchedLogger.log(TreeLogger.ERROR, "Cannot find " + serviceCreatorName
           + " class specific for callback type '"
           + callback.getType().getSimpleSourceName() + "'");
     } catch (InstantiationException e) {
-      logger.log(TreeLogger.ERROR, "Cannot instantiate "
-          + genUtils.getClassName(ServiceMethodCreator.class)
-          + " class specific for callback type '"
+      branchedLogger.log(TreeLogger.ERROR, "Cannot instantiate "
+          + serviceCreatorName + " class specific for callback type '"
           + callback.getType().getSimpleSourceName() + "'");
     } catch (IllegalAccessException e) {
-      logger.log(TreeLogger.ERROR, "Cannot invoke constructor of "
-          + genUtils.getClassName(ServiceMethodCreator.class)
-          + " class specific for callback type '"
+      branchedLogger.log(TreeLogger.ERROR, "Cannot invoke constructor of "
+          + serviceCreatorName + " class specific for callback type '"
           + callback.getType().getSimpleSourceName() + "'");
     }
     throw new UnableToCompleteException();
