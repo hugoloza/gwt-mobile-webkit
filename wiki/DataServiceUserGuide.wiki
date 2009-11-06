@@ -97,9 +97,9 @@ Under the hood, the expressions with their curly braces are replaced with a ques
 === Collection parameters ===
 There are two usecases for Collection parameters:
   # Create an SQL statement for each item in the collection (see [#Multiple_SQL_statements_in_a_single_transaction Multiple SQL statements in a single transaction]);
-  # Create an SQL `IN(...)` statement with a value for each item in the collection.
+  # Create an SQL `IN(...)` expression with a value for each item in the collection.
 
-The collection is expanded runtime with its values in the SQL statement (regardless of its placement in an `IN()` statement BTW). For instance:
+The collection (or Array, or Iterable) is expanded during runtime with its values in the SQL statement (regardless of its placement in an `IN()` statement BTW). For instance:
 
 {{{
 @Select("SELECT * FROM atable WHERE value IN({filterValues})")
@@ -112,10 +112,14 @@ The values in the provided collection are inserted in the SQL statement, like th
 filterValues = Arrays.asList(new Integer[] {1, 4, 10});
 }}}
 
-becomes SQL:
+becomes something like this:
 
 {{{
-SELECT * FROM atable WHERE value IN(1,4,10)
+Object[] params = new Object[filterValues.size()];
+for (int i=0; i<filterValues.size(); i++) {
+  params[i] = filterValues.get(i);
+}
+tx.executeSql("SELECT * FROM atable WHERE value IN(?,?,?)", params);
 }}}
 
 
