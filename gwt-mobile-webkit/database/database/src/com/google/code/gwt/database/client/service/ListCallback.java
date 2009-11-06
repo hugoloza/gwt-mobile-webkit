@@ -14,13 +14,12 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service.callback.list;
+package com.google.code.gwt.database.client.service;
 
 import java.util.List;
 
 import com.google.code.gwt.database.client.GenericRow;
 import com.google.code.gwt.database.client.SQLResultSetRowList;
-import com.google.code.gwt.database.client.service.callback.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**

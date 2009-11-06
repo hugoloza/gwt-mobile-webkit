@@ -19,6 +19,7 @@ package com.google.code.gwt.database.client.service.callback.rowid;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.code.gwt.database.client.service.RowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.DataServiceTransactionCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 

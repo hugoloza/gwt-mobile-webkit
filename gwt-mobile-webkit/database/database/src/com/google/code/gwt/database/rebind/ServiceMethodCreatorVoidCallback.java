@@ -16,8 +16,8 @@
 
 package com.google.code.gwt.database.rebind;
 
+import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.code.gwt.database.client.service.callback.voyd.TransactionCallbackVoidCallback;
-import com.google.code.gwt.database.client.service.callback.voyd.VoidCallback;
 import com.google.gwt.core.ext.UnableToCompleteException;
 
 /**

@@ -18,6 +18,7 @@ package com.google.code.gwt.database.client.service.callback.list;
 
 import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.service.ListCallback;
 import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 import com.google.gwt.core.client.JavaScriptObject;

@@ -16,6 +16,7 @@
 
 package com.google.code.gwt.database.client.service.callback.voyd;
 
+import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.code.gwt.database.client.service.callback.DataServiceTransactionCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 

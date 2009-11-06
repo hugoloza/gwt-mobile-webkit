@@ -14,9 +14,7 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service.callback.voyd;
-
-import com.google.code.gwt.database.client.service.callback.Callback;
+package com.google.code.gwt.database.client.service;
 
 /**
  * Database service callback which expects no query results.

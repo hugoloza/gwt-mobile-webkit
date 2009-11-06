@@ -14,24 +14,26 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service.callback;
+package com.google.code.gwt.database.client.service;
 
-import com.google.code.gwt.database.client.service.DataServiceException;
-
+import java.util.List;
 
 /**
- * All DataServiceXxxCallback interfaces mandate the same
- * {@link #onFailure(DataServiceException)} method, which is defined here.
+ * Database service callback which expects a collection of ROWID's from executed
+ * INSERT statements as resultSet.
  * 
  * @author bguijt
  */
-public interface Callback {
+public interface RowIdListCallback extends Callback {
 
   /**
-   * This callback method is invoked if the SQL transaction fails.
+   * This callback method is invoked if the SQL is executed successfully.
    * 
-   * @param error the SQL error causing the failure
+   * <p>
+   * The inserted ROWID's are provided in the rowIds list.
+   * </p>
+   * 
+   * @param rowIds the list of ROWID integers.
    */
-  void onFailure(DataServiceException error);
-
+  void onSuccess(List<Integer> rowIds);
 }
