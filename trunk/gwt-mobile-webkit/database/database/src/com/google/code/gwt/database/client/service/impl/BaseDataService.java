@@ -97,9 +97,10 @@ public abstract class BaseDataService implements DataService {
       callback.onFailure(new DataServiceException(msg));
     }
   }
-  
+
   /**
-   * Invokes a transaction in read/write mode on the {@link #getDatabase()} instance.
+   * Invokes a transaction in read/write mode on the
+   * {@link #getDatabase(Callback)} instance.
    */
   protected void transaction(DataServiceTransactionCallback<?> txCallback) {
     Database db = getDatabase(txCallback.getCallback());
@@ -107,9 +108,10 @@ public abstract class BaseDataService implements DataService {
       db.transaction(txCallback);
     }
   }
-  
+
   /**
-   * Invokes a transaction in read-only mode on the {@link #getDatabase()} instance.
+   * Invokes a transaction in read-only mode on the
+   * {@link #getDatabase(Callback)} instance.
    */
   protected void readTransaction(DataServiceTransactionCallback<?> txCallback) {
     Database db = getDatabase(txCallback.getCallback());
