@@ -16,7 +16,7 @@
 
 package com.google.code.gwt.database.rebind;
 
-import com.google.code.gwt.database.client.service.callback.rowid.RowIdListCallback;
+import com.google.code.gwt.database.client.service.RowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.StatementCallbackRowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.TransactionCallbackRowIdListCallback;
 import com.google.gwt.core.ext.UnableToCompleteException;

@@ -21,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.service.Callback;
 import com.google.code.gwt.database.client.service.annotation.Update;
-import com.google.code.gwt.database.client.service.callback.Callback;
+import com.google.code.gwt.database.client.service.impl.DataServiceUtils;
 import com.google.code.gwt.database.client.util.StringUtils;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -155,19 +156,121 @@ public abstract class ServiceMethodCreator {
    */
   protected void generateExecuteSqlStatement(String callbackExpression)
       throws UnableToCompleteException {
-    List<String> prepStmt = getPreparedStatementSql(sql, service);
-    sw.print(txVarName + ".executeSql(" + prepStmt.get(0) + ", ");
-    if (prepStmt.size() == 1) {
-      sw.print("null");
+    List<String> tokenizedStmt = tokenizeSql(sql);
+    if (tokenizedStmt.size() == 0) {
+      // No SQL at all. Probably already captured earlier in the process.
+      logger.log(TreeLogger.ERROR,
+          "No SQL statement specified at service method '" + service.getName()
+              + "'");
+      throw new UnableToCompleteException();
+    }
+
+    if (tokenizedStmt.size() == 1) {
+      // No parameters used in the SQL:
+      sw.print(txVarName + ".executeSql("
+          + StringUtils.getEscapedString(tokenizedStmt.get(0)) + ", null");
     } else {
-      sw.print("new Object[] {");
-      for (int i = 1; i < prepStmt.size(); i++) {
-        if (i > 1) {
-          sw.print(", ");
+      // At least one parameter used in the SQL:
+      String paramsVarName = GeneratorUtils.getVariableName("params",
+          service.getParameters());
+
+      StringBuilder prepParamsArrayStatic = new StringBuilder("Object[] ").append(
+          paramsVarName).append(" = new Object[] {");
+      StringBuilder prepParamsArrayDynamic = new StringBuilder("Object[] ").append(
+          paramsVarName).append(" = new Object[");
+      // Determine amount of parameters (to size the array) and whether dynamic
+      // parameters are applied:
+      boolean hasDynamics = false;
+      for (int i = 0; i < tokenizedStmt.size(); i++) {
+        if ((i % 2) == 0) {
+          // SQL token:
+          // ignore
+        } else {
+          // Parameter token:
+          String expression = tokenizedStmt.get(i);
+          if (i > 1) {
+            prepParamsArrayDynamic.append(" + ");
+            prepParamsArrayStatic.append(", ");
+          }
+          if (isDynamicParameter(expression)) {
+            // Aha! We have a collection or array used as input parameter.
+            // This means some different statement builder code!
+            hasDynamics = true;
+            JType type = GeneratorUtils.findType(expression,
+                service.getParameters());
+            if (type.isArray() != null) {
+              prepParamsArrayDynamic.append(expression + ".length");
+            } else {
+              prepParamsArrayDynamic.append(genUtils.getClassName(DataServiceUtils.class)
+                  + ".getSize(" + expression + ")");
+            }
+          } else {
+            prepParamsArrayDynamic.append("1");
+            prepParamsArrayStatic.append(expression);
+          }
         }
-        sw.print(prepStmt.get(i));
       }
-      sw.print("}");
+
+      // Now we determined whether the SQL statement to generate incorporates
+      // dynamic list(s) of parameters (e.g. IN() statements).
+      // This greatly influences the Java code to generate:
+      String sqlVarName = GeneratorUtils.getVariableName("sql",
+          service.getParameters());
+      String indexVarName = GeneratorUtils.getVariableName("i",
+          service.getParameters());
+      if (hasDynamics) {
+        prepParamsArrayDynamic.append("];");
+        sw.println(prepParamsArrayDynamic.toString());
+        sw.println("int " + indexVarName + " = 0;");
+        sw.println("StringBuilder " + sqlVarName + " = new StringBuilder();");
+      } else {
+        prepParamsArrayStatic.append("};");
+        sw.println(prepParamsArrayStatic.toString());
+      }
+
+      // Define statement in sqlVarName, and parameters in paramsVarName:
+      StringBuilder sqlLiteral = new StringBuilder();
+      for (int i = 0; i < tokenizedStmt.size(); i++) {
+        String token = tokenizedStmt.get(i);
+        if ((i % 2) == 0) {
+          // SQL token:
+          sqlLiteral.append(token);
+        } else {
+          // Parameter token:
+          if (isDynamicParameter(token)) {
+            sw.println(sqlVarName + ".append("
+                + StringUtils.getEscapedString(sqlLiteral.toString()) + ");");
+            sqlLiteral = new StringBuilder();
+
+            sw.println(indexVarName + " = "
+                + genUtils.getClassName(DataServiceUtils.class)
+                + ".addParameter(" + sqlVarName + ", " + paramsVarName + ", "
+                + indexVarName + ", " + token + ");");
+          } else {
+            sqlLiteral.append("?");
+            if (hasDynamics) {
+              sw.println(paramsVarName + "[" + indexVarName + "++] = " + token
+                  + ";");
+            }
+          }
+        }
+      }
+
+      if (hasDynamics) {
+        if (sqlLiteral.length() > 0) {
+          sw.println(sqlVarName + ".append("
+              + StringUtils.getEscapedString(sqlLiteral.toString()) + ");");
+        }
+
+        // Invoke the actual executeSql method:
+        sw.print(txVarName + ".executeSql(" + sqlVarName + ".toString(), "
+            + paramsVarName);
+      } else {
+        // Invoke the actual executeSql method with a String literal:
+        sw.print(txVarName + ".executeSql("
+            + StringUtils.getEscapedString(sqlLiteral.toString()) + ", "
+            + paramsVarName);
+      }
     }
 
     // Callback provided:
@@ -193,28 +296,43 @@ public abstract class ServiceMethodCreator {
    * 
    * <pre>INSERT INTO clickcount (clicked) VALUES ({when.getTime()})</pre>
    * <p>
-   * will be translated to the following List:
+   * will be tokenized to the following List:
    * </p>
    * <ul>
-   * <li><code>"INSERT INTO clickcount (clicked) VALUES (?)"</code></li>
+   * <li><code>INSERT INTO clickcount (clicked) VALUES (</code></li>
    * <li><code>when.getTime()</code></li>
+   * <li><code>)</code></li>
    * </ul>
+   * 
+   * <p>
+   * The list will *always* start with a SQL literal token, followed by a
+   * parameter token, next another SQL literal token, etc. Never two tokens of
+   * the same kind after one another!
+   * </p>
    */
-  private List<String> getPreparedStatementSql(String stmt, JMethod service)
+  private List<String> tokenizeSql(String stmt)
       throws UnableToCompleteException {
     List<String> result = new ArrayList<String>();
-    StringBuilder sql = new StringBuilder("\"");
-    StringBuilder param = new StringBuilder();
+    StringBuilder token = new StringBuilder();
     int depth = 0;
     for (int i = 0; i < stmt.length(); i++) {
       char ch = stmt.charAt(i);
       switch (ch) {
         case '{':
           if (depth == 0) {
+            // End previous token:
+            if (token.length() == 0) {
+              logger.log(TreeLogger.ERROR,
+                  "Cannot start SQL statement with a '{...}' parameter, "
+                      + "nor can one follow immediately after another "
+                      + "(e.g. '{...}{...}')");
+              throw new UnableToCompleteException();
+            }
+            result.add(token.toString());
             // Start a parameter:
-            param = new StringBuilder();
+            token = new StringBuilder();
           } else {
-            param.append(ch);
+            token.append(ch);
           }
           depth++;
           break;
@@ -222,30 +340,26 @@ public abstract class ServiceMethodCreator {
           depth--;
           if (depth == 0) {
             // End a parameter:
-            String s = param.toString().trim();
+            String s = token.toString().trim();
             if (s.length() == 0) {
               logger.log(TreeLogger.ERROR,
                   "Parameter expression in SQL statement '" + stmt
                       + "' is empty!");
               throw new UnableToCompleteException();
             }
-
-            appendParameter(sql, service, s, result);
+            result.add(s);
+            token = new StringBuilder();
           } else if (depth < 0) {
             logger.log(TreeLogger.ERROR,
                 "Parameter expression in SQL statement '" + stmt
                     + "' is not closed correctly! Too many closing brace(s)");
             throw new UnableToCompleteException();
           } else {
-            param.append(ch);
+            token.append(ch);
           }
           break;
         default:
-          if (depth == 0) {
-            StringUtils.appendEscapedChar(sql, ch);
-          } else {
-            param.append(ch);
-          }
+          token.append(ch);
           break;
       }
     }
@@ -255,7 +369,7 @@ public abstract class ServiceMethodCreator {
           + " closing brace(s)");
       throw new UnableToCompleteException();
     }
-    result.add(0, sql.toString().trim() + "\"");
+    result.add(token.toString());
     return result;
   }
 
@@ -263,48 +377,63 @@ public abstract class ServiceMethodCreator {
    * Appends a parameter to the sql String.
    * 
    * <p>
-   * Depending on whether the specified <code>expression</code> is an
-   * <code>{@link Iterable}&lt;? extends {@link Number}&gt;</code> or
-   * <code>{@link Iterable}&lt;? extends {@link String}&gt;</code>, the SQL
-   * string is amended with '?' (for a single oparameter), a call to
-   * {@link StringUtils#joinCollectionNumber(Iterable, String)} or a call to
-   * {@link StringUtils#joinEscapedCollectionString(Iterable, String)}.
+   * Returns <code>true</code> if the specified <code>expression</code> is an
+   * <code>{@link Iterable}&lt;? extends {@link Number}&gt;</code>,
+   * <code>{@link Iterable}&lt;? extends {@link String}&gt;</code>.
+   * <code>{@link String}[]</code>, <code>{@link Number}[]</code>, <code>{@link primitive}[]</code>.
    * </p>
    */
-  private void appendParameter(StringBuilder sql, JMethod service,
-      String expression, List<String> result) throws UnableToCompleteException {
+  private boolean isDynamicParameter(String expression)
+      throws UnableToCompleteException {
     JType type = GeneratorUtils.findType(expression, service.getParameters());
-    boolean addMultiple = false;
+    boolean isSuitableDynamic = false;
     String typeParam = null;
     if (type != null) {
       if (genUtils.isAssignableToType(type, Iterable.class)) {
         // OK, we've got our collection. Is the Type parameter 'suitable'?
         typeParam = genUtils.getTypeParameter(service, type);
-        for (String t : new String[] {"String", "Integer", "Number", "Long"}) {
+        for (String t : new String[] {
+            "String", "Integer", "Number", "Long", "Short", "Double", "Float",
+            "Boolean"}) {
           if (typeParam.equals(t)) {
-            addMultiple = true;
+            isSuitableDynamic = true;
             break;
           }
         }
-        if (!addMultiple) {
+        if (!isSuitableDynamic) {
           logger.log(TreeLogger.ERROR, "Service method named '"
               + service.getName()
-              + "' has a parameter defined in the SQL statement named '"
-              + expression + "' which is defined as an Iterable, but its type "
-              + "parameter is NOT one of String, Long, Integer, Short, Number");
+              + "' has an expression in the SQL statement '" + expression
+              + "' which is defined as an Iterable, but its type "
+              + "parameter " + typeParam
+              + " is NOT one of String, Long, Integer, Short, Number, "
+              + "Double, Float, Boolean");
+          throw new UnableToCompleteException();
+        }
+      }
+      if (type.isArray() != null) {
+        // Same as Collection, really:
+        typeParam = type.isArray().getComponentType().getSimpleSourceName();
+        for (String t : new String[] {
+            "String", "Integer", "int", "Number", "Long", "Short", "Double",
+            "Float", "Boolean"}) {
+          if (typeParam.equalsIgnoreCase(t)) {
+            isSuitableDynamic = true;
+            break;
+          }
+        }
+        if (!isSuitableDynamic) {
+          logger.log(TreeLogger.ERROR, "Service method named '"
+              + service.getName()
+              + "' has an expression in the SQL statement '" + expression
+              + "' which is defined as an Array, but its component type "
+              + typeParam + " is NOT one of String, Long/long, Integer/int, "
+              + "Short/short, Number, Double/double, Float/float, "
+              + "Boolean/boolean");
           throw new UnableToCompleteException();
         }
       }
     }
-    if (addMultiple) {
-      String joinMethodName = typeParam.equals("String")
-          ? "joinEscapedCollectionString" : "joinCollectionNumber";
-      sql.append("\" + ").append(genUtils.getClassName(StringUtils.class)).append(
-          ".").append(joinMethodName).append("(").append(expression).append(
-          ", \",\") + \"");
-    } else {
-      result.add(expression);
-      sql.append('?');
-    }
+    return isSuitableDynamic;
   }
 }

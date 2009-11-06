@@ -26,87 +26,57 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  */
 public class StringUtils {
 
-  /**
-   * Concatenates the Numbers of the specified iterable with the specified join
-   * in between.
-   */
-  public static String joinCollectionNumber(
-      Iterable<? extends Number> iterable, String join) {
-    StringBuilder sb = new StringBuilder();
-    for (Number n : iterable) {
-      if (sb.length() > 0) {
-        sb.append(join);
-      }
-      sb.append(n);
-    }
-    return sb.toString();
+  public static boolean isEmpty(String s) {
+    return s == null || s.trim().length() == 0;
+  }
+
+  public static boolean isNotEmpty(String s) {
+    return !isEmpty(s);
   }
 
   /**
-   * Concatenates the Strings of the specified iterable with the specified join
-   * in between, and escapes the Strings as String literals.
-   * 
-   * <p>
-   * This means the output looks like:
-   * <code>"Pierre", "Restaurant \"La Place\""</code>
-   * </p>
+   * Returns the escaped String literal of the specified String <code>s</code>.
    */
-  public static String joinEscapedCollectionString(Iterable<String> iterable,
-      String join) {
-    StringBuilder sb = new StringBuilder();
-    for (String s : iterable) {
-      if (sb.length() > 0) {
-        sb.append(join);
-      }
-      appendEscaped(sb, s);
-    }
-    return sb.toString();
-  }
-
-  /**
-   * Returns the String literal of the specified String s
-   */
-  public static String escape(String s) {
-    StringBuilder sb = new StringBuilder();
-    appendEscaped(sb, s);
-    return sb.toString();
-  }
-
-  /**
-   * Appends the String literal of the specified String s to the specified
-   * StringBuilder sb
-   */
-  public static void appendEscaped(StringBuilder sb, String s) {
-    sb.append("\"");
+  public static String getEscapedString(String s) {
+    StringBuilder sb = new StringBuilder("\"");
     for (int i = 0; i < s.length(); i++) {
-      appendEscapedChar(sb, s.charAt(i));
+      sb.append(getEscapedChar(s.charAt(i)));
     }
-    sb.append("\"");
+    return sb.append("\"").toString();
   }
 
   /**
-   * Appends the specified char ch as a String literal to the specified
-   * StringBuilder sb
+   * Returns the escaped String literal of the specified String <code>s</code>.
+   * The returned String does *not* start and end with a quote (
+   * <code>&quot;</code>) symbol!
    */
-  public static void appendEscapedChar(StringBuilder sb, char ch) {
+  public static String getEscapedStringPart(String s) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < s.length(); i++) {
+      sb.append(getEscapedChar(s.charAt(i)));
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Returns the specified char <code>ch</code> as a String literal to the
+   * specified StringBuilder <code>sb</code>. This is for escaping Java string
+   * literals.
+   */
+  public static String getEscapedChar(char ch) {
     switch (ch) {
       case '"':
-        sb.append("\\\"");
-        break;
+        return "\\\"";
       case '\\':
-        sb.append("\\\\");
-        break;
+        return "\\\\";
       case '\n':
-        sb.append("\\\n");
-        break;
+        return "\\\n";
       case '\r':
-        sb.append("\\\r");
-        break;
+        return "\\\r";
       case '\t':
-        sb.append("\\\t");
-        break;
+        return "\\\t";
       default:
-        sb.append(ch);
+        return String.valueOf(ch);
     }
   }
 }

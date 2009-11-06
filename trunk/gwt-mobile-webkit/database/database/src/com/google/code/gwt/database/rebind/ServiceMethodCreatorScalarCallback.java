@@ -16,7 +16,7 @@
 
 package com.google.code.gwt.database.rebind;
 
-import com.google.code.gwt.database.client.service.callback.scalar.ScalarCallback;
+import com.google.code.gwt.database.client.service.ScalarCallback;
 import com.google.code.gwt.database.client.service.callback.scalar.StatementCallbackScalarCallback;
 import com.google.code.gwt.database.client.service.callback.scalar.TransactionCallbackScalarCallback;
 import com.google.gwt.core.ext.UnableToCompleteException;

@@ -16,7 +16,7 @@
 
 package com.google.code.gwt.database.rebind;
 
-import com.google.code.gwt.database.client.service.callback.list.ListCallback;
+import com.google.code.gwt.database.client.service.ListCallback;
 import com.google.code.gwt.database.client.service.callback.list.StatementCallbackListCallback;
 import com.google.code.gwt.database.client.service.callback.list.TransactionCallbackListCallback;
 import com.google.gwt.core.ext.UnableToCompleteException;

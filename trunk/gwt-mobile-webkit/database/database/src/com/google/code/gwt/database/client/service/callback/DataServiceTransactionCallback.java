@@ -18,6 +18,7 @@ package com.google.code.gwt.database.client.service.callback;
 
 import com.google.code.gwt.database.client.SQLError;
 import com.google.code.gwt.database.client.TransactionCallback;
+import com.google.code.gwt.database.client.service.Callback;
 import com.google.code.gwt.database.client.service.DataServiceException;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 

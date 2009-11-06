@@ -166,7 +166,12 @@ public class GeneratorUtils {
    * specified class <code>assignableTo</code>.
    */
   public boolean isAssignableToType(JType type, Class<?> assignableTo) {
-    return type.isClassOrInterface().isAssignableTo(
-        context.getTypeOracle().findType(assignableTo.getCanonicalName()));
+    if (type.isClassOrInterface() != null) {
+      return type.isClassOrInterface().isAssignableTo(
+          context.getTypeOracle().findType(assignableTo.getCanonicalName()));
+    } else if (type.isPrimitive() != null) {
+      return type.isPrimitive().getSimpleSourceName().equals(assignableTo.getSimpleName());
+    }
+    return false;
   }
 }

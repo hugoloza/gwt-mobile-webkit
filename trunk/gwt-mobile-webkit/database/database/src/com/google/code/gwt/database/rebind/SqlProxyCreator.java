@@ -22,24 +22,24 @@ import java.lang.annotation.Annotation;
 import com.google.code.gwt.database.client.Database;
 import com.google.code.gwt.database.client.DatabaseException;
 import com.google.code.gwt.database.client.SQLTransaction;
-import com.google.code.gwt.database.client.service.BaseDataService;
+import com.google.code.gwt.database.client.service.Callback;
 import com.google.code.gwt.database.client.service.DataService;
+import com.google.code.gwt.database.client.service.ListCallback;
+import com.google.code.gwt.database.client.service.RowIdListCallback;
+import com.google.code.gwt.database.client.service.ScalarCallback;
+import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.code.gwt.database.client.service.annotation.Connection;
 import com.google.code.gwt.database.client.service.annotation.Select;
 import com.google.code.gwt.database.client.service.annotation.Update;
-import com.google.code.gwt.database.client.service.callback.Callback;
-import com.google.code.gwt.database.client.service.callback.list.ListCallback;
 import com.google.code.gwt.database.client.service.callback.list.StatementCallbackListCallback;
 import com.google.code.gwt.database.client.service.callback.list.TransactionCallbackListCallback;
-import com.google.code.gwt.database.client.service.callback.rowid.RowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.StatementCallbackRowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.TransactionCallbackRowIdListCallback;
-import com.google.code.gwt.database.client.service.callback.scalar.ScalarCallback;
 import com.google.code.gwt.database.client.service.callback.scalar.StatementCallbackScalarCallback;
 import com.google.code.gwt.database.client.service.callback.scalar.TransactionCallbackScalarCallback;
 import com.google.code.gwt.database.client.service.callback.voyd.TransactionCallbackVoidCallback;
-import com.google.code.gwt.database.client.service.callback.voyd.VoidCallback;
-import com.google.code.gwt.database.client.util.StringUtils;
+import com.google.code.gwt.database.client.service.impl.BaseDataService;
+import com.google.code.gwt.database.client.service.impl.DataServiceUtils;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -68,7 +68,7 @@ public class SqlProxyCreator {
   private static final String[] IMPORTED_CLASSES = new String[] {
       Database.class.getCanonicalName(),
       SQLTransaction.class.getCanonicalName(), BaseDataService.class.getName(),
-      StringUtils.class.getCanonicalName(),
+      DataServiceUtils.class.getCanonicalName(),
       VoidCallback.class.getCanonicalName(),
       ListCallback.class.getCanonicalName(),
       ScalarCallback.class.getCanonicalName(),
