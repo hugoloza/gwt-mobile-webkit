@@ -16,6 +16,12 @@
 
 package com.google.code.gwt.database.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.junit.client.GWTTestCase;
 
@@ -40,29 +46,25 @@ public class DatabaseTest extends GWTTestCase {
 
   @Override
   protected void gwtSetUp() throws Exception {
-    db = Database.openDatabase("gwtdb", "1.0", "GWT DB", 5000);
+    db = Database.openDatabase("gh5dt", "1.0", "GwtHtml5DatabaseTest", 5000);
     assertTrue(
-        "Database is null, or openDatabase is not supported! openDatabase() exists="
-            + hasOpenDatabase() + ", UserAgent=" + getUserAgent(), db != null
-            && hasOpenDatabase());
+        "Database is null, or Database is not supported! Database supported="
+            + Database.isSupported() + ", UserAgent=" + getUserAgent(),
+        db != null && Database.isSupported());
   }
 
   private final static native String getUserAgent() /*-{
     return navigator.userAgent;
   }-*/;
 
-  private final static native boolean hasOpenDatabase() /*-{
-    return $wnd.openDatabase ? true : false;
-  }-*/;
-
   public void testCreateTable() throws Exception {
     delayTestFinish(3000);
     db.transaction(new TransactionCallback() {
       public void onTransactionStart(SQLTransaction transaction) {
-        transaction.executeSql("DROP TABLE IF EXISTS test;", null);
+        transaction.executeSql("DROP TABLE IF EXISTS test", null);
         transaction.executeSql("CREATE TABLE test ("
             + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + "name VARCHAR(30) NOT NULL," + "length REAL DEFAULT 0,"
+            + "name VARCHAR(30) NOT NULL, length REAL DEFAULT 0,"
             + "dob DATE);", null);
         transaction.executeSql(
             "INSERT INTO test (name, length, dob) VALUES (?, ?, ?);",
@@ -75,12 +77,100 @@ public class DatabaseTest extends GWTTestCase {
                 "Pioneer Kuro 50\"", 50 * 2.54,
                 DateTimeFormat.getFormat("dd-MM-yyyy").parse("12-01-2009")});
       }
+
       public void onTransactionFailure(SQLError error) {
         fail(error.getMessage());
       }
+
       public void onTransactionSuccess() {
         finishTest();
       }
     });
+  }
+
+  public void testTxStepsSequence() throws Exception {
+    delayTestFinish(3000);
+    final List<Integer> steps = new ArrayList<Integer>();
+    steps.add(0);
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        System.err.println("Unexpected Exception caught! Performed steps: "
+            + joinCollection(steps, ", "));
+      }
+    });
+    db.transaction(new TransactionCallback() {
+      public void onTransactionStart(SQLTransaction tx) {
+        steps.add(2);
+        tx.executeSql("DROP TABLE IF EXISTS test", null,
+            new StatementCallback<GenericRow>() {
+              public boolean onFailure(SQLTransaction transaction,
+                  SQLError error) {
+                System.err.println("Database returned error at step #5! code="
+                    + error.getCode() + ", msg=" + error.getMessage());
+                return true;
+              }
+
+              public void onSuccess(SQLTransaction transaction,
+                  SQLResultSet<GenericRow> resultSet) {
+                steps.add(5);
+              }
+            });
+        steps.add(3);
+        tx.executeSql("CREATE TABLE test ("
+            + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+            + "name VARCHAR(30) NOT NULL, length REAL DEFAULT 0,"
+            + "dob DATE);", null, new StatementCallback<GenericRow>() {
+          public boolean onFailure(SQLTransaction transaction, SQLError error) {
+            System.err.println("Database returned error at step #6! code="
+                + error.getCode() + ", msg=" + error.getMessage());
+            return true;
+          }
+
+          public void onSuccess(SQLTransaction transaction,
+              SQLResultSet<GenericRow> resultSet) {
+            steps.add(6);
+            transaction.executeSql("SELECT COUNT(*) FROM test", null,
+                new StatementCallback<GenericRow>() {
+                  public boolean onFailure(SQLTransaction transaction,
+                      SQLError error) {
+                    System.err.println("Database returned error at step #7! code="
+                        + error.getCode() + ", msg=" + error.getMessage());
+                    return true;
+                  }
+
+                  public void onSuccess(SQLTransaction transaction,
+                      SQLResultSet<GenericRow> resultSet) {
+                    steps.add(7);
+                  }
+                });
+          }
+        });
+        steps.add(4);
+      }
+
+      public void onTransactionFailure(SQLError error) {
+        System.err.println("Database returned error at step #8! code="
+            + error.getCode() + ", msg=" + error.getMessage());
+      }
+
+      public void onTransactionSuccess() {
+        steps.add(8);
+        // Check the sequence of the steps:
+        assertEquals("Expecting 9 steps in the step sequence!",
+            "0, 1, 2, 3, 4, 5, 6, 7, 8", joinCollection(steps, ", "));
+        finishTest();
+      }
+    });
+    steps.add(1);
+  }
+
+  private String joinCollection(Collection<?> col, String join) {
+    StringBuilder sb = new StringBuilder();
+    for (Object o : col) {
+      if (sb.length() > 0)
+        sb.append(join);
+      sb.append(o);
+    }
+    return sb.toString();
   }
 }
