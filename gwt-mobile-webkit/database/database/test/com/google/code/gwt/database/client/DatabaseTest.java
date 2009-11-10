@@ -16,9 +16,9 @@
 
 package com.google.code.gwt.database.client;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Vector;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
@@ -34,11 +34,6 @@ public class DatabaseTest extends GWTTestCase {
 
   Database db = null;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see com.google.gwt.junit.client.GWTTestCase#getModuleName()
-   */
   @Override
   public String getModuleName() {
     return "com.google.code.gwt.database.Html5Database";
@@ -90,7 +85,7 @@ public class DatabaseTest extends GWTTestCase {
 
   public void testTxStepsSequence() throws Exception {
     delayTestFinish(3000);
-    final List<Integer> steps = new ArrayList<Integer>();
+    final List<Integer> steps = new Vector<Integer>();
     steps.add(0);
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
       public void onUncaughtException(Throwable e) {
@@ -158,6 +153,7 @@ public class DatabaseTest extends GWTTestCase {
         // Check the sequence of the steps:
         assertEquals("Expecting 9 steps in the step sequence!",
             "0, 1, 2, 3, 4, 5, 6, 7, 8", joinCollection(steps, ", "));
+        System.out.println("Database execution steps: " + joinCollection(steps, ", "));
         finishTest();
       }
     });

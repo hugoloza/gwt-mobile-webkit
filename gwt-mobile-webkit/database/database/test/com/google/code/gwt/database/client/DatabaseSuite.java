@@ -17,7 +17,6 @@
 package com.google.code.gwt.database.client;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 import com.google.gwt.junit.tools.GWTTestSuite;
 
@@ -26,11 +25,15 @@ import com.google.gwt.junit.tools.GWTTestSuite;
  * 
  * @author bguijt
  */
-public class DatabaseSuite extends GWTTestSuite {
+public class DatabaseSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite("Test for HTML5 Database API");
+    GWTTestSuite suite = new GWTTestSuite("Test for HTML5 Database API");
+    
+    // $JUnit-BEGIN$
     suite.addTestSuite(DatabaseTest.class);
+    // $JUnit-END$
+    
     return suite;
   }
 }
