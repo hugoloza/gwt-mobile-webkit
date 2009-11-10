@@ -262,7 +262,7 @@ public class SqlProxyCreator {
     JParameter callback = service.getParameters()[service.getParameters().length - 1];
     String serviceCreatorName = ServiceMethodCreator.class.getCanonicalName()
         + callback.getType().getSimpleSourceName();
-    TreeLogger branchedLogger = logger.branch(TreeLogger.INFO,
+    TreeLogger branchedLogger = logger.branch(TreeLogger.DEBUG,
         "Generating service method '" + service.getName()
             + "' with SQL statement expression '" + sql + "'");
     try {
