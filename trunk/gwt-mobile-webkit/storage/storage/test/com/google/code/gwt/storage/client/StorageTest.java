@@ -69,6 +69,9 @@ public class StorageTest extends GWTTestCase {
   }
 
   public void testStorageHandler() {
+    // Wait for 10 seconds to time-out the test:
+    delayTestFinish(10000);
+
     final Storage localStorage = Storage.getLocalStorage();
     final Storage sessionStorage = Storage.getSessionStorage();
 
@@ -86,10 +89,10 @@ public class StorageTest extends GWTTestCase {
           fail("StorageEvent is neither from the SessionStorage"
               + " nor from the LocalStorage!");
         }
-        
+
         System.out.println("#localStorage events: " + localCount);
         System.out.println("#sessionStorage events: " + sessionCount);
-        
+
         if (localCount == 4 && sessionCount == 1) {
           finishTest();
         }
@@ -107,9 +110,6 @@ public class StorageTest extends GWTTestCase {
     localStorage.setItem("country", "The Netherlands");
 
     sessionStorage.setItem("name", "Pepijn");
-
-    // wait for all event handlers to finish...
-    delayTestFinish(10000);
   }
 
   private final static native String getUserAgent() /*-{
