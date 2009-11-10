@@ -37,11 +37,9 @@ public class StorageTest extends GWTTestCase {
     final Storage localStorage = Storage.getLocalStorage();
     final Storage sessionStorage = Storage.getSessionStorage();
 
-    assertNotNull(
-        "This browser seems not to support Web Storage: no localStorage found!",
+    assertNotNull("No support for Web Storage: no localStorage found!",
         localStorage);
-    assertNotNull(
-        "This browser seems not to support Web Storage: no sessionStorage found!",
+    assertNotNull("No support for Web Storage: no sessionStorage found!",
         sessionStorage);
 
     localStorage.clear();
@@ -88,16 +86,15 @@ public class StorageTest extends GWTTestCase {
           fail("StorageEvent is neither from the SessionStorage"
               + " nor from the LocalStorage!");
         }
+        
+        System.out.println("#localStorage events: " + localCount);
+        System.out.println("#sessionStorage events: " + sessionCount);
+        
         if (localCount == 4 && sessionCount == 1) {
           finishTest();
         }
       }
     };
-
-    assertNotNull("No support for Web Storage: no localStorage found!",
-        localStorage);
-    assertNotNull("No support for Web Storage: no sessionStorage found!",
-        sessionStorage);
 
     localStorage.clear();
     sessionStorage.clear();
@@ -112,7 +109,6 @@ public class StorageTest extends GWTTestCase {
     sessionStorage.setItem("name", "Pepijn");
 
     // wait for all event handlers to finish...
-
     delayTestFinish(10000);
   }
 
