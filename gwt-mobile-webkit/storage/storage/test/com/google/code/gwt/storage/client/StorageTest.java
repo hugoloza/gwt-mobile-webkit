@@ -21,7 +21,6 @@ import com.google.gwt.junit.client.GWTTestCase;
 /**
  * Tests the {@link Storage} class.
  */
-@SuppressWarnings("deprecation")
 public class StorageTest extends GWTTestCase {
 
   @Override
@@ -30,9 +29,10 @@ public class StorageTest extends GWTTestCase {
   }
 
   public void testStorageSupported() {
-    assertTrue("Storage API is NOT supported! User agent: " + getUserAgent(), Storage.isSupported());
+    assertTrue("Storage API is NOT supported! User agent: " + getUserAgent(),
+        Storage.isSupported());
   }
-  
+
   public void testStorage() {
     final Storage localStorage = Storage.getLocalStorage();
     final Storage sessionStorage = Storage.getSessionStorage();
@@ -59,11 +59,11 @@ public class StorageTest extends GWTTestCase {
     assertEquals("There must be a name key in sessionStorage!", "Pepijn",
         sessionStorage.getItem("name"));
   }
-  
+
   public void testStorageRetention() {
     final Storage localStorage = Storage.getLocalStorage();
     final Storage sessionStorage = Storage.getSessionStorage();
-    
+
     assertEquals("There must be a name key in localStorage!", "Bart",
         localStorage.getItem("name"));
     assertEquals("There must be a name key in sessionStorage!", "Pepijn",
@@ -82,37 +82,27 @@ public class StorageTest extends GWTTestCase {
         assertNotNull("The event may NOT be null!", event);
         if (localStorage.equals(event.getStorageArea())) {
           localCount++;
-          addCheckpoint("local event: #" + localCount);
         } else if (sessionStorage.equals(event.getStorageArea())) {
           sessionCount++;
-          addCheckpoint("session event: #" + sessionCount);
         } else {
-          fail("StorageEvent is from an alien Storage!");
+          fail("StorageEvent is neither from the SessionStorage"
+              + " nor from the LocalStorage!");
         }
-        checkCounts();
-      }
-
-      private void checkCounts() {
         if (localCount == 4 && sessionCount == 1) {
           finishTest();
         }
       }
     };
 
-    assertNotNull(
-        "This browser seems not to support Web Storage: no localStorage found!",
+    assertNotNull("No support for Web Storage: no localStorage found!",
         localStorage);
-    assertNotNull(
-        "This browser seems not to support Web Storage: no sessionStorage found!",
+    assertNotNull("No support for Web Storage: no sessionStorage found!",
         sessionStorage);
 
     localStorage.clear();
     sessionStorage.clear();
 
     Storage.addStorageEventHandler(handler);
-    Storage.addStorageEventHandler(handler);
-
-    addCheckpoint("Handlers added");
 
     localStorage.setItem("name", "Bart");
     localStorage.setItem("lastName", "Guijt");
@@ -122,11 +112,10 @@ public class StorageTest extends GWTTestCase {
     sessionStorage.setItem("name", "Pepijn");
 
     // wait for all event handlers to finish...
-    addCheckpoint("Waiting for finish...");
 
     delayTestFinish(10000);
   }
-  
+
   private final static native String getUserAgent() /*-{
     return navigator.userAgent;
   }-*/;
