@@ -19,7 +19,7 @@ package com.google.code.gwt.storage.client;
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**
- * Tests the Storage class.
+ * Tests the {@link Storage} class.
  */
 @SuppressWarnings("deprecation")
 public class StorageTest extends GWTTestCase {
@@ -29,6 +29,10 @@ public class StorageTest extends GWTTestCase {
     return "com.google.code.gwt.storage.Html5Storage";
   }
 
+  public void testStorageSupported() {
+    assertTrue("Storage API is NOT supported! User agent: " + getUserAgent(), Storage.isSupported());
+  }
+  
   public void testStorage() {
     final Storage localStorage = Storage.getLocalStorage();
     final Storage sessionStorage = Storage.getSessionStorage();
@@ -105,8 +109,8 @@ public class StorageTest extends GWTTestCase {
     localStorage.clear();
     sessionStorage.clear();
 
-    sessionStorage.addStorageEventHandler(handler);
-    localStorage.addStorageEventHandler(handler);
+    Storage.addStorageEventHandler(handler);
+    Storage.addStorageEventHandler(handler);
 
     addCheckpoint("Handlers added");
 
@@ -122,4 +126,8 @@ public class StorageTest extends GWTTestCase {
 
     delayTestFinish(500);
   }
+  
+  private final static native String getUserAgent() /*-{
+    return navigator.userAgent;
+  }-*/;
 }
