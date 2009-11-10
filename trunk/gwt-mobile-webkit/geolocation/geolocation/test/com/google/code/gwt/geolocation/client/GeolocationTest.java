@@ -28,7 +28,29 @@ public class GeolocationTest extends GWTTestCase {
     return "com.google.code.gwt.geolocation.Html5Geolocation";
   }
 
-  public void testGeolocation() {
-    Geolocation t = Geolocation.getGeolocation();
+  public void testGeolocationSupported() {
+    assertTrue("Geolocation API should be supported! User agent: " + getUserAgent(), Geolocation.isSupported());
   }
+  
+  public void testGetPosition() {
+    delayTestFinish(40000);  // It might take up to 30 seconds to get a GPS fix!
+    Geolocation g = Geolocation.getGeolocation();
+    g.getCurrentPosition(new PositionCallback() {
+      public void onSuccess(Position position) {
+        assertNotNull("Position may not be null!", position);
+        assertNotNull("Position coordinates may not be null!", position.getCoords());
+        assertTrue("Latitude may not be null!", position.getCoords().getLatitude() > 0.00001 || position.getCoords().getLatitude() < -0.00001);
+        assertTrue("Longitude may not be null!", position.getCoords().getLongitude() > 0.00001 || position.getCoords().getLongitude() < -0.00001);
+        finishTest();
+      }
+      
+      public void onFailure(PositionError error) {
+        fail("Could not get position! code=" + error.getCode() + ", msg=" + error.getMessage());
+      }
+    });
+  }
+  
+  private final static native String getUserAgent() /*-{
+    return navigator.userAgent;
+  }-*/;
 }
