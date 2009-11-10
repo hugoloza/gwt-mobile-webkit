@@ -104,7 +104,7 @@ public class StorageImpl {
     @com.google.code.gwt.storage.client.StorageImpl::jsHandler = function(event) {
       @com.google.code.gwt.storage.client.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
     };
-    $doc.body.addEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
+    $wnd.addEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
   }-*/;
 
   protected static final void handleStorageEvent(StorageEvent event) {
@@ -131,7 +131,7 @@ public class StorageImpl {
   }
 
   protected native void removeStorageEventHandler0() /*-{
-    $doc.body.removeEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
+    $wnd.removeEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
   }-*/;
 
   /**
