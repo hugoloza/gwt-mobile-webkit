@@ -124,7 +124,7 @@ public class StorageTest extends GWTTestCase {
     // wait for all event handlers to finish...
     addCheckpoint("Waiting for finish...");
 
-    delayTestFinish(500);
+    delayTestFinish(10000);
   }
   
   private final static native String getUserAgent() /*-{
