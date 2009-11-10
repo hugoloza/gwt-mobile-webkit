@@ -57,7 +57,7 @@
     <condition property="gwt.useragents.value" value="-userAgents ${gwt.useragents.web.remote}" else="">
       <isset property="gwt.useragents.web.remote" />
     </condition>
-    <gwt.junit test.args="-web ${gwt.useragents.value} -runStyle RemoteWeb:${gwt.hosts.dev.remote}" test.out="${junit.out}/web-remote" test.cases="default.web.tests" />
+    <gwt.junit test.args="-web ${gwt.useragents.value} -runStyle RemoteWeb:${gwt.hosts.web.remote}" test.out="${junit.out}/web-remote" test.cases="default.web.tests" />
     <!--gwt.junit test.args="-port ${gwt.junit.port} -out www -web -remoteweb ${gwt.hosts.dev.remote}" test.out="${junit.out}/remoteweb" test.cases="default.web.tests" /-->
   </target>
 
@@ -66,7 +66,7 @@
     <condition property="gwt.useragents.value" value="-userAgents ${gwt.useragents.web.selenium}" else="">
       <isset property="gwt.useragents.web.selenium" />
     </condition>
-    <gwt.junit test.args="-web ${gwt.useragents.value} -runStyle Selenium:${gwt.hosts.web.remote}" test.out="${junit.out}/web-selenium" test.cases="default.web.tests" />
+    <gwt.junit test.args="-web ${gwt.useragents.value} -runStyle Selenium:${gwt.hosts.web.selenium}" test.out="${junit.out}/web-selenium" test.cases="default.web.tests" />
   </target>
 
   <target name="test.hosted" depends="compile, compile.tests" description="Run only hosted-mode tests for this project.">
@@ -83,8 +83,8 @@
       is executing
 	-->
     <parallel threadcount="1">
-      <antcall target="test.hosted" />
-      <antcall target="test.web" />
+      <!--antcall target="test.hosted" />
+      <antcall target="test.web" /-->
       <antcall target="test.web.remote" />
       <antcall target="test.web.selenium" />
     </parallel>
