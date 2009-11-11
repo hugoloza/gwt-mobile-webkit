@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service.annotation;
+package com.google.code.gwt.database.client.service;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -49,13 +49,17 @@ import java.lang.annotation.Target;
 public @interface Select {
 
   /**
-   * Specify either {@link #value()} or {@link #sql()} - they are the same attribute.
+   * Specify either {@link #value()} or {@link #sql()} - they are the same
+   * attribute.
+   * 
    * @return the SQL SELECT statement to execute
    */
   String value() default "";
-  
+
   /**
-   * Specify either {@link #value()} or {@link #sql()} - they are the same attribute.
+   * Specify either {@link #value()} or {@link #sql()} - they are the same
+   * attribute.
+   * 
    * @return the SQL SELECT statement to execute
    */
   String sql() default "";

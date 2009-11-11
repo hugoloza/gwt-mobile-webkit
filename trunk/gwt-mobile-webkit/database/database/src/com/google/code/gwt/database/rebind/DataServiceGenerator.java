@@ -18,8 +18,8 @@ package com.google.code.gwt.database.rebind;
 
 import java.lang.annotation.Annotation;
 
+import com.google.code.gwt.database.client.service.Connection;
 import com.google.code.gwt.database.client.service.DataService;
-import com.google.code.gwt.database.client.service.annotation.Connection;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;

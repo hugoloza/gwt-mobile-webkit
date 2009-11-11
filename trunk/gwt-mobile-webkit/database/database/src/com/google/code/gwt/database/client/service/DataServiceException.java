@@ -45,7 +45,7 @@ public class DataServiceException extends Exception {
    */
   public DataServiceException(String message) {
     super(message);
-    this.code = 1; // DATABASE_ERR
+    this.code = 0; // UNKNOWN_ERR
   }
 
   /**

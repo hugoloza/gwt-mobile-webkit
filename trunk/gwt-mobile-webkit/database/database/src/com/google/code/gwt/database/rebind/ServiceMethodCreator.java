@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.google.code.gwt.database.client.SQLTransaction;
 import com.google.code.gwt.database.client.service.Callback;
-import com.google.code.gwt.database.client.service.annotation.Update;
+import com.google.code.gwt.database.client.service.Update;
 import com.google.code.gwt.database.client.service.impl.DataServiceUtils;
 import com.google.code.gwt.database.client.util.StringUtils;
 import com.google.gwt.core.ext.GeneratorContext;
