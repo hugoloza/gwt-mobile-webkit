@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service.annotation;
+package com.google.code.gwt.database.client.service;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

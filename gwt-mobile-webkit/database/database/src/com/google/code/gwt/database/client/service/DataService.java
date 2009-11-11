@@ -21,12 +21,9 @@ import java.util.List;
 
 import com.google.code.gwt.database.client.Database;
 import com.google.code.gwt.database.client.SQLTransaction;
-import com.google.code.gwt.database.client.service.annotation.Connection;
-import com.google.code.gwt.database.client.service.annotation.Select;
-import com.google.code.gwt.database.client.service.annotation.Update;
 
 /**
- * Marks the interface as a DataService.
+ * Marks an interface as a <em>DataService</em>.
  * 
  * <p>
  * The DataService interface is the starting point for defining a SQL
@@ -35,7 +32,7 @@ import com.google.code.gwt.database.client.service.annotation.Update;
  * </p>
  * 
  * <pre>
- * &#x40;Connection(name="<i>shortname</i>", version="<i>1.0</i>",
+ * &#x40;{@link Connection}(name="<i>shortname</i>", version="<i>1.0</i>",
  *             description="<i>diplayname</i>", maxsize=<i>max size in bytes</i>)
  * public interface <i>MyDataService</i> extends DataService {
  *   // ...
@@ -43,8 +40,8 @@ import com.google.code.gwt.database.client.service.annotation.Update;
  * </pre>
  * 
  * <p>
- * Please make sure that you both extend the DataService interface, and add a
- * Connection annotation to it to specify the database
+ * Please make sure that you 1) extend this DataService interface, and 2) add a
+ * {@link Connection} annotation to it to specify the database
  * {@link Database#openDatabase(String, String, String, int) connection
  * parameters}.
  * </p>
@@ -148,7 +145,7 @@ import com.google.code.gwt.database.client.service.annotation.Update;
 public interface DataService {
 
   /**
-   * Returns the Database associated with this DataService.
+   * Returns the Database instance associated with this DataService.
    */
   Database getDatabase();
 }

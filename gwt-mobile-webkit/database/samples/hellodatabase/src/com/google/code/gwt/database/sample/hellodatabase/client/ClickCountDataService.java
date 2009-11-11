@@ -19,14 +19,14 @@ package com.google.code.gwt.database.sample.hellodatabase.client;
 import java.util.Collection;
 import java.util.Date;
 
+import com.google.code.gwt.database.client.service.Connection;
 import com.google.code.gwt.database.client.service.DataService;
 import com.google.code.gwt.database.client.service.ListCallback;
 import com.google.code.gwt.database.client.service.RowIdListCallback;
 import com.google.code.gwt.database.client.service.ScalarCallback;
+import com.google.code.gwt.database.client.service.Select;
+import com.google.code.gwt.database.client.service.Update;
 import com.google.code.gwt.database.client.service.VoidCallback;
-import com.google.code.gwt.database.client.service.annotation.Connection;
-import com.google.code.gwt.database.client.service.annotation.Select;
-import com.google.code.gwt.database.client.service.annotation.Update;
 
 /**
  * Demo database service to the 'ClckCnt' database.

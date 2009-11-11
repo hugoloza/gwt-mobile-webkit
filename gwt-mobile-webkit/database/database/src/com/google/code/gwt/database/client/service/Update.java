@@ -14,14 +14,13 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service.annotation;
+package com.google.code.gwt.database.client.service;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 import com.google.code.gwt.database.client.SQLResultSet;
-import com.google.code.gwt.database.client.service.RowIdListCallback;
 
 /**
  * Provides the SQL update statement to be executed when the annotated method is
