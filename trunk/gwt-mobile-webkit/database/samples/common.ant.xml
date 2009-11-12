@@ -60,6 +60,7 @@
         <gwt.timer name="${sample.upper} with ${gwt.samples.localworkers} localWorkers">
           <java dir="${sample.build}" classname="com.google.gwt.dev.Compiler" classpath="src:${sample.build}/war/WEB-INF/classes:${mobile.webkit.api.jar}:${gwt.user.jar}:${gwt.dev.jar}" fork="yes" failonerror="true">
             <jvmarg value="-Xmx256M" />
+            <!--jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8000" /-->
             <arg value="-localWorkers" />
             <arg value="${gwt.samples.localworkers}" />
             <arg value="-war" />
