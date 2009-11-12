@@ -16,10 +16,7 @@ In your GWT client package, create an interface with a Connection annotation:
 {{{
 package my.gwt.package.client;
 
-import com.google.code.gwt.database.client.service.DataService;
-import com.google.code.gwt.database.client.service.VoidCallback;
-import com.google.code.gwt.database.client.service.annotation.Connection;
-import com.google.code.gwt.database.client.service.annotation.Update;
+import com.google.code.gwt.database.client.service.*;
 
 @Connection(name = "myDatabase", version = "1.0", description = "My Database", maxsize = 10000)
 public interface MyDataService extends DataService {
