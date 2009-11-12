@@ -237,7 +237,8 @@ public class DatabaseTest extends GWTTestCase {
       }
 
       public void onTransactionSuccess() {
-        fail("Not expected to finish transaction successfully!");
+        fail("Not expected to finish transaction successfully! Executed steps: "
+            + joinCollection(steps, ", "));
       }
     });
     steps.add(1);
