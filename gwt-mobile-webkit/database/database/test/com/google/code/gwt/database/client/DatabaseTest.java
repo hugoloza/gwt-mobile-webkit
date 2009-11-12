@@ -231,8 +231,6 @@ public class DatabaseTest extends GWTTestCase {
         // Check the sequence of the steps:
         assertEquals("Expecting 8 steps in the step sequence!",
             "0, 1, 2, 3, 4, 5, 6, 7", joinCollection(steps, ", "));
-        System.out.println("Database execution steps: "
-            + joinCollection(steps, ", "));
         finishTest();
       }
 
