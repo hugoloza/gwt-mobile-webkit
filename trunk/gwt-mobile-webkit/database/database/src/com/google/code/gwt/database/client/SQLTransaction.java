@@ -44,9 +44,10 @@ public class SQLTransaction extends JavaScriptObject {
    * Helper method to bind a JS function callback to the
    * {@link StatementCallback#onSuccess(SQLTransaction, SQLResultSet)} method.
    */
-  @SuppressWarnings( {"unused", "unchecked"})
-  private static final void handleStatement(StatementCallback callback,
-      SQLTransaction transaction, SQLResultSet resultSet) {
+  @SuppressWarnings( {"unused"})
+  private static final <T extends JavaScriptObject> void handleStatement(
+      StatementCallback<T> callback, SQLTransaction transaction,
+      SQLResultSet<T> resultSet) {
     UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
     if (ueh != null) {
       try {
@@ -64,18 +65,18 @@ public class SQLTransaction extends JavaScriptObject {
    * {@link StatementCallback#onFailure(SQLTransaction, SQLError)} method.
    */
   @SuppressWarnings("unused")
-  private static final void handleError(
-      StatementCallback<? extends JavaScriptObject> callback,
+  private static final boolean handleError(StatementCallback<?> callback,
       SQLTransaction transaction, SQLError error) {
     UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
     if (ueh != null) {
       try {
-        callback.onFailure(transaction, error);
+        return callback.onFailure(transaction, error);
       } catch (Throwable t) {
         ueh.onUncaughtException(t);
+        return true;
       }
     } else {
-      callback.onFailure(transaction, error);
+      return callback.onFailure(transaction, error);
     }
   }
 
@@ -92,8 +93,8 @@ public class SQLTransaction extends JavaScriptObject {
    * <p>
    * Because this method doesn't specify any callback, whenever a database error
    * occurs the transaction will be rolled-back (as if a
-   * {@link StatementCallback#onFailure(SQLTransaction, SQLError)} callback returns
-   * <code>true</code>).
+   * {@link StatementCallback#onFailure(SQLTransaction, SQLError)} callback
+   * returns <code>true</code>).
    * </p>
    * 
    * @see <a
@@ -139,10 +140,10 @@ public class SQLTransaction extends JavaScriptObject {
     sqlStatement,
     arguments,
     function(transaction, resultSet) {
-    @com.google.code.gwt.database.client.SQLTransaction::handleStatement(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLResultSet;) (callback, transaction, resultSet);
+      @com.google.code.gwt.database.client.SQLTransaction::handleStatement(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLResultSet;) (callback, transaction, resultSet);
     },
     function(transaction, error) {
-    return @com.google.code.gwt.database.client.SQLTransaction::handleError(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLError;) (callback, transaction, error);
+      return @com.google.code.gwt.database.client.SQLTransaction::handleError(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLError;) (callback, transaction, error);
     }
     );
   }-*/;

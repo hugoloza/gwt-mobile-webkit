@@ -57,17 +57,18 @@ public class DatabaseTest extends GWTTestCase {
     db.transaction(new TransactionCallback() {
       public void onTransactionStart(SQLTransaction transaction) {
         transaction.executeSql("DROP TABLE IF EXISTS test", null);
-        transaction.executeSql("CREATE TABLE test ("
-            + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + "name VARCHAR(30) NOT NULL, length REAL DEFAULT 0,"
-            + "dob DATE);", null);
+        transaction.executeSql(
+            "CREATE TABLE test ("
+                + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                + "name VARCHAR(30) NOT NULL, length REAL DEFAULT 0,"
+                + "dob DATE)", null);
         transaction.executeSql(
             "INSERT INTO test (name, length, dob) VALUES (?, ?, ?);",
             new Object[] {
                 "Bart Guijt", 2.12,
                 DateTimeFormat.getFormat("dd-MM-yyyy").parse("24-05-1974")});
         transaction.executeSql(
-            "INSERT INTO test (name, length, dob) VALUES (?, ?, ?);",
+            "INSERT INTO test (name, length, dob) VALUES (?, ?, ?)",
             new Object[] {
                 "Pioneer Kuro 50\"", 50 * 2.54,
                 DateTimeFormat.getFormat("dd-MM-yyyy").parse("12-01-2009")});
@@ -83,14 +84,14 @@ public class DatabaseTest extends GWTTestCase {
     });
   }
 
-  public void testTxStepsSequence() throws Exception {
+  public void testTxStepsSequenceOk() throws Exception {
     delayTestFinish(3000);
     final List<Integer> steps = new Vector<Integer>();
     steps.add(0);
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
       public void onUncaughtException(Throwable e) {
-        System.err.println("Unexpected Exception caught! Performed steps: "
-            + joinCollection(steps, ", "));
+        fail("Unexpected Exception caught! Performed steps: "
+            + joinCollection(steps, ", ") + ", exception: " + e);
       }
     });
     db.transaction(new TransactionCallback() {
@@ -100,7 +101,7 @@ public class DatabaseTest extends GWTTestCase {
             new StatementCallback<GenericRow>() {
               public boolean onFailure(SQLTransaction transaction,
                   SQLError error) {
-                System.err.println("Database returned error at step #5! code="
+                fail("Database returned error at step #5! code="
                     + error.getCode() + ", msg=" + error.getMessage());
                 return true;
               }
@@ -111,41 +112,43 @@ public class DatabaseTest extends GWTTestCase {
               }
             });
         steps.add(3);
-        tx.executeSql("CREATE TABLE test ("
-            + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            + "name VARCHAR(30) NOT NULL, length REAL DEFAULT 0,"
-            + "dob DATE);", null, new StatementCallback<GenericRow>() {
-          public boolean onFailure(SQLTransaction transaction, SQLError error) {
-            System.err.println("Database returned error at step #6! code="
-                + error.getCode() + ", msg=" + error.getMessage());
-            return true;
-          }
+        tx.executeSql(
+            "CREATE TABLE test ("
+                + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                + "name VARCHAR(30) NOT NULL, length REAL DEFAULT 0,"
+                + "dob DATE)", null, new StatementCallback<GenericRow>() {
+              public boolean onFailure(SQLTransaction transaction,
+                  SQLError error) {
+                fail("Database returned error at step #6! code="
+                    + error.getCode() + ", msg=" + error.getMessage());
+                return true;
+              }
 
-          public void onSuccess(SQLTransaction transaction,
-              SQLResultSet<GenericRow> resultSet) {
-            steps.add(6);
-            transaction.executeSql("SELECT COUNT(*) FROM test", null,
-                new StatementCallback<GenericRow>() {
-                  public boolean onFailure(SQLTransaction transaction,
-                      SQLError error) {
-                    System.err.println("Database returned error at step #7! code="
-                        + error.getCode() + ", msg=" + error.getMessage());
-                    return true;
-                  }
+              public void onSuccess(SQLTransaction transaction,
+                  SQLResultSet<GenericRow> resultSet) {
+                steps.add(6);
+                transaction.executeSql("SELECT COUNT(*) FROM test", null,
+                    new StatementCallback<GenericRow>() {
+                      public boolean onFailure(SQLTransaction transaction,
+                          SQLError error) {
+                        fail("Database returned error at step #7! code="
+                            + error.getCode() + ", msg=" + error.getMessage());
+                        return true;
+                      }
 
-                  public void onSuccess(SQLTransaction transaction,
-                      SQLResultSet<GenericRow> resultSet) {
-                    steps.add(7);
-                  }
-                });
-          }
-        });
+                      public void onSuccess(SQLTransaction transaction,
+                          SQLResultSet<GenericRow> resultSet) {
+                        steps.add(7);
+                      }
+                    });
+              }
+            });
         steps.add(4);
       }
 
       public void onTransactionFailure(SQLError error) {
-        System.err.println("Database returned error at step #8! code="
-            + error.getCode() + ", msg=" + error.getMessage());
+        fail("Database returned error at step #8! code=" + error.getCode()
+            + ", msg=" + error.getMessage());
       }
 
       public void onTransactionSuccess() {
@@ -153,8 +156,88 @@ public class DatabaseTest extends GWTTestCase {
         // Check the sequence of the steps:
         assertEquals("Expecting 9 steps in the step sequence!",
             "0, 1, 2, 3, 4, 5, 6, 7, 8", joinCollection(steps, ", "));
-        System.out.println("Database execution steps: " + joinCollection(steps, ", "));
         finishTest();
+      }
+    });
+    steps.add(1);
+  }
+
+  public void testTxStepsSequenceWithFailure() throws Exception {
+    delayTestFinish(3000);
+    final List<Integer> steps = new Vector<Integer>();
+    steps.add(0);
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        fail("Unexpected Exception caught! Performed steps: "
+            + joinCollection(steps, ", ") + ", exception: " + e);
+      }
+    });
+    db.transaction(new TransactionCallback() {
+      public void onTransactionStart(SQLTransaction tx) {
+        steps.add(2);
+        tx.executeSql("DROP TABLE IF EXISTS test", null,
+            new StatementCallback<GenericRow>() {
+              public boolean onFailure(SQLTransaction transaction,
+                  SQLError error) {
+                fail("Database returned error at step #5! code="
+                    + error.getCode() + ", msg=" + error.getMessage());
+                return true;
+              }
+
+              public void onSuccess(SQLTransaction transaction,
+                  SQLResultSet<GenericRow> resultSet) {
+                steps.add(5);
+              }
+            });
+        steps.add(3);
+        // This will fail with a syntax error:
+        tx.executeSql(
+            "CREATE TABLE test ("
+                + "id INTEGER NOT N*LL PRIMARY KEY AUTOINCREMENT,"
+                + "name VARCHAR(30) NOT NULL, length REAL DEFAULT 0,"
+                + "dob DATE)", null, new StatementCallback<GenericRow>() {
+              public boolean onFailure(SQLTransaction transaction,
+                  SQLError error) {
+                // Expected!
+                steps.add(6);
+                return true;
+              }
+
+              public void onSuccess(SQLTransaction transaction,
+                  SQLResultSet<GenericRow> resultSet) {
+                transaction.executeSql("SELECT COUNT(*) FROM test", null,
+                    new StatementCallback<GenericRow>() {
+                      public boolean onFailure(SQLTransaction transaction,
+                          SQLError error) {
+                        fail("Not expected to run this "
+                            + "SELECT COUNT(*) failure callback! code="
+                            + error.getCode() + ", msg=" + error.getMessage());
+                        return true;
+                      }
+
+                      public void onSuccess(SQLTransaction transaction,
+                          SQLResultSet<GenericRow> resultSet) {
+                        fail("Not expected to run this "
+                            + "SELECT COUNT(*) success callback!");
+                      }
+                    });
+              }
+            });
+        steps.add(4);
+      }
+
+      public void onTransactionFailure(SQLError error) {
+        steps.add(7);
+        // Check the sequence of the steps:
+        assertEquals("Expecting 8 steps in the step sequence!",
+            "0, 1, 2, 3, 4, 5, 6, 7", joinCollection(steps, ", "));
+        System.out.println("Database execution steps: "
+            + joinCollection(steps, ", "));
+        finishTest();
+      }
+
+      public void onTransactionSuccess() {
+        fail("Not expected to finish transaction successfully!");
       }
     });
     steps.add(1);
