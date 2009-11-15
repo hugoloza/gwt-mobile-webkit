@@ -17,6 +17,7 @@
 package com.google.code.gwt.database.rebind;
 
 import com.google.code.gwt.database.client.service.VoidCallback;
+import com.google.code.gwt.database.client.service.callback.voyd.StatementCallbackVoidCallback;
 import com.google.code.gwt.database.client.service.callback.voyd.TransactionCallbackVoidCallback;
 import com.google.code.gwt.database.client.util.StringUtils;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -29,17 +30,23 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 public class ServiceMethodCreatorVoidCallback extends ServiceMethodCreator {
 
   @Override
+  protected String getTransactionCallbackClassName()
+      throws UnableToCompleteException {
+    return genUtils.getClassName(TransactionCallbackVoidCallback.class);
+  }
+
+  @Override
   public void generateOnTransactionStartBody() throws UnableToCompleteException {
     if (StringUtils.isNotEmpty(foreach)) {
-      generateExecuteIteratedSqlStatements(null);
+      generateExecuteIteratedSqlStatements();
     } else {
-      generateExecuteSqlStatement(null);
+      generateExecuteSqlStatement();
     }
   }
 
   @Override
-  protected String getTransactionCallbackClassName()
-      throws UnableToCompleteException {
-    return genUtils.getClassName(TransactionCallbackVoidCallback.class);
+  protected void generateStatementCallbackParameter() {
+    sw.print(", new "
+        + genUtils.getClassName(StatementCallbackVoidCallback.class) + "(this)");
   }
 }

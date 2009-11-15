@@ -17,6 +17,8 @@
 package com.google.code.gwt.database.client.service.callback;
 
 import com.google.code.gwt.database.client.SQLError;
+import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.StatementCallback;
 import com.google.code.gwt.database.client.TransactionCallback;
 import com.google.code.gwt.database.client.service.Callback;
 import com.google.code.gwt.database.client.service.DataServiceException;
@@ -40,6 +42,12 @@ public abstract class DataServiceTransactionCallback<C extends Callback>
 
   private C callback;
 
+  // Context values for auditing:
+  private int errCode;
+  private String errMessage;
+  private String sql;
+  private Object[] params;
+
   /**
    * Creates a new TransactionCallback with the specified DataService callback.
    */
@@ -48,11 +56,55 @@ public abstract class DataServiceTransactionCallback<C extends Callback>
   }
 
   /**
+   * Wraps a call to {@link SQLTransaction#executeSql(String, Object[])} and
+   * stores the SQL statement and parameters for failure events.
+   */
+  protected void exec(SQLTransaction tx, String sql, Object[] params,
+      StatementCallback<?> callback) {
+    this.sql = sql;
+    this.params = params;
+    tx.executeSql(sql, params, callback);
+  }
+
+  /**
+   * Wraps a call to
+   * {@link SQLTransaction#executeSql(String, Object[], StatementCallback)} and
+   * stores the SQL statement and parameters for failure events.
+   */
+  protected void exec(SQLTransaction tx, String sql, Object[] params) {
+    this.sql = sql;
+    this.params = params;
+    tx.executeSql(sql, params);
+  }
+
+  /**
+   * Stores the {@link SQLError} details for the onFailure callback.
+   * 
+   * @param code the error code - see <a
+   *          href="http://www.w3.org/TR/webdatabase/#sqlexception">W3C Web
+   *          Database error codes</a>
+   * @param message the error message
+   */
+  public void storeStatementError(int code, String message) {
+    this.errCode = code;
+    this.errMessage = message;
+  }
+
+  /**
    * Invokes the DataService' {@link Callback#onFailure(DataServiceException)}
    * callback method.
    */
   public void onTransactionFailure(SQLError error) {
-    callback.onFailure(new DataServiceException(error));
+    if (errMessage != null) {
+      // Use the SQLError details from the
+      // StatementCallback.onFailure callback:
+      callback.onFailure(new DataServiceException(errMessage, errCode, sql,
+          params));
+    } else {
+      // Use the SQLError details from the
+      // TransactionCallback.onFailure callback:
+      callback.onFailure(new DataServiceException(error));
+    }
   }
 
   /**

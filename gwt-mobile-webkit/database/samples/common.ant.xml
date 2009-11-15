@@ -42,10 +42,6 @@
   </target>
 
   <target name="gwtc" description="Compile to JavaScript">
-    <!-- option "-XdisableCastChecking" is needed for GWT2.0 to overcome dynamicCast bug: -->
-    <condition property="compile.gwt.args" value="-XdisableCastChecking -XdisableClassMetadata" else="">
-      <isset property="is.gwt2" />
-    </condition>
     <outofdate>
       <sourcefiles>
         <fileset dir="src" />
@@ -71,7 +67,6 @@
             <arg value="INFO" />
             <arg value="-style" />
             <arg value="PRETTY" /-->
-            <arg line="${compile.gwt.args}" />
             <arg value="com.google.code.gwt.${sample.api}.sample.${sample.lower}.${sample.module}" />
           </java>
         </gwt.timer>
@@ -122,6 +117,7 @@
       </classpath>
       <jvmarg line="${hostedmode.platform.args}" />
       <jvmarg value="-Xmx256M" />
+      <!--jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8000" /-->
       <!--arg value="-logLevel" />
       <arg value="INFO" />
       <arg value="-style" />

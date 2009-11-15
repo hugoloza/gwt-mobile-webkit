@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.TransactionCallback;
 import com.google.code.gwt.database.client.service.Callback;
 import com.google.code.gwt.database.client.service.Update;
 import com.google.code.gwt.database.client.service.impl.DataServiceUtils;
@@ -82,6 +83,25 @@ public abstract class ServiceMethodCreator {
         + callback.getName() + ") {");
     sw.indent();
 
+    generateTransactionCallbackBody();
+
+    // ends new TransactionCallback() and (read)transaction() call
+    sw.outdent();
+    sw.println("});");
+  }
+
+  /**
+   * Generates the body of the {@link TransactionCallback} type.
+   * 
+   * <p>
+   * By default it only generates the onTransactionStart() method, which in turn
+   * calls the {@link #generateOnTransactionStartBody()} method.
+   * </p>
+   * 
+   * @throws UnableToCompleteException
+   */
+  protected void generateTransactionCallbackBody()
+      throws UnableToCompleteException {
     sw.println("public void onTransactionStart("
         + genUtils.getClassName(SQLTransaction.class) + " " + txVarName + ") {");
     sw.indent();
@@ -91,17 +111,15 @@ public abstract class ServiceMethodCreator {
     // ends onTransactionStart()
     sw.outdent();
     sw.println("}");
-
-    // ends new TransactionCallback() and (read)transaction() call
-    sw.outdent();
-    sw.println("});");
   }
 
   /**
    * Generates the body of an onTransactionStart() method.
    */
-  protected abstract void generateOnTransactionStartBody()
-      throws UnableToCompleteException;
+  protected void generateOnTransactionStartBody()
+      throws UnableToCompleteException {
+    generateExecuteSqlStatement();
+  }
 
   /**
    * Returns the name of the TransactionCallback implementation use for this
@@ -113,12 +131,9 @@ public abstract class ServiceMethodCreator {
   /**
    * Generates an iterating <code>tx.executeSql(...);</code> call statement.
    * 
-   * @param callbackExpression the expression for an instantiated
-   *          StatementCallback class - or <code>null</code> if no callback
-   *          applies
    * @throws UnableToCompleteException
    */
-  protected void generateExecuteIteratedSqlStatements(String callbackExpression)
+  protected void generateExecuteIteratedSqlStatements()
       throws UnableToCompleteException {
     if (StringUtils.isNotEmpty(foreach)) {
       // Generate code to loop over a collection to create a tx.executeSql()
@@ -137,21 +152,21 @@ public abstract class ServiceMethodCreator {
       // Find the types, parameters, assert not-nulls, etc.:
       JType collection = GeneratorUtils.findType(foreach,
           service.getParameters());
+      String forEachType = null;
       if (collection == null) {
         logger.log(TreeLogger.WARN,
             "no parameter on the service method named '" + foreach
                 + "' found. Using Object as the type for the loop variable '_'");
+      } else {
+        forEachType = genUtils.getTypeParameter(collection);
       }
-
-      String forEachType = collection != null
-          ? genUtils.getTypeParameter(collection) : null;
       if (forEachType == null) {
         forEachType = "Object";
       }
 
       sw.println("for (" + forEachType + " _ : " + foreach + ") {");
       sw.indent();
-      generateExecuteSqlStatement(callbackExpression);
+      generateExecuteSqlStatement();
       sw.outdent();
       sw.println("}");
     }
@@ -160,13 +175,9 @@ public abstract class ServiceMethodCreator {
   /**
    * Generates a <code>tx.executeSql(...);</code> call statement.
    * 
-   * @param callbackExpression the expression for an instantiated
-   *          StatementCallback class - or <code>null</code> if no callback
-   *          applies
    * @throws UnableToCompleteException
    */
-  protected void generateExecuteSqlStatement(String callbackExpression)
-      throws UnableToCompleteException {
+  protected void generateExecuteSqlStatement() throws UnableToCompleteException {
     List<String> tokenizedStmt = tokenizeSql(sql);
     if (tokenizedStmt.size() == 0) {
       // No SQL at all. Probably already captured earlier in the process.
@@ -176,7 +187,7 @@ public abstract class ServiceMethodCreator {
 
     if (tokenizedStmt.size() == 1) {
       // No parameters used in the SQL:
-      sw.print(txVarName + ".executeSql("
+      sw.print("exec(" + txVarName + ", "
           + StringUtils.getEscapedString(tokenizedStmt.get(0)) + ", null");
     } else {
       // At least one parameter used in the SQL:
@@ -184,7 +195,7 @@ public abstract class ServiceMethodCreator {
           service.getParameters());
 
       StringBuilder prepParamsArrayStatic = new StringBuilder("Object[] ").append(
-          paramsVarName).append(" = new Object[] {");
+          paramsVarName).append(" = {");
       StringBuilder prepParamsArrayDynamic = new StringBuilder("Object[] ").append(
           paramsVarName).append(" = new Object[");
       // Determine amount of parameters (to size the array) and whether dynamic
@@ -272,23 +283,37 @@ public abstract class ServiceMethodCreator {
         }
 
         // Invoke the actual executeSql method:
-        sw.print(txVarName + ".executeSql(" + sqlVarName + ".toString(), "
+        sw.print("exec(" + txVarName + ", " + sqlVarName + ".toString(), "
             + paramsVarName);
       } else {
         // Invoke the actual executeSql method with a String literal:
-        sw.print(txVarName + ".executeSql("
+        sw.print("exec(" + txVarName + ", "
             + StringUtils.getEscapedString(sqlLiteral.toString()) + ", "
             + paramsVarName);
       }
     }
 
-    // Callback provided:
-    if (callbackExpression != null) {
-      sw.print(", " + callbackExpression);
-    }
+    generateStatementCallbackParameter();
 
     sw.println(");");
   }
+
+  /**
+   * generates the callback parameter expression (to <code>sw</code>).
+   * 
+   * <p>
+   * It is this part in bold:
+   * </p>
+   * 
+   * <pre>tx.executeSQL("SELECT....", parameters<b>, new MyCallback()</b>);</pre>
+   * <p>
+   * Please mind that you can either output nothing, or comma + expression.
+   * </p>
+   * 
+   * @throws UnableToCompleteException
+   */
+  protected abstract void generateStatementCallbackParameter()
+      throws UnableToCompleteException;
 
   /**
    * Returns the specified SQL expression in at least one part.

@@ -29,16 +29,16 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 public class ServiceMethodCreatorListCallback extends ServiceMethodCreator {
 
   @Override
-  public void generateOnTransactionStartBody() throws UnableToCompleteException {
-    generateExecuteSqlStatement("new "
-        + genUtils.getClassName(StatementCallbackListCallback.class) + "<"
-        + genUtils.getTypeParameter(callback.getType()) + ">(this)");
-  }
-
-  @Override
   protected String getTransactionCallbackClassName()
       throws UnableToCompleteException {
     return genUtils.getClassName(TransactionCallbackListCallback.class) + "<"
         + genUtils.getTypeParameter(callback.getType()) + ">";
+  }
+
+  @Override
+  protected void generateStatementCallbackParameter() throws UnableToCompleteException {
+    sw.print(", new "
+        + genUtils.getClassName(StatementCallbackListCallback.class) + "<"
+        + genUtils.getTypeParameter(callback.getType()) + ">(this)");
   }
 }

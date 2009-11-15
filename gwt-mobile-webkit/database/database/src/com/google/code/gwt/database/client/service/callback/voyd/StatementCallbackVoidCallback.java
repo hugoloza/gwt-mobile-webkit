@@ -14,11 +14,12 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client.service.callback.scalar;
+package com.google.code.gwt.database.client.service.callback.voyd;
 
+import com.google.code.gwt.database.client.GenericRow;
 import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLTransaction;
-import com.google.code.gwt.database.client.service.ScalarCallback;
+import com.google.code.gwt.database.client.service.VoidCallback;
 import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 
@@ -26,28 +27,36 @@ import com.google.code.gwt.database.rebind.DataServiceGenerator;
  * Used in the {@link DataServiceGenerator} to reduce generated boilerplate
  * code.
  * 
- * <p>This StatementCallback impl is applied specifically to the {@link ScalarCallback}
- * service methods.</p>
+ * <p>
+ * This StatementCallback impl is applied specifically to the
+ * {@link VoidCallback} service methods.
+ * </p>
  * 
  * @author bguijt
  */
-public class StatementCallbackScalarCallback<T> extends
-    DataServiceStatementCallback<ScalarRow<T>> {
+public class StatementCallbackVoidCallback extends
+    DataServiceStatementCallback<GenericRow> {
 
-  private TransactionCallbackScalarCallback<T> txCallback;
+  private TransactionCallbackVoidCallback txCallback;
 
   /**
-   * Creates a StatementCallback with a ScalarCallback-specific TransactionCallback
+   * Creates a new TransactionCallback with the specified DataService' ROWIDs
+   * callback.
    */
-  public StatementCallbackScalarCallback(TransactionCallbackScalarCallback<T> txCallback) {
+  public StatementCallbackVoidCallback(
+      TransactionCallbackVoidCallback txCallback) {
     this.txCallback = txCallback;
   }
 
+  @Override
+  protected void storeError(int code, String message) {
+    txCallback.storeStatementError(code, message);
+  }
+
   /**
-   * Stores the value from the resultSet in the TransactionCallback
+   * Do nothing here.
    */
   public void onSuccess(SQLTransaction transaction,
-      SQLResultSet<ScalarRow<T>> resultSet) {
-    txCallback.storeValue(resultSet.getRows().getItem(0).getValue());
+      SQLResultSet<GenericRow> resultSet) {
   }
 }

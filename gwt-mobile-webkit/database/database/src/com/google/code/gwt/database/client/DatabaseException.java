@@ -28,4 +28,8 @@ public class DatabaseException extends RuntimeException {
   public DatabaseException(String name) {
     super(name);
   }
+
+  public DatabaseException(String name, Throwable cause) {
+    super(name, cause);
+  }
 }

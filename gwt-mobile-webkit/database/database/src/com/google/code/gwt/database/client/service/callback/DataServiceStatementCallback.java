@@ -38,6 +38,24 @@ public abstract class DataServiceStatementCallback<T extends JavaScriptObject>
    * @return <code>true</code>
    */
   public boolean onFailure(SQLTransaction transaction, SQLError error) {
+    storeError(error.getCode(), error.getMessage());
     return true;
   }
+
+  /**
+   * Stores the SQLError details from
+   * {@link #onFailure(SQLTransaction, SQLError)} to the TransactionCallback in
+   * charge.
+   * 
+   * <p>
+   * Due to Java Generics' incapabilities we need to implement this method at
+   * each subtype.
+   * </p>
+   * 
+   * @param code the error code - see <a
+   *          href="http://www.w3.org/TR/webdatabase/#sqlexception">W3C Web
+   *          Database error codes</a>
+   * @param message the error message
+   */
+  protected abstract void storeError(int code, String message);
 }

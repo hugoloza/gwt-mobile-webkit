@@ -43,6 +43,11 @@ public class StatementCallbackListCallback<T extends JavaScriptObject> extends
   public StatementCallbackListCallback(TransactionCallbackListCallback<T> txCallback) {
     this.txCallback = txCallback;
   }
+  
+  @Override
+  protected void storeError(int code, String message) {
+    txCallback.storeStatementError(code, message);
+  }
 
   /**
    * Stores the resultSet in the TransactionCallback

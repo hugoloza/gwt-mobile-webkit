@@ -41,7 +41,7 @@ public class DatabaseImpl {
       return openDatabase0(shortName, version, displayName, maxSizeBytes);
     } catch (JavaScriptException e) {
       // INVALID_STATE_ERR or SECURITY_ERR
-      throw new DatabaseException(e.getName());
+      throw new DatabaseException(e.getName(), e);
     }
   }
 

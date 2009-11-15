@@ -53,7 +53,7 @@ public class DatabaseTest extends GWTTestCase {
   }-*/;
 
   public void testCreateTable() throws Exception {
-    delayTestFinish(3000);
+    delayTestFinish(10000);
     db.transaction(new TransactionCallback() {
       public void onTransactionStart(SQLTransaction transaction) {
         transaction.executeSql("DROP TABLE IF EXISTS test", null);
@@ -85,7 +85,7 @@ public class DatabaseTest extends GWTTestCase {
   }
 
   public void testTxStepsSequenceOk() throws Exception {
-    delayTestFinish(3000);
+    delayTestFinish(10000);
     final List<Integer> steps = new Vector<Integer>();
     steps.add(0);
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -163,7 +163,7 @@ public class DatabaseTest extends GWTTestCase {
   }
 
   public void testTxStepsSequenceWithFailure() throws Exception {
-    delayTestFinish(3000);
+    delayTestFinish(10000);
     final List<Integer> steps = new Vector<Integer>();
     steps.add(0);
     GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {

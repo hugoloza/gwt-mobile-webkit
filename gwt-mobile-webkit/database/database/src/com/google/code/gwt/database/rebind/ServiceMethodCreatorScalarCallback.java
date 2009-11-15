@@ -16,10 +16,15 @@
 
 package com.google.code.gwt.database.rebind;
 
+import com.google.code.gwt.database.client.SQLResultSet;
+import com.google.code.gwt.database.client.SQLTransaction;
 import com.google.code.gwt.database.client.service.ScalarCallback;
-import com.google.code.gwt.database.client.service.callback.scalar.StatementCallbackScalarCallback;
+import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
+import com.google.code.gwt.database.client.service.callback.scalar.ScalarRow;
 import com.google.code.gwt.database.client.service.callback.scalar.TransactionCallbackScalarCallback;
+import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.JType;
 
 /**
  * Represents a ServiceMethodCreator for the {@link ScalarCallback} type.
@@ -29,16 +34,57 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 public class ServiceMethodCreatorScalarCallback extends ServiceMethodCreator {
 
   @Override
-  public void generateOnTransactionStartBody() throws UnableToCompleteException {
-    generateExecuteSqlStatement("new "
-        + genUtils.getClassName(StatementCallbackScalarCallback.class) + "<"
-        + genUtils.getTypeParameter(callback.getType()) + ">(this)");
+  protected String getTransactionCallbackClassName()
+      throws UnableToCompleteException {
+    JType scalarType = getScalarType();
+    if (genUtils.isAssignableToType(scalarType, Number.class)
+        || genUtils.isAssignableToType(scalarType, String.class)
+        || genUtils.isAssignableToType(scalarType, Boolean.class)) {
+      return genUtils.getClassName(TransactionCallbackScalarCallback.class)
+          + "<" + genUtils.getClassName(scalarType) + ">";
+    }
+    logger.log(TreeLogger.ERROR, "The type parameter of "
+        + genUtils.getClassName(ScalarCallback.class)
+        + " must be one of String, Number subclasses, Boolean");
+    throw new UnableToCompleteException();
   }
 
   @Override
-  protected String getTransactionCallbackClassName()
+  protected void generateStatementCallbackParameter()
       throws UnableToCompleteException {
-    return genUtils.getClassName(TransactionCallbackScalarCallback.class) + "<"
-        + genUtils.getTypeParameter(callback.getType()) + ">";
+    String rowType = genUtils.getClassName(ScalarRow.class) + "<"
+        + genUtils.getClassName(getScalarType()) + ">";
+    String rsVarName = GeneratorUtils.getVariableName("resultSet",
+        service.getParameters());
+    String txVarName = GeneratorUtils.getVariableName("transaction",
+        service.getParameters());
+    String ecVarName = GeneratorUtils.getVariableName("code",
+        service.getParameters());
+    String emVarName = GeneratorUtils.getVariableName("message",
+        service.getParameters());
+
+    sw.println(", new "
+        + genUtils.getClassName(DataServiceStatementCallback.class) + "<"
+        + rowType + ">() {");
+    sw.indent();
+    sw.println("public void onSuccess("
+        + genUtils.getClassName(SQLTransaction.class) + " " + txVarName + ", "
+        + genUtils.getClassName(SQLResultSet.class) + "<" + rowType + "> "
+        + rsVarName + ") {");
+    sw.indentln("storeValue(" + rsVarName + ".getRows().getItem(0).get"
+        + genUtils.getClassName(getScalarType()) + "());");
+    sw.println("}");
+
+    sw.println("protected void storeError(int " + ecVarName + ", String "
+        + emVarName + ") {");
+    sw.indentln("storeStatementError(" + ecVarName + ", " + emVarName + ");");
+    sw.println("}");
+
+    sw.outdent();
+    sw.print("}");
+  }
+
+  private JType getScalarType() {
+    return callback.getType().isParameterized().getTypeArgs()[0];
   }
 }

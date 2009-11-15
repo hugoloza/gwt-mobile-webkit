@@ -24,7 +24,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  * code.
  * 
  * <p>
- * This Row type is used to obtain a scalar value from the resultset.
+ * This Row type is used to obtain a scalar value from the resultSet.
  * </p>
  * 
  * @author bguijt
@@ -34,10 +34,43 @@ public final class ScalarRow<T> extends JavaScriptObject {
   protected ScalarRow() {
   }
 
-  /**
-   * Returns the first value from the row as type T.
-   */
-  public native T getValue() /*-{
+  public native byte getByte() /*-{
+    for (var n in this) {
+      return this[n];
+    }
+  }-*/;
+
+  public native short getShort() /*-{
+    for (var n in this) {
+      return this[n];
+    }
+  }-*/;
+
+  public native int getInteger() /*-{
+    for (var n in this) {
+      return this[n];
+    }
+  }-*/;
+
+  public native float getFloat() /*-{
+    for (var n in this) {
+      return this[n];
+    }
+  }-*/;
+
+  public native double getDouble() /*-{
+    for (var n in this) {
+      return this[n];
+    }
+  }-*/;
+
+  public native boolean getBoolean() /*-{
+    for (var n in this) {
+      return this[n] ? true : false;
+    }
+  }-*/;
+
+  public native String getString() /*-{
     for (var n in this) {
       return this[n];
     }

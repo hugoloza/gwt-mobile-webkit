@@ -44,7 +44,7 @@ public class SQLResultSet<T extends JavaScriptObject> extends JavaScriptObject {
       return getInsertId0();
     } catch (JavaScriptException e) {
       // INVALID_ACCESS_ERR
-      throw new DatabaseException(e.getName());
+      throw new DatabaseException("Could not get insertId from SQLResultSet: " + e.getName(), e);
     }
   }
 

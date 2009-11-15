@@ -77,15 +77,13 @@ public class HelloDatabase implements EntryPoint {
       public void onClick(ClickEvent event) {
         dbService.insertClick(new Date(), new RowIdListCallback() {
           public void onFailure(DataServiceException error) {
-            Window.alert("Failed to add click! Code: " + error.getCode()
-                + ", msg: " + error.getMessage());
+            Window.alert("Failed to add click! " + error);
           }
 
           public void onSuccess(final List<Integer> rowIds) {
             dbService.getClicks(new ListCallback<ClickRow>() {
               public void onFailure(DataServiceException error) {
-                Window.alert("Failed to query clicks! Code: " + error.getCode()
-                    + ", msg: " + error.getMessage());
+                Window.alert("Failed to query clicks! " + error);
               }
 
               public void onSuccess(List<ClickRow> result) {
@@ -123,8 +121,7 @@ public class HelloDatabase implements EntryPoint {
     // Create table 'clickcount' if it doesn't exist already:
     dbService.initTable(new VoidCallback() {
       public void onFailure(DataServiceException error) {
-        Window.alert("Failed to initialize table! Code: " + error.getCode()
-            + ", msg: " + error.getMessage());
+        Window.alert("Failed to initialize table! " + error);
       }
 
       public void onSuccess() {
@@ -137,8 +134,7 @@ public class HelloDatabase implements EntryPoint {
   protected void getCount() {
     dbService.getClickCount(new ScalarCallback<Integer>() {
       public void onFailure(DataServiceException error) {
-        Window.alert("Failed to get count! Code: " + error.getCode()
-            + ", msg: " + error.getMessage());
+        Window.alert("Failed to get count! " + error);
       }
 
       public void onSuccess(Integer result) {
