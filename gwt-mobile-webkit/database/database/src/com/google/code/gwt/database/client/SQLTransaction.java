@@ -44,10 +44,10 @@ public class SQLTransaction extends JavaScriptObject {
    * Helper method to bind a JS function callback to the
    * {@link StatementCallback#onSuccess(SQLTransaction, SQLResultSet)} method.
    */
-  @SuppressWarnings( {"unused"})
-  private static final <T extends JavaScriptObject> void handleStatement(
-      StatementCallback<T> callback, SQLTransaction transaction,
-      SQLResultSet<T> resultSet) {
+  @SuppressWarnings({"unused", "unchecked"})
+  private static final void handleStatement(
+      StatementCallback callback, SQLTransaction transaction,
+      SQLResultSet resultSet) {
     UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
     if (ueh != null) {
       try {
@@ -75,9 +75,8 @@ public class SQLTransaction extends JavaScriptObject {
         ueh.onUncaughtException(t);
         return true;
       }
-    } else {
-      return callback.onFailure(transaction, error);
     }
+    return callback.onFailure(transaction, error);
   }
 
   /**
