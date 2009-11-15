@@ -48,6 +48,24 @@ public class DataServiceScalarCallbackTest extends GWTTestCase {
     @Select("SELECT COUNT(*) FROM testtable")
     void selectCountAllInt(ScalarCallback<Integer> callback);
     
+    @Select("SELECT COUNT(*) FROM testtable")
+    void selectCountAllShort(ScalarCallback<Short> callback);
+    
+    @Select("SELECT COUNT(*) FROM testtable")
+    void selectCountAllByte(ScalarCallback<Byte> callback);
+    
+    @Select("SELECT COUNT(*) FROM testtable")
+    void selectCountAllFloat(ScalarCallback<Float> callback);
+    
+    @Select("SELECT COUNT(*) FROM testtable")
+    void selectCountAllDouble(ScalarCallback<Double> callback);
+    
+    @Select("SELECT (COUNT(*) > 0) FROM testtable")
+    void hasRecordsTrue(ScalarCallback<Boolean> callback);
+    
+    @Select("SELECT (COUNT(*) == 0) FROM testtable")
+    void hasNoRecordsFalse(ScalarCallback<Boolean> callback);
+    
     @Select("SELECT COUNT(*) FROM nonexistingtable")
     void selectCountAllFail(ScalarCallback<Integer> callback);
   }
@@ -66,7 +84,7 @@ public class DataServiceScalarCallbackTest extends GWTTestCase {
   }
 
   public void testCreate() throws Exception {
-    delayTestFinish(10000);
+    delayTestFinish(3000);
     service.create(new VoidCallback() {
       public void onFailure(DataServiceException error) {
         fail(error.toString());
@@ -78,7 +96,7 @@ public class DataServiceScalarCallbackTest extends GWTTestCase {
   }
   
   public void testSelectCountAllInt() {
-    delayTestFinish(10000);
+    delayTestFinish(3000);
     service.selectCountAllInt(new ScalarCallback<Integer>() {
       public void onFailure(DataServiceException error) {
         fail(error.toString());
@@ -91,8 +109,92 @@ public class DataServiceScalarCallbackTest extends GWTTestCase {
     });
   }
   
+  public void testSelectCountAllShort() {
+    delayTestFinish(3000);
+    service.selectCountAllShort(new ScalarCallback<Short>() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess(Short result) {
+        assertNotNull("Result may not be null", result);
+        assertTrue("Result must be 0 or higher", result >= 0);
+        finishTest();
+      }
+    });
+  }
+  
+  public void testSelectCountAllByte() {
+    delayTestFinish(3000);
+    service.selectCountAllByte(new ScalarCallback<Byte>() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess(Byte result) {
+        assertNotNull("Result may not be null", result);
+        assertTrue("Result must be 0 or higher", result >= 0);
+        finishTest();
+      }
+    });
+  }
+  
+  public void testSelectCountAllFloat() {
+    delayTestFinish(3000);
+    service.selectCountAllFloat(new ScalarCallback<Float>() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess(Float result) {
+        assertNotNull("Result may not be null", result);
+        assertTrue("Result must be 0 or higher", result >= 0);
+        finishTest();
+      }
+    });
+  }
+  
+  public void testSelectCountAllDouble() {
+    delayTestFinish(3000);
+    service.selectCountAllFloat(new ScalarCallback<Float>() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess(Float result) {
+        assertNotNull("Result may not be null", result);
+        assertTrue("Result must be 0 or higher", result >= 0);
+        finishTest();
+      }
+    });
+  }
+  
+  public void testHasRecordsTrue() {
+    delayTestFinish(3000);
+    service.hasRecordsTrue(new ScalarCallback<Boolean>() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess(Boolean result) {
+        assertNotNull("Result may not be null", result);
+        assertTrue("Result must be true", result);
+        finishTest();
+      }
+    });
+  }
+  
+  public void testHasNoRecordsFalse() {
+    delayTestFinish(3000);
+    service.hasNoRecordsFalse(new ScalarCallback<Boolean>() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess(Boolean result) {
+        assertNotNull("Result may not be null", result);
+        assertFalse("Result must be false", result);
+        finishTest();
+      }
+    });
+  }
+  
   public void testSelectCountAllFail() {
-    delayTestFinish(10000);
+    delayTestFinish(3000);
     service.selectCountAllFail(new ScalarCallback<Integer>() {
       public void onFailure(DataServiceException error) {
         assertTrue("Error must have message attribute!", error.getMessage() != null && error.getMessage().length() > 0);
