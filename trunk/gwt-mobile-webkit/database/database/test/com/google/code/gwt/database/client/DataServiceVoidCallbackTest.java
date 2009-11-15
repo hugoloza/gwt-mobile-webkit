@@ -74,7 +74,7 @@ public class DataServiceVoidCallbackTest extends GWTTestCase {
   }
 
   public void testCreateOk() throws Exception {
-    delayTestFinish(10000);
+    delayTestFinish(3000);
     service.createOk(new VoidCallback() {
       public void onFailure(DataServiceException error) {
         fail(error.toString());
@@ -86,15 +86,17 @@ public class DataServiceVoidCallbackTest extends GWTTestCase {
   }
 
   public void testCreateFail() throws Exception {
-    delayTestFinish(10000);
+    delayTestFinish(3000);
     service.createFail(new VoidCallback() {
       public void onFailure(DataServiceException error) {
-        assertTrue("Error must have message attribute!", error.getMessage() != null && error.getMessage().length() > 0);
-        assertTrue("Error must have sql attribute!", error.getSql() != null && error.getSql().length() > 0);
+        assertTrue("Error must have message attribute!",
+            error.getMessage() != null && error.getMessage().length() > 0);
+        assertTrue("Error must have sql attribute!", error.getSql() != null
+            && error.getSql().length() > 0);
         finishTest();
       }
       public void onSuccess() {
-        fail("The statement creates a suppoosedly already existing table - it should fail!");
+        fail("The statement creates a supposedly already existing table - it should fail!");
       }
     });
   }
