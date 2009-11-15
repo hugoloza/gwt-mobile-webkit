@@ -16,6 +16,8 @@
 
 package com.google.code.gwt.database.client.util;
 
+import java.util.List;
+
 import com.google.code.gwt.database.rebind.DataServiceGenerator;
 
 /**
@@ -78,5 +80,36 @@ public class StringUtils {
       default:
         return String.valueOf(ch);
     }
+  }
+
+  /**
+   * Joins the values of the array together separated by the join argument.
+   */
+  public static String join(Object[] values, String join) {
+    if (values == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < values.length; i++) {
+      if (i > 0) {
+        sb.append(join);
+      }
+      sb.append(values[i]);
+    }
+    return sb.toString();
+  }
+
+  public static String join(List<?> values, String join) {
+    if (values == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < values.size(); i++) {
+      if (i > 0) {
+        sb.append(join);
+      }
+      sb.append(values.get(i));
+    }
+    return sb.toString();
   }
 }

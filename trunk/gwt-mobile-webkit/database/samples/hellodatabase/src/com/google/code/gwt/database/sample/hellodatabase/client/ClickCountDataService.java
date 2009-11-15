@@ -62,6 +62,9 @@ public interface ClickCountDataService extends DataService {
   @Select("SELECT count(*) FROM clickcount")
   void getClickCount(ScalarCallback<Integer> callback);
   
+  /**
+   * Obtains the version number of the SQLite database.
+   */
   @Select("SELECT sqlite_version()")
   void getSqliteVersion(ScalarCallback<String> callback);
 }

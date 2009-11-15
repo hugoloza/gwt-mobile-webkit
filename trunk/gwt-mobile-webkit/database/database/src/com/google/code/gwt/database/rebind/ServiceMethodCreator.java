@@ -157,8 +157,10 @@ public abstract class ServiceMethodCreator {
         logger.log(TreeLogger.WARN,
             "no parameter on the service method named '" + foreach
                 + "' found. Using Object as the type for the loop variable '_'");
-      } else {
+      } else if (collection.isParameterized() != null) {
         forEachType = genUtils.getTypeParameter(collection);
+      } else if (collection.isArray() != null) {
+        forEachType = genUtils.getClassName(collection.isArray().getComponentType());
       }
       if (forEachType == null) {
         forEachType = "Object";
