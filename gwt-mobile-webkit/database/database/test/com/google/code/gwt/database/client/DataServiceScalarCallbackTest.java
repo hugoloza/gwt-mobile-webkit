@@ -68,6 +68,9 @@ public class DataServiceScalarCallbackTest extends GWTTestCase {
     
     @Select("SELECT COUNT(*) FROM nonexistingtable")
     void selectCountAllFail(ScalarCallback<Integer> callback);
+    
+    @Select("SELECT textvalue FROM testtable WHERE LENGTH(textvalue) > 0")
+    void selectLastText(ScalarCallback<String> callback);
   }
   
   private TestScalarCallbackDataService service = null;
@@ -203,6 +206,20 @@ public class DataServiceScalarCallbackTest extends GWTTestCase {
       }
       public void onSuccess(Integer result) {
         fail("Querying nonexisting table should fail!");
+      }
+    });
+  }
+  
+  public void testSelectLastText() {
+    delayTestFinish(3000);
+    service.selectLastText(new ScalarCallback<String>() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess(String result) {
+        assertNotNull("Result may not be null", result);
+        assertTrue("Result must have a length > 0", result.length() >= 0);
+        finishTest();
       }
     });
   }
