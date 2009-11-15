@@ -33,13 +33,31 @@ import com.google.gwt.core.ext.typeinfo.JType;
  */
 public class ServiceMethodCreatorScalarCallback extends ServiceMethodCreator {
 
+  /**
+   * Defines the types that may be associated with the ScalarCallback.
+   */
+  private static final Class<?>[] ALLOWED_SCALAR_TYPES = {
+    Integer.class,
+    Short.class,
+    Byte.class,
+    Float.class,
+    Double.class,
+    Boolean.class,
+    String.class
+  };
+  
   @Override
   protected String getTransactionCallbackClassName()
       throws UnableToCompleteException {
     JType scalarType = getScalarType();
-    if (genUtils.isAssignableToType(scalarType, Number.class)
-        || genUtils.isAssignableToType(scalarType, String.class)
-        || genUtils.isAssignableToType(scalarType, Boolean.class)) {
+    boolean ok = false;
+    for (Class<?> allowed : ALLOWED_SCALAR_TYPES) {
+      if (GeneratorUtils.isType(scalarType, allowed)) {
+        ok = true;
+        break;
+      }
+    }
+    if (ok) {
       return genUtils.getClassName(TransactionCallbackScalarCallback.class)
           + "<" + genUtils.getClassName(scalarType) + ">";
     }
