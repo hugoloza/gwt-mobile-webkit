@@ -129,9 +129,23 @@ public class HelloDatabase implements EntryPoint {
         getCount();
       }
     });
+
+    getVersion();
   }
 
-  protected void getCount() {
+  private void getVersion() {
+    dbService.getSqliteVersion(new ScalarCallback<String>() {
+      public void onFailure(DataServiceException error) {
+        Window.alert("Failed to get SQLite version! " + error);
+      }
+
+      public void onSuccess(String result) {
+        vPanel.add(new Label("SQLite version: " + result));
+      }
+    });
+  }
+
+  private void getCount() {
     dbService.getClickCount(new ScalarCallback<Integer>() {
       public void onFailure(DataServiceException error) {
         Window.alert("Failed to get count! " + error);
