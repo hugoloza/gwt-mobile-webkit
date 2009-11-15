@@ -92,15 +92,15 @@ The method declares two parameters before the callback: a String called `name` a
 Under the hood, the expressions with their curly braces are replaced with a question mark (`?`) and the expressions are moved to an `Object[]` array initializer (in this example, `new Object[] {when.getTime(), name}`).
 
 === Collection parameters ===
-There are two usecases for Collection parameters:
+There are two usecases for Collection (or Array, or Iterable) parameters:
   # Create an SQL statement for each item in the collection (see [#Multiple_SQL_statements_in_a_single_transaction Multiple SQL statements in a single transaction]);
   # Create an SQL `IN(...)` expression with a value for each item in the collection.
 
-The collection (or Array, or Iterable) is expanded during runtime with its values in the SQL statement (regardless of its placement in an `IN()` statement BTW). For instance:
+The collection is expanded during runtime with its values in the SQL statement (regardless of its placement in an `IN()` statement BTW). For instance:
 
 {{{
 @Select("SELECT * FROM atable WHERE value IN({filterValues})")
-void getFilteredData(Collection<Integer> filterValues, ListCallback<GenericRow> callback);
+void getFilteredData(List<Integer> filterValues, ListCallback<GenericRow> callback);
 }}}
 
 The values in the provided collection are inserted in the SQL statement, like this:
@@ -123,7 +123,7 @@ tx.executeSql("SELECT * FROM atable WHERE value IN(?,?,?)", params);
 == Getting results ==
 
 === Anticipating no results: !VoidCallback ===
-If you execute SQL and you don't want to handle any results, simply use the `VoidCallback` type:
+If you execute SQL and you don't want to process any results, simply use the `VoidCallback` type:
 
 {{{
 @Update("INSERT INTO testtable (adate) VALUES ({when.getTime()})")
@@ -155,7 +155,7 @@ dbService.getCount(new ScalarCallback<Integer>() {
 
 The `result` value is obtained as the first column from the first record in the resultSet. If no data is available, you probably executed the wrong SQL.
 
-If the transaction executes multiple SQL statements, *only the last* statement is considered for providing the value.
+The types you can use for the `ScalarCallback` are `Byte`, `Short`, `Integer`, `Float`, `Double`, `Boolean` and `String`.
 
 === Anticipating multiple rows: !ListCallback ===
 Most `SELECT` queries return a regular, tabular kind of resultSet. The `ListCallback` is designed for this usecase:
@@ -202,7 +202,7 @@ public final class TestTableRow extends JavaScriptObject {
 
 The references in the [http://code.google.com/webtoolkit/doc/1.6/FAQ_Client.html#JavaScript_Native_Interface JSNI] code `this.name` and `this.adate` refer to the properties of a resultSet record. By means of a !JavaScript overlay type, we can access these properties.
 
-If you think creating your own row type is too complex, you can always fall back to the generic row type `GenericRow`, just like in the example above. That type is a bit like the `ResultSet` type in JDBC: you access the data with methods like `getInteger(String columnName)` and `getString(String columnName)`. For most data types there is an accessor method.
+If you think creating your own row type is too complex, you can always turn to the generic row type `GenericRow`, just like in the example above. That type is a bit like the `ResultSet` type in JDBC: you access the data with methods like `getInteger(String columnName)` and `getString(String columnName)`. For most data types there is an accessor method.
 
 === Anticipating primary key ID's (ROWID's): !RowIdListCallback ===
 The `@Update` annotation enables the use of a fourth Callback type: the `RowIdListCallback`. This callback type *only* works with SQL INSERT statements.
@@ -217,7 +217,7 @@ void insertDate(Date when, RowIdListCallback callback);
 Note the use of a `List`-kind Callback, when in fact you want a single value. Maybe later we have a `RowIdScalarCallback` for this purpose, but for now, this will suffice just fine:
 
 {{{
-dbService.insertDate(new RowIdCallback() {
+dbService.insertDate(new Date(), new RowIdCallback() {
   public void onFailure(DataServiceException e) {
      // Handle failure
   }
