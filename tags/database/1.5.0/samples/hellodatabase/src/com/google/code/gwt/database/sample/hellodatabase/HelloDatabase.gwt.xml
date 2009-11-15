@@ -1,0 +1,10 @@
+<module rename-to="hellodatabase">
+	<!-- Inherit the core Web Toolkit stuff.                        -->
+	<inherits name="com.google.gwt.user.User" />
+
+	<!-- Other module inherits                                      -->
+	<inherits name="com.google.code.gwt.database.Html5Database" />
+
+	<!-- Specify the app entry point class.                         -->
+	<entry-point class="com.google.code.gwt.database.sample.hellodatabase.client.HelloDatabase" />
+</module>
