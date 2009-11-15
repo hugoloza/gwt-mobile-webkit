@@ -65,7 +65,18 @@ public class DataServiceListCallbackTest extends GWTTestCase {
 
     @Select("SELECT integervalue, textvalue, numericvalue, realvalue, "
         + "nonevalue FROM testtable WHERE id IN ({ids})")
-    void getRecords(Iterable<Integer> ids, ListCallback<GenericRow> callback);
+    void getRecordsByIterable(Iterable<Integer> ids,
+        ListCallback<GenericRow> callback);
+
+    @Select("SELECT integervalue, textvalue, numericvalue, realvalue, "
+        + "nonevalue FROM testtable WHERE id IN ({ids})")
+    void getRecordsByWrapperArray(Integer[] ids,
+        ListCallback<GenericRow> callback);
+
+    @Select("SELECT integervalue, textvalue, numericvalue, realvalue, "
+        + "nonevalue FROM testtable WHERE id IN ({ids})")
+    void getRecordsByPrimitiveArray(int[] ids,
+        ListCallback<GenericRow> callback);
   }
 
   private TestListCallbackDataService service = null;
@@ -115,7 +126,7 @@ public class DataServiceListCallbackTest extends GWTTestCase {
     });
   }
   
-  public void testGetIds() throws Exception {
+  public void testGetIdsByIterable() throws Exception {
     delayTestFinish(3000);
     service.getIds(new ListCallback<IdRow>() {
       public void onFailure(DataServiceException error) {
@@ -129,13 +140,77 @@ public class DataServiceListCallbackTest extends GWTTestCase {
         for (IdRow id : result) {
           ids.add(Integer.valueOf(id.getId()));
         }
-        service.getRecords(ids, new ListCallback<GenericRow>() {
+        service.getRecordsByIterable(ids, new ListCallback<GenericRow>() {
           public void onSuccess(List<GenericRow> records) {
             assertNotNull("Resultset may never be null!", records);
             assertTrue("Number of records must be larger than 0 for this test!",
                 records.size() > 0);
             assertEquals("Number of records must equal number of IDs!",
                 ids.size(), records.size());
+            finishTest();
+          }
+          public void onFailure(DataServiceException error) {
+            fail("Failed to obtain records! " + error);
+          }
+        });
+      }
+    });
+  }
+  
+  public void testGetIdsByWrapperArray() throws Exception {
+    delayTestFinish(3000);
+    service.getIds(new ListCallback<IdRow>() {
+      public void onFailure(DataServiceException error) {
+        fail("Failed to obtain ID's! " + error);
+      }
+      public void onSuccess(List<IdRow> result) {
+        assertNotNull("Resultset may never be null!", result);
+        assertTrue("Number of IDs must be larger than 0 for this test!",
+            result.size() > 0);
+        final Integer[] ids = new Integer[result.size()];
+        int i = 0;
+        for (IdRow id : result) {
+          ids[i++] = Integer.valueOf(id.getId());
+        }
+        service.getRecordsByWrapperArray(ids, new ListCallback<GenericRow>() {
+          public void onSuccess(List<GenericRow> records) {
+            assertNotNull("Resultset may never be null!", records);
+            assertTrue("Number of records must be larger than 0 for this test!",
+                records.size() > 0);
+            assertEquals("Number of records must equal number of IDs!",
+                ids.length, records.size());
+            finishTest();
+          }
+          public void onFailure(DataServiceException error) {
+            fail("Failed to obtain records! " + error);
+          }
+        });
+      }
+    });
+  }
+  
+  public void testGetIdsByPrimtiveArray() throws Exception {
+    delayTestFinish(3000);
+    service.getIds(new ListCallback<IdRow>() {
+      public void onFailure(DataServiceException error) {
+        fail("Failed to obtain ID's! " + error);
+      }
+      public void onSuccess(List<IdRow> result) {
+        assertNotNull("Resultset may never be null!", result);
+        assertTrue("Number of IDs must be larger than 0 for this test!",
+            result.size() > 0);
+        final int[] ids = new int[result.size()];
+        int i = 0;
+        for (IdRow id : result) {
+          ids[i++] = id.getId();
+        }
+        service.getRecordsByPrimitiveArray(ids, new ListCallback<GenericRow>() {
+          public void onSuccess(List<GenericRow> records) {
+            assertNotNull("Resultset may never be null!", records);
+            assertTrue("Number of records must be larger than 0 for this test!",
+                records.size() > 0);
+            assertEquals("Number of records must equal number of IDs!",
+                ids.length, records.size());
             finishTest();
           }
           public void onFailure(DataServiceException error) {
