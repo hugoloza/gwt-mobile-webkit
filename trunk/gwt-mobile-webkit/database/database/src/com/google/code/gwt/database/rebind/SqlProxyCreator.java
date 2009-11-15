@@ -31,12 +31,13 @@ import com.google.code.gwt.database.client.service.ScalarCallback;
 import com.google.code.gwt.database.client.service.Select;
 import com.google.code.gwt.database.client.service.Update;
 import com.google.code.gwt.database.client.service.VoidCallback;
+import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
 import com.google.code.gwt.database.client.service.callback.list.StatementCallbackListCallback;
 import com.google.code.gwt.database.client.service.callback.list.TransactionCallbackListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.StatementCallbackRowIdListCallback;
 import com.google.code.gwt.database.client.service.callback.rowid.TransactionCallbackRowIdListCallback;
-import com.google.code.gwt.database.client.service.callback.scalar.StatementCallbackScalarCallback;
 import com.google.code.gwt.database.client.service.callback.scalar.TransactionCallbackScalarCallback;
+import com.google.code.gwt.database.client.service.callback.voyd.StatementCallbackVoidCallback;
 import com.google.code.gwt.database.client.service.callback.voyd.TransactionCallbackVoidCallback;
 import com.google.code.gwt.database.client.service.impl.BaseDataService;
 import com.google.code.gwt.database.client.service.impl.DataServiceUtils;
@@ -74,7 +75,8 @@ public class SqlProxyCreator {
       ListCallback.class.getCanonicalName(),
       ScalarCallback.class.getCanonicalName(),
       RowIdListCallback.class.getCanonicalName(),
-      StatementCallbackScalarCallback.class.getCanonicalName(),
+      DataServiceStatementCallback.class.getCanonicalName(),
+      StatementCallbackVoidCallback.class.getCanonicalName(),
       StatementCallbackListCallback.class.getCanonicalName(),
       StatementCallbackRowIdListCallback.class.getCanonicalName(),
       TransactionCallbackVoidCallback.class.getCanonicalName(),
@@ -346,6 +348,6 @@ public class SqlProxyCreator {
    * Returns the name of the generated class.
    */
   private String getProxySimpleName() {
-    return dataService.getName() + PROXY_SUFFIX;
+    return dataService.getName().replace('.', '_') + PROXY_SUFFIX;
   }
 }

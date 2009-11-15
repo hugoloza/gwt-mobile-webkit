@@ -16,7 +16,6 @@
 
 package com.google.code.gwt.database.sample.hellodatabase.client;
 
-import java.util.Collection;
 import java.util.Date;
 
 import com.google.code.gwt.database.client.service.Connection;
@@ -52,19 +51,6 @@ public interface ClickCountDataService extends DataService {
   void insertClick(Date when, RowIdListCallback callback);
 
   /**
-   * Returns the clicks with the specified IDs.
-   */
-  @Select("SELECT clicked FROM clickcount WHERE id IN ({ids})")
-  void getClicksWithIds(Collection<Integer> ids, ListCallback<ClickRow> callback);
-  
-  /**
-   * Records a collection of click values
-   */
-  @Update(sql="INSERT INTO clickcount (clicked) VALUES ({_.getTime()})",
-          foreach="clicks")
-  void insertClicks(Collection<Date> clicks, RowIdListCallback callback);
-
-  /**
    * Returns all clicks.
    */
   @Select("SELECT clicked FROM clickcount")
@@ -76,13 +62,4 @@ public interface ClickCountDataService extends DataService {
   @Select("SELECT count(*) FROM clickcount")
   void getClickCount(ScalarCallback<Integer> callback);
   
-  public enum TestEnum {
-    A, B
-  }
-  
-  /**
-   * Just type testing here!
-   */
-  @Update(sql="SELECT * FROM clickcount WHERE clicked={i} OR clicked={e} OR clicked={array1} OR clicked={array2} OR clicked={col1}", foreach="col1")
-  void testTypes(int i, TestEnum e, int[] array1, String[] array2, Collection<String> col1, VoidCallback callback);
 }

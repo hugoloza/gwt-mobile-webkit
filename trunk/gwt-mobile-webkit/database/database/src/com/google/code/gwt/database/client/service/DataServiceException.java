@@ -30,6 +30,8 @@ public class DataServiceException extends Exception {
   private static final long serialVersionUID = -3748774586186283062L;
 
   private int code;
+  private String sql;
+  private Object[] parameters;
 
   /**
    * Creates a DataServiceException using a SQLError as source.
@@ -40,12 +42,23 @@ public class DataServiceException extends Exception {
   }
 
   /**
-   * Creates a DataServiceException from a custom message, with error code 1
-   * (DATABASE_ERR).
+   * Creates a DataServiceException from a custom message, with error code 0
+   * (UNKNOWN_ERR).
    */
-  public DataServiceException(String message) {
+  public DataServiceException(String msg) {
+    super(msg);
+    this.code = 0;
+  }
+
+  /**
+   * Creates a DataServiceException from a series of custom fields
+   */
+  public DataServiceException(String message, int code, String sql,
+      Object[] parameters) {
     super(message);
-    this.code = 0; // UNKNOWN_ERR
+    this.code = code;
+    this.sql = sql;
+    this.parameters = parameters;
   }
 
   /**
@@ -55,5 +68,44 @@ public class DataServiceException extends Exception {
    */
   public int getCode() {
     return code;
+  }
+
+  /**
+   * Returns the SQL statement which was executed when the error occurred.
+   */
+  public String getSql() {
+    return sql;
+  }
+
+  /**
+   * Returns the parameters of the SQL statement which was executed when the
+   * error occurred.
+   */
+  public Object[] getParameters() {
+    return parameters;
+  }
+
+  /**
+   * Returns the error details in a single String.
+   */
+  @Override
+  public String toString() {
+    return "DataServiceException: #" + code + " - " + getMessage()
+        + " - Executed SQL: " + sql
+        + (parameters != null ? ", args: [" + join(parameters) + "]" : "");
+  }
+
+  private String join(Object[] values) {
+    if (values == null) {
+      return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < values.length; i++) {
+      if (sb.length() > 0) {
+        sb.append(", ");
+      }
+      sb.append(values[i]);
+    }
+    return sb.toString();
   }
 }

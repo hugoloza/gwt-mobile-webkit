@@ -32,6 +32,10 @@ public class DatabaseSuite {
     
     // $JUnit-BEGIN$
     suite.addTestSuite(DatabaseTest.class);
+    suite.addTestSuite(DataServiceVoidCallbackTest.class);
+    suite.addTestSuite(DataServiceScalarCallbackTest.class);
+    suite.addTestSuite(DataServiceListCallbackTest.class);
+    suite.addTestSuite(DataServiceRowIdListCallbackTest.class);
     // $JUnit-END$
     
     return suite;

@@ -89,7 +89,7 @@ public abstract class BaseDataService implements DataService {
   /**
    * Call the callback's onFailure() with the specified message.
    * 
-   * @param callback (may be <code>null</code>)
+   * @param callback (may be <code>null</code> - nothing will happen)
    * @param msg the error message
    */
   private void callFailure(Callback callback, String msg) {

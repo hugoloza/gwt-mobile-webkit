@@ -30,6 +30,12 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 public class ServiceMethodCreatorRowIdListCallback extends ServiceMethodCreator {
 
   @Override
+  protected String getTransactionCallbackClassName()
+      throws UnableToCompleteException {
+    return genUtils.getClassName(TransactionCallbackRowIdListCallback.class);
+  }
+
+  @Override
   public void generateOnTransactionStartBody() throws UnableToCompleteException {
     // Use a single instance for each tx.executeSql()
     // call in the iteration:
@@ -43,15 +49,19 @@ public class ServiceMethodCreatorRowIdListCallback extends ServiceMethodCreator 
         + " = new " + stmtCallbackName + "(this);");
 
     if (StringUtils.isNotEmpty(foreach)) {
-      generateExecuteIteratedSqlStatements(callbackInstanceName);
+      generateExecuteIteratedSqlStatements();
     } else {
-      generateExecuteSqlStatement(callbackInstanceName);
+      generateExecuteSqlStatement();
     }
   }
-
+  
   @Override
-  protected String getTransactionCallbackClassName()
+  protected void generateStatementCallbackParameter()
       throws UnableToCompleteException {
-    return genUtils.getClassName(TransactionCallbackRowIdListCallback.class);
+    // Holds the name of a pre-instantiated StatementCallback type:
+    String callbackInstanceName = GeneratorUtils.getVariableName(
+        "rowIdListCallback", service.getParameters());
+
+    sw.print(", " + callbackInstanceName);
   }
 }

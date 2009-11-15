@@ -48,6 +48,11 @@ public class StatementCallbackRowIdListCallback extends
     this.txCallback = txCallback;
   }
 
+  @Override
+  protected void storeError(int code, String message) {
+    txCallback.storeStatementError(code, message);
+  }
+
   /**
    * Adds the generated ROWID to the transactionCallback's
    * {@link TransactionCallbackRowIdListCallback#addRowId(Integer)
