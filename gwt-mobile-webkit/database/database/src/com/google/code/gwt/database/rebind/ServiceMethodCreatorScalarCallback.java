@@ -22,6 +22,7 @@ import com.google.code.gwt.database.client.service.ScalarCallback;
 import com.google.code.gwt.database.client.service.callback.DataServiceStatementCallback;
 import com.google.code.gwt.database.client.service.callback.scalar.ScalarRow;
 import com.google.code.gwt.database.client.service.callback.scalar.TransactionCallbackScalarCallback;
+import com.google.code.gwt.database.client.util.StringUtils;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -37,15 +38,9 @@ public class ServiceMethodCreatorScalarCallback extends ServiceMethodCreator {
    * Defines the types that may be associated with the ScalarCallback.
    */
   private static final Class<?>[] ALLOWED_SCALAR_TYPES = {
-    Integer.class,
-    Short.class,
-    Byte.class,
-    Float.class,
-    Double.class,
-    Boolean.class,
-    String.class
-  };
-  
+      Integer.class, Short.class, Byte.class, Float.class, Double.class,
+      Boolean.class, String.class};
+
   @Override
   protected String getTransactionCallbackClassName()
       throws UnableToCompleteException {
@@ -63,7 +58,8 @@ public class ServiceMethodCreatorScalarCallback extends ServiceMethodCreator {
     }
     logger.log(TreeLogger.ERROR, "The type parameter of "
         + genUtils.getClassName(ScalarCallback.class)
-        + " must be one of String, Number subclasses, Boolean");
+        + " is unsuitable as Scalar type. Type must be one of "
+        + StringUtils.join(ALLOWED_SCALAR_TYPES, ", "));
     throw new UnableToCompleteException();
   }
 

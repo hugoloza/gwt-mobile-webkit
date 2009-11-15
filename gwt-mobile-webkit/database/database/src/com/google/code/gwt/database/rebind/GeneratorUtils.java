@@ -133,7 +133,8 @@ public class GeneratorUtils {
    * Returns the (first) Type parameter of the specified type.
    */
   public String getTypeParameter(JType type) throws UnableToCompleteException {
-    JClassType[] typeArgs = type.isParameterized().getTypeArgs();
+    JClassType[] typeArgs = type.isParameterized() != null
+        ? type.isParameterized().getTypeArgs() : null;
     if (typeArgs == null || typeArgs.length == 0) {
       logger.log(TreeLogger.ERROR, "Expected a type parameter on the type "
           + type.getQualifiedSourceName());

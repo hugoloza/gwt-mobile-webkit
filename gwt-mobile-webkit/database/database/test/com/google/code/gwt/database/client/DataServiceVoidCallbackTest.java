@@ -33,7 +33,8 @@ import com.google.gwt.junit.client.GWTTestCase;
  */
 public class DataServiceVoidCallbackTest extends GWTTestCase {
 
-  @Connection(name="gh5dt", version="1.0", description="GwtHtml5DatabaseTest", maxsize=5000)
+  @Connection(name="gh5dt", version="1.0",
+      description="GwtHtml5DatabaseTest", maxsize=5000)
   public interface TestVoidCallbackDataService extends DataService {
     
     @Update("CREATE TABLE IF NOT EXISTS testtable ("
@@ -45,10 +46,11 @@ public class DataServiceVoidCallbackTest extends GWTTestCase {
         + "nonevalue NONE)")
     void createOk(VoidCallback callback);
     
-    @Update("CREATE TABLE testtable ("
-        + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-        + "integervalue INTEGER)")
-    void createFail(VoidCallback callback);
+    @Update("DROP TABLE nonexistingtable")
+    void dropFail(VoidCallback callback);
+    
+    @Update("DELETE FROM testtable")
+    void emptyTable(VoidCallback callback);
     
     public enum TestEnum {
       A, B
@@ -56,8 +58,11 @@ public class DataServiceVoidCallbackTest extends GWTTestCase {
     /**
      * Just type testing here!
      */
-    @Update(sql="SELECT * FROM clickcount WHERE clicked={i} OR clicked={e} OR clicked={array1} OR clicked={array2} OR clicked={col1}", foreach="col1")
-    void testTypes(int i, TestEnum e, int[] array1, String[] array2, Collection<String> col1, VoidCallback callback);
+    @Update(sql="SELECT * FROM clickcount WHERE clicked={i} OR clicked={e} "
+    		+ "OR clicked={array1} OR clicked={array2} OR clicked={col1}",
+    		foreach="col1")
+    void testTypes(int i, TestEnum e, int[] array1, String[] array2,
+        Collection<String> col1, VoidCallback callback);
   }
   
   private TestVoidCallbackDataService service = null;
@@ -70,7 +75,8 @@ public class DataServiceVoidCallbackTest extends GWTTestCase {
   @Override
   protected void gwtSetUp() throws Exception {
     service = GWT.create(TestVoidCallbackDataService.class);
-    assertNotNull("GWT.create() of a DataService may not return null!", service);
+    assertNotNull("GWT.create() of a DataService may not return null!",
+        service);
   }
 
   public void testCreateOk() throws Exception {
@@ -85,9 +91,9 @@ public class DataServiceVoidCallbackTest extends GWTTestCase {
     });
   }
 
-  public void testCreateFail() throws Exception {
+  public void testDropFail() throws Exception {
     delayTestFinish(3000);
-    service.createFail(new VoidCallback() {
+    service.dropFail(new VoidCallback() {
       public void onFailure(DataServiceException error) {
         assertTrue("Error must have message attribute!",
             error.getMessage() != null && error.getMessage().length() > 0);
@@ -96,7 +102,19 @@ public class DataServiceVoidCallbackTest extends GWTTestCase {
         finishTest();
       }
       public void onSuccess() {
-        fail("The statement creates a supposedly already existing table - it should fail!");
+        fail("The statement drops a non existing table - it should fail!");
+      }
+    });
+  }
+  
+  public void testEmptyTable() throws Exception {
+    delayTestFinish(3000);
+    service.emptyTable(new VoidCallback() {
+      public void onFailure(DataServiceException error) {
+        fail(error.toString());
+      }
+      public void onSuccess() {
+        finishTest();
       }
     });
   }

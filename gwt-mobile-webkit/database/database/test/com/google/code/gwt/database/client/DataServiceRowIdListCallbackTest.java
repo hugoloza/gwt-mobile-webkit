@@ -42,12 +42,13 @@ public class DataServiceRowIdListCallbackTest extends GWTTestCase {
   /**
    * Class to help insert records over a collection
    */
-  public class TestRecord {
+  public static class TestRecord {
     private int i;
     private String text;
     private Number number;
     private Double real;
     private Object none;
+
     public TestRecord(int i, String text, Number number, Double real,
         Object none) {
       this.i = i;
@@ -56,46 +57,67 @@ public class DataServiceRowIdListCallbackTest extends GWTTestCase {
       this.real = real;
       this.none = none;
     }
+
     public int getI() {
       return i;
     }
+
     public String getText() {
       return text;
     }
+
     public Number getNumber() {
       return number;
     }
+
     public Double getReal() {
       return real;
     }
+
     public Object getNone() {
       return none;
     }
   }
-  
-  @Connection(name = "gh5dt", version = "1.0", description = "GwtHtml5DatabaseTest", maxsize = 5000)
+
+  @Connection(name="gh5dt", version="1.0",
+      description="GwtHtml5DatabaseTest", maxsize=5000)
   public interface TestRowIdListCallbackDataService extends DataService {
 
     @Update("CREATE TABLE IF NOT EXISTS testtable ("
         + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-        + "integervalue INTEGER, " + "textvalue TEXT, "
-        + "numericvalue NUMERIC, " + "realvalue REAL, " + "nonevalue NONE)")
+        + "integervalue INTEGER, "
+        + "textvalue TEXT, "
+        + "numericvalue NUMERIC, "
+        + "realvalue REAL, "
+        + "nonevalue NONE)")
     void create(VoidCallback callback);
 
-    @Update("INSERT INTO testtable (integervalue, textvalue, numericvalue, realvalue, nonevalue) VALUES ({i}, {t}, {n}, {d}, {o})")
+    @Update("INSERT INTO testtable (integervalue, textvalue, numericvalue, "
+    		+ "realvalue, nonevalue) VALUES ({i}, {t}, {n}, {d}, {o})")
     void insertRecord(int i, String t, Number n, Double d, Object o,
         RowIdListCallback callback);
 
-    @Update("INSERT INTO nonexistingtable (integervalue, textvalue, numericvalue, realvalue, nonevalue) VALUES ({i}, {t}, {n}, {d}, {o})")
+    @Update("INSERT INTO nonexistingtable (integervalue, textvalue, "
+    		+ "numericvalue, realvalue, nonevalue) "
+    		+ "VALUES ({i}, {t}, {n}, {d}, {o})")
     void insertRecordFail(int i, String t, Number n, Double d, Object o,
         RowIdListCallback callback);
 
-    @Update(sql="INSERT INTO testtable (integervalue, textvalue, numericvalue, realvalue, nonevalue) VALUES ({_.getI()}, {_.getText()}, {_.getNumber()}, {_.getReal()}, {_.getNone()})",
-            foreach="records")
-    void insertRecords(Collection<TestRecord> records,
+    @Update(sql="INSERT INTO testtable (integervalue, textvalue, "
+      + "numericvalue, realvalue, nonevalue) VALUES ({_.getI()}, "
+      + "{_.getText()}, {_.getNumber()}, {_.getReal()}, {_.getNone()})",
+      foreach="records")
+    void insertRecordsCollection(Collection<TestRecord> records,
         RowIdListCallback callback);
-    
-    @Select("SELECT integervalue, textvalue, numericvalue, realvalue, nonevalue FROM testtable WHERE id IN ({ids})")
+
+    @Update(sql="INSERT INTO testtable (integervalue, textvalue, "
+      + "numericvalue, realvalue, nonevalue) VALUES ({_.getI()}, "
+      + "{_.getText()}, {_.getNumber()}, {_.getReal()}, {_.getNone()})",
+      foreach="records")
+    void insertRecordsArray(TestRecord[] records, RowIdListCallback callback);
+
+    @Select("SELECT integervalue, textvalue, numericvalue, realvalue, "
+        + "nonevalue FROM testtable WHERE id IN ({ids})")
     void getRecords(Collection<Integer> ids, ListCallback<GenericRow> callback);
   }
 
@@ -192,17 +214,20 @@ public class DataServiceRowIdListCallbackTest extends GWTTestCase {
           }
         });
   }
-  
-  public void insertRecords() throws Exception {
+
+  public void insertRecordsColection() throws Exception {
     delayTestFinish(3000);
     final List<TestRecord> inserts = new ArrayList<TestRecord>();
     inserts.add(new TestRecord(1000, "record 1", 1, 1d, null));
-    inserts.add(new TestRecord(1001, "record 2 ma\u00f1ana with slash-u-00f1", 2, 2d, new Date()));
-    inserts.add(new TestRecord(1002, "record 3 ma–ana with literal", 3, 3d, "none"));
-    service.insertRecords(inserts, new RowIdListCallback() {
+    inserts.add(new TestRecord(1001, "record 2 ma\u00f1ana with slash-u-00f1",
+        2, 2d, new Date()));
+    inserts.add(new TestRecord(1002, "record 3 ma–ana with literal", 3, 3d,
+        "none"));
+    service.insertRecordsCollection(inserts, new RowIdListCallback() {
       public void onFailure(DataServiceException error) {
         fail("Failed to insert records! " + error.toString());
       }
+
       public void onSuccess(final List<Integer> rowIds) {
         // Test returned rowIds:
         assertNotNull("resultset may not be null!", rowIds);
@@ -211,13 +236,58 @@ public class DataServiceRowIdListCallbackTest extends GWTTestCase {
           public void onFailure(DataServiceException error) {
             fail("Failed to obtain records! " + error.toString());
           }
+
           public void onSuccess(List<GenericRow> result) {
             assertNotNull("Resultset may not be null!", result);
-            assertTrue("Length of resultset must be bigger than 0!", rowIds.size() > 0);
-            assertEquals("ID list and result list must be of same size!", rowIds.size(), result.size());
-            for (int i=0; i<rowIds.size(); i++) {
-              assertEquals("int column must match!", inserts.get(i).getI(), result.get(i).getInt("integervalue"));
-              assertEquals("text column must match!", inserts.get(i).getText(), result.get(i).getString("textvalue"));
+            assertTrue("Length of resultset must be bigger than 0!",
+                rowIds.size() > 0);
+            assertEquals("ID list and result list must be of same size!",
+                rowIds.size(), result.size());
+            for (int i = 0; i < rowIds.size(); i++) {
+              assertEquals("int column must match!", inserts.get(i).getI(),
+                  result.get(i).getInt("integervalue"));
+              assertEquals("text column must match!", inserts.get(i).getText(),
+                  result.get(i).getString("textvalue"));
+            }
+            finishTest();
+          }
+        });
+      }
+    });
+  }
+
+  public void insertRecordsArray() throws Exception {
+    delayTestFinish(3000);
+    final TestRecord[] inserts = {
+        new TestRecord(1003, "record 4", 4, 4d, null),
+        new TestRecord(1004, "record 5 ma\u00f1ana with \\ u 00f1", 5, 5d,
+            new Date()),
+        new TestRecord(1005, "record 6 ma–ana with literal", 6, 6d, "none")};
+    service.insertRecordsArray(inserts, new RowIdListCallback() {
+      public void onFailure(DataServiceException error) {
+        fail("Failed to insert records! " + error.toString());
+      }
+
+      public void onSuccess(final List<Integer> rowIds) {
+        // Test returned rowIds:
+        assertNotNull("resultset may not be null!", rowIds);
+        assertEquals("Length of resultset must match!", 3, rowIds.size());
+        service.getRecords(rowIds, new ListCallback<GenericRow>() {
+          public void onFailure(DataServiceException error) {
+            fail("Failed to obtain records! " + error.toString());
+          }
+
+          public void onSuccess(List<GenericRow> result) {
+            assertNotNull("Resultset may not be null!", result);
+            assertTrue("Length of resultset must be bigger than 0!",
+                rowIds.size() > 0);
+            assertEquals("ID list and result list must be of same size!",
+                rowIds.size(), result.size());
+            for (int i = 0; i < rowIds.size(); i++) {
+              assertEquals("int column must match!", inserts[i].getI(),
+                  result.get(i).getInt("integervalue"));
+              assertEquals("text column must match!", inserts[i].getText(),
+                  result.get(i).getString("textvalue"));
             }
             finishTest();
           }
