@@ -23,7 +23,7 @@ public interface MyDataService extends DataService {
 
   @Update("CREATE TABLE IF NOT EXISTS testtable ("
             + "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-            + "adate INTEGER)"
+            + "adate INTEGER")
   void initDatabase(VoidCallback callback);
 }
 }}}
