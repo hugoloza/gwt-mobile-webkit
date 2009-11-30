@@ -42,8 +42,7 @@
   </target>
 
   <target name="gwtc" description="Compile to JavaScript">
-    <!-- option "-XdisableCastChecking" is needed for GWT2.0 to overcome dynamicCast bug: -->
-    <condition property="compile.gwt.args" value="-XdisableCastChecking -XdisableClassMetadata" else="">
+    <condition property="gwt.compile.report" value="-compileReport" else="">
       <isset property="is.gwt2" />
     </condition>
     <outofdate>
@@ -60,20 +59,18 @@
         <gwt.timer name="${sample.upper} with ${gwt.samples.localworkers} localWorkers">
           <java dir="${sample.build}" classname="com.google.gwt.dev.Compiler" classpath="src:${sample.build}/war/WEB-INF/classes:${mobile.webkit.api.jar}:${gwt.user.jar}:${gwt.dev.jar}" fork="yes" failonerror="true">
             <jvmarg value="-Xmx256M" />
+            <!--jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8000" /-->
             <arg value="-localWorkers" />
             <arg value="${gwt.samples.localworkers}" />
             <arg value="-war" />
             <arg file="${sample.build}/war" />
-            <arg value="-soyc" />
-            <arg value="-extra" />
-            <arg value="extra" />
+            <arg line="${gwt.compile.report}" />
             <arg value="-gen" />
             <arg value=".gwt-gen" />
             <!--arg value="-logLevel" />
             <arg value="INFO" />
             <arg value="-style" />
             <arg value="PRETTY" /-->
-            <arg line="${compile.gwt.args}" />
             <arg value="com.google.code.gwt.${sample.api}.sample.${sample.lower}.${sample.module}" />
           </java>
         </gwt.timer>

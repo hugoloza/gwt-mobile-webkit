@@ -42,6 +42,9 @@
   </target>
 
   <target name="gwtc" description="Compile to JavaScript">
+    <condition property="gwt.compile.report" value="-compileReport" else="">
+      <isset property="is.gwt2" />
+    </condition>
     <outofdate>
       <sourcefiles>
         <fileset dir="src" />
@@ -61,7 +64,7 @@
             <arg value="${gwt.samples.localworkers}" />
             <arg value="-war" />
             <arg file="${sample.build}/war" />
-            <arg value="-compileReport" />
+            <arg line="${gwt.compile.report}" />
             <arg value="-gen" />
             <arg value=".gwt-gen" />
             <!--arg value="-logLevel" />
