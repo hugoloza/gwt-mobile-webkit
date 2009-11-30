@@ -61,9 +61,7 @@
             <arg value="${gwt.samples.localworkers}" />
             <arg value="-war" />
             <arg file="${sample.build}/war" />
-            <arg value="-soyc" />
-            <arg value="-extra" />
-            <arg value="extra" />
+            <arg value="-compileReport" />
             <arg value="-gen" />
             <arg value=".gwt-gen" />
             <!--arg value="-logLevel" />
