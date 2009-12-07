@@ -22,12 +22,12 @@ if (Geolocation.isSupported()) {
 }
 }}}
 
-== Getting a Storage instance ==
+== Getting a Geolocation instance ==
 {{{
 Geolocation geo = Geolocation.getGeolocation();
 }}}
 
-== Obtaining your location ==
+== Obtaining your position ==
 {{{
 geo.getCurrentPosition(new PositionCallback() {
     public void onFailure(PositionError error) {
@@ -39,4 +39,11 @@ geo.getCurrentPosition(new PositionCallback() {
     }
 });
 }}}
-The location is enclosed in the `Position` instance returned in the `onSuccess()` callback method.
+The location is enclosed in the `Position` instance returned in the `onSuccess()` callback method:
+{{{
+//...
+Coordinates coords = position.getCoords();
+double latitude = coords.getLatitude();
+double longitude = coords.getLongitude();
+double accuracy = coords.getAccuracy();
+}}}
