@@ -17,6 +17,7 @@
 package com.google.code.gwt.database.client.service;
 
 import com.google.code.gwt.database.client.SQLError;
+import com.google.code.gwt.database.client.util.StringUtils;
 
 /**
  * Represents an exception in DataService failure handling.
@@ -86,26 +87,15 @@ public class DataServiceException extends Exception {
   }
 
   /**
-   * Returns the error details in a single String.
+   * Returns the error details in a single String, including the SQL query
+   * statement and (if available) query parameters.
    */
   @Override
   public String toString() {
     return "DataServiceException: #" + code + " - " + getMessage()
         + " - Executed SQL: " + sql
-        + (parameters != null ? ", args: [" + join(parameters) + "]" : "");
-  }
-
-  private String join(Object[] values) {
-    if (values == null) {
-      return null;
-    }
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < values.length; i++) {
-      if (sb.length() > 0) {
-        sb.append(", ");
-      }
-      sb.append(values[i]);
-    }
-    return sb.toString();
+        + (parameters != null
+            ? ", args: [" + StringUtils.join(parameters, ", ") + "]"
+            : "");
   }
 }
