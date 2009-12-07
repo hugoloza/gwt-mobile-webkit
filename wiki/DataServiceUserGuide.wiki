@@ -73,6 +73,9 @@ All these statements are executed in a single transaction.
 
 The `RowIdListCallback` in the example returns the generated primary key ID's in a List.
 
+=== What happens when the Web Database API is not supported in the browser ===
+When the Web Database API itself is not supported in the browser, the `onFailure()` callback method is called immediately if you invoke a !DataService method. The error code will be `0` and the message will be `Unable to open Web Database - API is NOT supported`.
+
 === What happens when a statement fails ===
 Whenever a SQL statement fails, the transaction is always rolled back, and the Callback's `onFailure()` method is called with an error code/message indicating the source of the error.
 
