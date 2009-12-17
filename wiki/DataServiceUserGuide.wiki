@@ -1,5 +1,5 @@
 #summary User guide for the DataService API in the html5-database library
-#labels Phase-Implementation,API-Database
+#labels Phase-Implementation,API-Database,Featured
 
 = Introduction =
 
@@ -8,10 +8,17 @@ The !DataService API is a convenience API on top of the existing, regular [Datab
 The API involves an interface, a few annotations and GWT's Deferred Binding to glue the parts together.
 
 = Quick start =
+== Project setup ==
+First, copy the `gwt-html5-database-x.x.x.jar` file to your project classpath. This jar contains everything you need to use the !DataService API.
 
-In order to create a service, you need to inherit GWT module `com.google.code.gwt.database.Html5Database`.
+Next, in your GWT module `gwt.xml` file (which uses the !DataService API), add the following entry:
+{{{
+<inherits name="com.google.code.gwt.database.Html5Database" />
+}}}
+This imports the Database API, which includes the !DataService API into your module. Now you are ready to use the API!
 
-In your GWT client package, create an interface with a Connection annotation:
+== GWT client code ==
+In your GWT module, create an interface with a Connection annotation (in a `.client` package, because eventually the code runs on the client side):
 
 {{{
 package my.gwt.package.client;
