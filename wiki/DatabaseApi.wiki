@@ -19,8 +19,17 @@ Not every browser supports this feature, and currently there are no fallback sce
 NOTE: The Database API as specified by W3C describes two API's: an Asynchronous and a Synchronous API. Currently we only built support for the Asynchronous API, the Synchronous API isn't supported by any browser yet.
 
 = Usage =
+== Add the Database API to your project ==
+First, copy the `gwt-html5-database-x.x.x.jar` file to your project classpath. This jar contains everything you need to use the Database API.
+
+Next, in your GWT module `gwt.xml` file (which uses the Database API), add the following entry:
+{{{
+<inherits name="com.google.code.gwt.database.Html5Database" />
+}}}
+This imports the Database API into your module. Now you are ready to use the API!
+
 == is API supported? ==
-The following will test whether the API is supported in your browser:
+The following client code will test whether the API is supported in your browser:
 {{{
 if (Database.isSupported()) {
     // Interact with your database...
