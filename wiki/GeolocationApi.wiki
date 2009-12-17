@@ -14,8 +14,17 @@ Not every browser supports this feature. Fortunately, there is a fallback scenar
   # Opera Mobile (9.7 but untested!)
 
 = Usage =
+== Add the Geolocation API to your project ==
+First, copy the `gwt-html5-geolocation-x.x.x.jar` file to your project classpath. This jar contains everything you need to use the Geolocation API.
+
+Next, in your GWT module `gwt.xml` file (which uses the Geolocation API), add the following entry:
+{{{
+<inherits name="com.google.code.gwt.geolocation.Html5Geolocation" />
+}}}
+This imports the Geolocation API into your module. Now you are ready to use the API!
+
 == is API supported? ==
-The following will test whether the API is supported in your browser:
+The following code will test whether the API is supported in your browser:
 {{{
 if (Geolocation.isSupported()) {
     // get your Geo location...
