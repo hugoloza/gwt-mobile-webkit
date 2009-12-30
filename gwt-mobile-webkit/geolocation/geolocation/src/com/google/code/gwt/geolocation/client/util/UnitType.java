@@ -16,10 +16,18 @@
 
 package com.google.code.gwt.geolocation.client.util;
 
+/**
+ * This enumeration is used to qualify distances between two
+ * geo locations.
+ *
+ * @see GeographicalArea#GeographicalArea(double, double, int, UnitType)
+ * 
+ * @author bguijt
+ */
 public enum UnitType {
 
-  METERS(1609.344 * (25000d / 360d) * 180d / Math.PI),
-  KILOMETERS(1.609344 * (25000d / 360d) * 180d / Math.PI),
+  METERS(6378137d),
+  KILOMETERS(6378.137d),
   MILES((25000d / 360d) * 180d / Math.PI),
   NAUTICALMILES(60d * 180d / Math.PI);
   
@@ -28,7 +36,10 @@ public enum UnitType {
   private UnitType(double earthRadius) {
     this.earthRadius = earthRadius;
   }
-  
+
+  /**
+   * Returns the amount of units making up the (mean) radius of the earth
+   */
   public double getEarthRadius() {
     return earthRadius;
   }

@@ -17,7 +17,7 @@
 package com.google.code.gwt.geolocation.client;
 
 /**
- * Opera-specific implementation of Geolocation API.
+ * gears-specific implementation of Geolocation API.
  * 
  * @author bguijt
  * 
@@ -25,15 +25,15 @@ package com.google.code.gwt.geolocation.client;
  *      href="http://code.google.com/intl/ja/apis/gears/api_geolocation.html">Gears
  *      API - Geolocation</a>
  */
-public class GeolocationImplOpera extends GeolocationImpl {
+public class GeolocationImplGears extends GeolocationImpl {
 
   public native boolean isSupported() /*-{
-    return typeof google != "undefined"
-        && typeof google.gears != "undefined"
-        && typeof google.gears.factory != "undefined";
+    return typeof $wnd.google != "undefined"
+        && typeof $wnd.google.gears != "undefined"
+        && typeof $wnd.google.gears.factory != "undefined";
   }-*/;
 
   public native Geolocation getGeolocation() /*-{
-    return google.gears.factory.create("beta.geolocation");
+    return $wnd.google.gears.factory.create("beta.geolocation");
   }-*/;
 }

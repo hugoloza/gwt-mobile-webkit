@@ -19,9 +19,10 @@ package com.google.code.gwt.geolocation.client.util;
 /**
  * Represents a geographical area suitable for selection purposes.
  * 
- * @author bguijt
  * @see <a href="http://www.zipcodeworld.com/docs/distance.pdf">Geographical
  *      Distance Calculations</a>
+ * 
+ * @author bguijt
  */
 public class GeographicalArea {
 
