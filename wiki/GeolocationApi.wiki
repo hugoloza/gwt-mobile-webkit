@@ -7,11 +7,11 @@ The Geolocation API ([http://code.google.com/p/gwt-mobile-webkit/downloads/list?
 As of June 2009 some browsers started to add support for this API, specifically Firefox 3.5 and iPhone Safari 3.0. This API gives you the [http://en.wikipedia.org/wiki/World_Geodetic_System WGS84 coordinates] of the location of the browser.
 
 = Browser support =
-Not every browser supports this feature. Fortunately, there is a fallback scenario to rely on the Gears plugin (which as of version 0.9 is only enabled for Opera) for that API is very similar. We built support for the following browsers:
+Not every browser supports this feature. Fortunately, there is a fallback scenario to rely on the Gears plugin - that API is very similar. We built support for the following browsers:
 
   # iPhone Safari (OS3.0)
   # Firefox (3.5)
-  # Opera Mobile (9.7 but untested!)
+  # Any browser with the Google Gears plugin
 
 = Usage =
 == Add the Geolocation API to your project ==
