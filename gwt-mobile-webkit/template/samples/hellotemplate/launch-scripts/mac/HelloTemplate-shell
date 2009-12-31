@@ -1,8 +1,0 @@
-#!/bin/sh
-APPDIR=../..;
-if [ "$GWT_HOME" == "" ]; then
-	echo "The environment variable GWT_HOME is not defined, it should point to a valid GWT installation."
-	exit
-fi
-
-java -Xmx128m -XstartOnFirstThread -d32 -cp "$APPDIR/src:$APPDIR/bin:$GWT_HOME/gwt-user.jar:$GWT_HOME/gwt-dev-mac.jar:../../../../gwt-templtype-template.jar" com.google.gwt.dev.HostedMode -war "$APPDIR/war" "$@" -startupUrl HelloTemplate.html com.google.code.gwt.template.sample.hellotemplate.HelloTemplate
