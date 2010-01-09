@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Bart Guijt and others.
+ * Copyright 2010 Bart Guijt and others.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -41,6 +41,14 @@ public final class Geolocation extends JavaScriptObject {
    */
   public static boolean isSupported() {
     return impl.isSupported();
+  }
+
+  /**
+   * Returns the name of the Geolocation provider, e.g.
+   * <code>HTML5 Geolocation API</code>.
+   */
+  public static String getProviderName() {
+    return impl.getProviderName();
   }
 
   /**
@@ -105,8 +113,7 @@ public final class Geolocation extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/geolocation-API/#watch-position">W3C
    *      Geolocation API - Geolocation.watchPosition</a>
    */
-  public int watchPosition(PositionCallback callback,
-      PositionOptions options) {
+  public int watchPosition(PositionCallback callback, PositionOptions options) {
     return impl.watchPosition(this, callback, options);
   }
 

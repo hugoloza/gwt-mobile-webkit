@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Bart Guijt and others.
+ * Copyright 2010 Bart Guijt and others.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,13 +27,20 @@ package com.google.code.gwt.geolocation.client;
  */
 public class GeolocationImplGears extends GeolocationImpl {
 
-  public native boolean isSupported() /*-{
-    return typeof $wnd.google != "undefined"
-        && typeof $wnd.google.gears != "undefined"
-        && typeof $wnd.google.gears.factory != "undefined";
-  }-*/;
+  private static final GearsFactory factory = GearsFactory.getInstance();
 
-  public native Geolocation getGeolocation() /*-{
-    return $wnd.google.gears.factory.create("beta.geolocation");
-  }-*/;
+  @Override
+  public boolean isSupported() {
+    return true;
+  }
+
+  @Override
+  public Geolocation getGeolocation() {
+    return factory.createGeolocation();
+  }
+
+  @Override
+  public String getProviderName() {
+    return "Google Gears API " + factory.getVersion();
+  }
 }

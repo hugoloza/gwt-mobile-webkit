@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Bart Guijt and others.
+ * Copyright 2010 Bart Guijt and others.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -45,7 +45,7 @@ public class PositionError extends JavaScriptObject {
    *      API - PositionError.code</a>
    */
   public final native int getCode() /*-{
-    return this.code;
+    return (typeof this.code == "undefined") ? 0 : this.code;
   }-*/;
 
   /**

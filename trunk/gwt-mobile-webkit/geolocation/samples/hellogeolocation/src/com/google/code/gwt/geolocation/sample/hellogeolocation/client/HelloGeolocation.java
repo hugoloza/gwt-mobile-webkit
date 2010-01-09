@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Bart Guijt and others.
+ * Copyright 2010 Bart Guijt and others.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,7 +20,10 @@ import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.code.gwt.geolocation.client.Position;
 import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.code.gwt.geolocation.client.PositionError;
+import com.google.code.gwt.geolocation.client.PositionOptions;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -34,24 +37,38 @@ public class HelloGeolocation implements EntryPoint {
    * This is the entry point method.
    */
   public void onModuleLoad() {
+    GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+      public void onUncaughtException(Throwable e) {
+        RootPanel.get().add(new Label("Uncaught exception: " + e));
+      }
+    });
     final VerticalPanel main = new VerticalPanel();
     RootPanel.get().add(main);
 
+    Label providerLabel = new Label("Geolocation provider: " + Geolocation.getProviderName());
+    main.add(providerLabel);
+    
     Label l1 = new Label("Obtaining Geolocation...");
     main.add(l1);
     if (!Geolocation.isSupported()) {
-      l1.setText("Obtaining Geolocation... FAILED! Geolocation API is not supported.");
+      l1.setText("Obtaining Geolocation FAILED! Geolocation API is not supported.");
       return;
     }
     Geolocation geo = Geolocation.getGeolocation();
     if (geo == null) {
-      l1.setText("Obtaining Geolocation... FAILED! Object is null.");
+      l1.setText("Obtaining Geolocation FAILED! Object is null.");
       return;
     }
-    l1.setText("Obtaining Geolocation... DONE!");
+    l1.setText("Obtaining Geolocation DONE!");
 
-    final Label l2 = new Label("Obtaining position...");
+    final Label l2 = new Label("Obtaining position (timeout: 15 sec)...");
     main.add(l2);
+    
+    obtainPosition(main, geo, l2);
+  }
+
+  private void obtainPosition(final VerticalPanel main, Geolocation geo,
+      final Label l2) {
     geo.getCurrentPosition(new PositionCallback() {
       public void onFailure(PositionError error) {
         String message = "";
@@ -71,13 +88,13 @@ public class HelloGeolocation implements EntryPoint {
           default:
             message = "Unknown error code.";
         }
-        l2.setText("Obtaining position... FAILED! Message: '"
+        l2.setText("Obtaining position FAILED! Message: '"
             + error.getMessage() + "', code: " + error.getCode() + " ("
             + message + ")");
       }
 
       public void onSuccess(Position position) {
-        l2.setText("Obtaining position... DONE:");
+        l2.setText("Obtaining position DONE:");
         Coordinates c = position.getCoords();
         main.add(new Label("lat, lon: " + c.getLatitude() + ", "
             + c.getLongitude()));
@@ -93,6 +110,6 @@ public class HelloGeolocation implements EntryPoint {
         main.add(new Label("Speed: "
             + (c.hasSpeed() ? c.getSpeed() : "[no value]")));
       }
-    });
+    }, PositionOptions.getPositionOptions(false, 15000, 30000));
   }
 }
