@@ -27,6 +27,9 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public final class GearsFactory extends JavaScriptObject {
 
+  protected GearsFactory() {
+  }
+  
   /**
    * Returns an instance of the Gears factory.
    * 
