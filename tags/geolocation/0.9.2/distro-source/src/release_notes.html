@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <title>HTML5 Geolocation API Library for GWT Release Notes</title>
+      
+      <style>
+         body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            font-size: small;
+            margin: 20px;
+         }
+
+         li {
+            margin-bottom: 0.5em;
+         }
+
+         li div {
+            margin-top: 0.2em;
+         }
+
+         code {
+            font-size: medium;
+         }
+      </style></head>
+
+   <body>
+      <h1>HTML5 Geolocation API Library for GWT Release Notes</h1>
+      <ul>
+	    <li><a href="#Release_Notes_Current">@API_VERSION@</a></li>
+        <li><a href="#r0_9_1">0.9.1</a></li>
+        <li><a href="#r0_9_0">0.9.0</a></li>
+      </ul>
+      <hr/>
+      <a name="Release_Notes_Current"></a>
+     <h2>Release Notes for @API_VERSION@</h2>
+       <p>Android fix release.
+       </p>
+       <ul>
+         <ul>Fixed the Geolocation API implementation so it works perfectly
+           with all versions of Android. Due to the iframe design of GWT's
+           default linker the gears_init.js code is applied to the iframe
+           instead of the parent.</ul>
+         <ul>'Hardened' the Geolocation methods - added try/catch blocks, to
+           catch potential permission problems (Gears).</ul>
+       </ul>
+         <h3>Known Issues</h3>
+       <ul>
+         <ul>API is (still) untested on Opera Mobile 9.7.</ul>
+       </ul>
+      <a name="r0_9_1"></a>
+     <h2>Release Notes for 0.9.1</h2>
+       <p>Incremental (pre)release of Geolocation API.
+       </p>
+       <ul>
+         <ul>Added general support for Google Gears' Geolocation API</ul>
+         <ul>Added support for GWT.getUncaughtExceptionHandler()</ul>
+         <ul>Fixed commandline scripts</ul>
+       </ul>
+         <h3>Known Issues</h3>
+       <ul>
+         <ul>API is (still) untested on Opera Mobile 9.7.</ul>
+       </ul>
+      <a name="r0_9_0"></a>
+     <h2>Release Notes for 0.9.0</h2>
+       <p>Initial (pre)release of Geolocation API.
+       </p>
+       <ul>
+         <ul>Works with Opera Mobile 9.7 (according to <a href="http://dev.opera.com/articles/view/opera-mobile-9-7-features-standards/">Opera Mobile 9.7 - features and standards support</a>),
+             iPhone Safari 3.0 and Firefox 3.5</ul>
+       </ul>
+         <h3>Known Issues</h3>
+	   <ul>
+	     <ul>API is untested on Opera Mobile 9.7.</ul>
+	   </ul>
+   </body>
+</html>
