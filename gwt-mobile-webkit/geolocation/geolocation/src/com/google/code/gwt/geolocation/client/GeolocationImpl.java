@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Bart Guijt and others.
+ * Copyright 2010 Bart Guijt and others.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -32,9 +32,13 @@ public class GeolocationImpl {
   }
 
   public native boolean isSupported() /*-{
-    return typeof $wnd.navigator.geolocation != "undefined";
+    return !!$wnd.navigator.geolocation;
   }-*/;
 
+  public String getProviderName() {
+    return "HTML5 Geolocation API";
+  }
+  
   /**
    * Returns the Geolocation instance.
    * 
@@ -82,51 +86,67 @@ public class GeolocationImpl {
 
   public native void getCurrentPosition(Geolocation geo,
       PositionCallback callback) /*-{
-    geo.getCurrentPosition(
-      function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
-      },
-      function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
-      }
-    );
+    try {
+      geo.getCurrentPosition(
+        function(position) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
+        },
+        function(error) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+        }
+      );
+    } catch (error) {
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+    }
   }-*/;
 
   public native void getCurrentPosition(Geolocation geo,
       PositionCallback callback, PositionOptions options) /*-{
-    geo.getCurrentPosition(
-      function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
-      },
-      function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
-      },
-      options
-    );
+    try {
+      geo.getCurrentPosition(
+        function(position) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
+        },
+        function(error) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+        },
+        options
+      );
+    } catch (error) {
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+    }
   }-*/;
 
   public native int watchPosition(Geolocation geo, PositionCallback callback) /*-{
-    return geo.watchPosition(
-      function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
-      },
-      function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
-      }
-    );
+    try {
+      return geo.watchPosition(
+        function(position) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
+        },
+        function(error) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+        }
+      );
+    } catch (error) {
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+    }
   }-*/;
 
   public native int watchPosition(Geolocation geo, PositionCallback callback,
       PositionOptions options) /*-{
-    return geo.watchPosition(
-      function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
-      },
-      function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
-      },
-      options
-    );
+    try {
+      return geo.watchPosition(
+        function(position) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
+        },
+        function(error) {
+          @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+        },
+        options
+      );
+    } catch (error) {
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+    }
   }-*/;
 
   public native void clearWatch(Geolocation geo, int watchId) /*-{
