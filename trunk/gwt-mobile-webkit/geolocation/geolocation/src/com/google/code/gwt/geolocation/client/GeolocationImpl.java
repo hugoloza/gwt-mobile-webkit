@@ -96,7 +96,7 @@ public class GeolocationImpl {
         }
       );
     } catch (error) {
-      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, {message:error.message, code:1});
     }
   }-*/;
 
@@ -113,7 +113,7 @@ public class GeolocationImpl {
         options
       );
     } catch (error) {
-      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, {message:error.message, code:1});
     }
   }-*/;
 
@@ -128,7 +128,7 @@ public class GeolocationImpl {
         }
       );
     } catch (error) {
-      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, {message:error.message, code:1});
     }
   }-*/;
 
@@ -145,7 +145,7 @@ public class GeolocationImpl {
         options
       );
     } catch (error) {
-      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+      @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, {message:error.message, code:1});
     }
   }-*/;
 

@@ -24,6 +24,12 @@
 
   <!-- Property provider which answers true if Gears is to be used -->
   <property-provider name="use.gears.geolocation"><![CDATA[
+    // Native HTML5 API
+    if (!!navigator.geolocation
+         && (typeof navigator.geolocation.getCurrentPosition == "function")) {
+      return "false";
+    }
+    
     // Firefox
     if (typeof GearsFactory != "undefined") {
       return "true";
