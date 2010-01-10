@@ -16,6 +16,8 @@
 
 package com.google.code.gwt.geolocation.client;
 
+import com.google.gwt.core.client.JavaScriptException;
+
 /**
  * gears-specific implementation of Geolocation API.
  * 
@@ -42,5 +44,46 @@ public class GeolocationImplGears extends GeolocationImpl {
   @Override
   public String getProviderName() {
     return "Google Gears API " + factory.getVersion();
+  }
+  
+  @Override
+  public void getCurrentPosition(Geolocation geo,
+      PositionCallback callback) {
+    try {
+      _getCurrentPosition(geo, callback);
+    } catch (JavaScriptException e) {
+      handleError(callback, PositionError.create(1, e.getMessage()));
+    }
+  }
+
+  @Override
+  public void getCurrentPosition(Geolocation geo,
+      PositionCallback callback, PositionOptions options) {
+    try {
+      _getCurrentPosition(geo, callback, options);
+    } catch (JavaScriptException e) {
+      handleError(callback, PositionError.create(1, e.getMessage()));
+    }
+  }
+
+  @Override
+  public int watchPosition(Geolocation geo, PositionCallback callback) {
+    try {
+      return _watchPosition(geo, callback);
+    } catch (JavaScriptException e) {
+      handleError(callback, PositionError.create(1, e.getMessage()));
+      return 0;
+    }
+  }
+
+  @Override
+  public int watchPosition(Geolocation geo, PositionCallback callback,
+      PositionOptions options) {
+    try {
+      return _watchPosition(geo, callback, options);
+    } catch (JavaScriptException e) {
+      handleError(callback, PositionError.create(1, e.getMessage()));
+      return 0;
+    }
   }
 }
