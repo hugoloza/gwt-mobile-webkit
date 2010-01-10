@@ -36,6 +36,16 @@ public class PositionError extends JavaScriptObject {
   }
 
   /**
+   * Creates a new PositionError with the specified code and message.
+   * 
+   * @param code any PositionError constant value (0-3)
+   * @param message the error message
+   */
+  static native PositionError create(int code, String message) /*-{
+    return {code: code, message: message};
+  }-*/;
+  
+  /**
    * Returns the error code. Must be one of {@link #UNKNOWN_ERROR},
    * {@link #PERMISSION_DENIED}, {@link #POSITION_UNAVAILABLE} or
    * {@link #TIMEOUT}.

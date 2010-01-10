@@ -19,39 +19,39 @@
   <inherits name="com.google.gwt.core.Core" />
   <inherits name="com.google.gwt.user.UserAgent" />
 
-  <!-- Define a property which answers true if Gears is to be used -->
-  <define-property name="use.gears.geolocation" values="false,true" />
+  <!-- Define a property which identifies the Geolocation API to use -->
+  <define-property name="geolocation.api" values="html5,gears" />
 
-  <!-- Property provider which answers true if Gears is to be used -->
-  <property-provider name="use.gears.geolocation"><![CDATA[
+  <!-- Property provider which identifies the Geolocation API to use -->
+  <property-provider name="geolocation.api"><![CDATA[
     // Native HTML5 API
     if (!!navigator.geolocation
          && (typeof navigator.geolocation.getCurrentPosition == "function")) {
-      return "false";
+      return "html5";
     }
     
     // Firefox
     if (typeof GearsFactory != "undefined") {
-      return "true";
+      return "gears";
     } else {
       // IE
       try {
         new ActiveXObject("Gears.Factory");
-        return "true";
+        return "gears";
       } catch (e) {
         // Safari
-        if (!!navigator.mimeTypes
+        if ((typeof navigator.mimeTypes != "undefined")
              && navigator.mimeTypes["application/x-googlegears"]) {
-          return "true";
+          return "gears";
         }
       }
     }
-  
-    return "false";
+    
+    return "html5";
   ]]></property-provider>
 
   <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplGears">
     <when-type-is class="com.google.code.gwt.geolocation.client.GeolocationImpl" />
-    <when-property-is name="use.gears.geolocation" value="true" />
+    <when-property-is name="geolocation.api" value="gears" />
   </replace-with>
 </module>
