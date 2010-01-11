@@ -24,6 +24,9 @@ import com.google.code.gwt.geolocation.client.PositionOptions;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -54,21 +57,26 @@ public class HelloGeolocation implements EntryPoint {
       l1.setText("Obtaining Geolocation FAILED! Geolocation API is not supported.");
       return;
     }
-    Geolocation geo = Geolocation.getGeolocation();
+    final Geolocation geo = Geolocation.getGeolocation();
     if (geo == null) {
       l1.setText("Obtaining Geolocation FAILED! Object is null.");
       return;
     }
     l1.setText("Obtaining Geolocation DONE!");
+    
+    main.add(new Button("Get Location", new ClickHandler() {
+      public void onClick(ClickEvent event) {
+        obtainPosition(main, geo);
+      }
+    }));
+    
+    obtainPosition(main, geo);
+  }
 
+  private void obtainPosition(final VerticalPanel main, Geolocation geo) {
     final Label l2 = new Label("Obtaining position (timeout: 15 sec)...");
     main.add(l2);
     
-    obtainPosition(main, geo, l2);
-  }
-
-  private void obtainPosition(final VerticalPanel main, Geolocation geo,
-      final Label l2) {
     geo.getCurrentPosition(new PositionCallback() {
       public void onFailure(PositionError error) {
         String message = "";
