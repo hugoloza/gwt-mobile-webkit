@@ -37,6 +37,7 @@ public final class GearsFactory extends JavaScriptObject {
    */
   public native static GearsFactory getInstance() /*-{
     // We are already defined. Hooray!
+    // Mind you: We're *not* using $wnd on purpose here!
     if (window.google && google.gears) {
       return google.gears.factory;
     }
