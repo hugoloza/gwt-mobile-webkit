@@ -48,31 +48,11 @@ public class GeolocationImplGears extends GeolocationImpl {
   
   @Override
   public void getCurrentPosition(Geolocation geo,
-      PositionCallback callback) {
-    try {
-      _getCurrentPosition(geo, callback);
-    } catch (JavaScriptException e) {
-      handleError(callback, PositionError.create(1, e.getMessage()));
-    }
-  }
-
-  @Override
-  public void getCurrentPosition(Geolocation geo,
       PositionCallback callback, PositionOptions options) {
     try {
       _getCurrentPosition(geo, callback, options);
     } catch (JavaScriptException e) {
-      handleError(callback, PositionError.create(1, e.getMessage()));
-    }
-  }
-
-  @Override
-  public int watchPosition(Geolocation geo, PositionCallback callback) {
-    try {
-      return _watchPosition(geo, callback);
-    } catch (JavaScriptException e) {
-      handleError(callback, PositionError.create(1, e.getMessage()));
-      return 0;
+      handleGearsError(callback, e);
     }
   }
 
@@ -82,8 +62,25 @@ public class GeolocationImplGears extends GeolocationImpl {
     try {
       return _watchPosition(geo, callback, options);
     } catch (JavaScriptException e) {
-      handleError(callback, PositionError.create(1, e.getMessage()));
+      handleGearsError(callback, e);
       return 0;
     }
   }
+
+  private void handleGearsError(PositionCallback callback, JavaScriptException jse) {
+    String message = jse.getDescription();
+    // Very annoying bug in Gears: Sometimes the Gears call fails with a
+    // message "Null or undefined passed for required argument 1."
+    boolean gearsBug = (message != null && message.indexOf("Null or undefined passed") == 0);
+    handleError(callback, PositionError.create(gearsBug ? 0 : 1, message));
+    if (gearsBug) {
+      logMessage("Stumbled upon a Gears bug - please report to GWT Mobile WebKit project team! " + jse.getMessage());
+    }
+  }
+
+  private native void logMessage(String message) /*-{
+    if ((typeof console != "undefined") && (typeof console.log == "function")) {
+      console.log(message);
+    }
+  }-*/;
 }

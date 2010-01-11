@@ -84,24 +84,14 @@ public class GeolocationImpl {
 
   public void getCurrentPosition(Geolocation geo,
       PositionCallback callback) {
-    _getCurrentPosition(geo, callback);
+    getCurrentPosition(geo, callback, null);
   }
-  protected native void _getCurrentPosition(Geolocation geo,
-      PositionCallback callback) /*-{
-    geo.getCurrentPosition(
-      function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
-      },
-      function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
-      }
-    );
-  }-*/;
 
   public void getCurrentPosition(Geolocation geo,
       PositionCallback callback, PositionOptions options) {
     _getCurrentPosition(geo, callback, options);
   }
+  
   protected native void _getCurrentPosition(Geolocation geo,
       PositionCallback callback, PositionOptions options) /*-{
     geo.getCurrentPosition(
@@ -116,23 +106,14 @@ public class GeolocationImpl {
   }-*/;
 
   public int watchPosition(Geolocation geo, PositionCallback callback) {
-    return _watchPosition(geo, callback);
+    return watchPosition(geo, callback, null);
   }
-  protected native int _watchPosition(Geolocation geo, PositionCallback callback) /*-{
-    return geo.watchPosition(
-      function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
-      },
-      function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
-      }
-    );
-  }-*/;
 
   public int watchPosition(Geolocation geo, PositionCallback callback,
       PositionOptions options) {
     return _watchPosition(geo, callback, options);
   }
+  
   protected native int _watchPosition(Geolocation geo, PositionCallback callback,
       PositionOptions options) /*-{
     return geo.watchPosition(
