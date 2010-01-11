@@ -10,6 +10,7 @@ As of June 2009 some browsers started to add support for this API, specifically 
 Not every browser supports this feature. Fortunately, there is a fallback scenario to rely on the Gears plugin - that API is very similar. We built support for the following browsers:
 
   # iPhone Safari (OS3.0)
+  # Android (all versions)
   # Firefox (3.5)
   # Any browser with the Google Gears plugin
 
@@ -56,3 +57,8 @@ double latitude = coords.getLatitude();
 double longitude = coords.getLongitude();
 double accuracy = coords.getAccuracy();
 }}}
+
+= Beware =
+== Android: "Null or undefined passed for required argument 1." ==
+The Gears API in the Android browser is implemented differently from the 'regular' (desktop) plugin. Due to some weird API error, you could get an error message whenever you try to call a Geolocation method (like `getCurrentPosition()`). This is only for pre-2.0 Android versions, as of 2.0 Android uses the regular HTML5 API.
+If the error pops up, and you use the Geolocation API version 0.9.4 or higher, please report!
