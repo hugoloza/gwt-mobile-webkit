@@ -17,7 +17,6 @@
 
 <module>
   <inherits name="com.google.gwt.core.Core" />
-  <inherits name="com.google.gwt.user.UserAgent" />
 
   <!-- Define a property which identifies the Geolocation API to use -->
   <define-property name="geolocation.api" values="html5,gears" />
@@ -25,29 +24,65 @@
   <!-- Property provider which identifies the Geolocation API to use -->
   <property-provider name="geolocation.api"><![CDATA[
     // Native HTML5 API
-    if (!!navigator.geolocation
+    if ((typeof navigator.geolocation != "undefined")
          && (typeof navigator.geolocation.getCurrentPosition == "function")) {
       return "html5";
     }
     
+    // Gears already defined. Hooray!
+    if (window.google && google.gears) {
+      return "gears";
+    }
+  
+    // While we're at it, initialize Gears:
+    var factory = null;
+  
     // Firefox
     if (typeof GearsFactory != "undefined") {
-      return "gears";
+      factory = new GearsFactory();
     } else {
       // IE
       try {
-        new ActiveXObject("Gears.Factory");
-        return "gears";
+        factory = new ActiveXObject("Gears.Factory");
+        // privateSetGlobalObject is only required and supported on IE Mobile on
+        // WinCE.
+        if (factory.getBuildInfo().indexOf("ie_mobile") != -1) {
+          factory.privateSetGlobalObject(this);
+        }
       } catch (e) {
         // Safari
         if ((typeof navigator.mimeTypes != "undefined")
              && navigator.mimeTypes["application/x-googlegears"]) {
-          return "gears";
+          factory = document.createElement("object");
+          factory.style.display = "none";
+          factory.width = 0;
+          factory.height = 0;
+          factory.type = "application/x-googlegears";
+          document.documentElement.appendChild(factory);
         }
       }
     }
+  
+    // *Do not* define any objects if Gears is not installed. This mimics the
+    // behavior of Gears defining the objects in the future.
+    if (!factory) {
+      return "html5";
+    }
+  
+    // Now set up the objects, being careful not to overwrite anything.
+    //
+    // Note: In Internet Explorer for Windows Mobile, you can't add properties to
+    // the window object. However, global objects are automatically added as
+    // properties of the window object in all browsers.
+    if (!window.google) {
+      google = {};
+    }
+  
+    if (!google.gears) {
+      google.gears = {factory: factory};
+    }
     
-    return "html5";
+    return "gears";
   ]]></property-provider>
 
   <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplGears">
