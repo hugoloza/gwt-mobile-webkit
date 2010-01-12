@@ -48,8 +48,8 @@ public class HelloGeolocation implements EntryPoint {
     final VerticalPanel main = new VerticalPanel();
     RootPanel.get().add(main);
 
-    Label providerLabel = new Label("Geolocation provider: " + Geolocation.getProviderName());
-    main.add(providerLabel);
+    main.add(new Label("Geolocation provider: " + Geolocation.getProviderName()));
+    main.add(new Label("GWT strongname: " + GWT.getPermutationStrongName()));
     
     Label l1 = new Label("Obtaining Geolocation...");
     main.add(l1);
