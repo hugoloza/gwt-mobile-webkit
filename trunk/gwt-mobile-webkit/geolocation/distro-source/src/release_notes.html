@@ -29,6 +29,7 @@
       <h1>HTML5 Geolocation API Library for GWT Release Notes</h1>
       <ul>
 	    <li><a href="#Release_Notes_Current">@API_VERSION@</a></li>
+        <li><a href="#r0_9_4">0.9.4</a></li>
         <li><a href="#r0_9_3">0.9.3</a></li>
         <li><a href="#r0_9_2">0.9.2</a></li>
         <li><a href="#r0_9_1">0.9.1</a></li>
@@ -37,6 +38,15 @@
       <hr/>
       <a name="Release_Notes_Current"></a>
      <h2>Release Notes for @API_VERSION@</h2>
+       <p>Bug fix release
+       </p>
+       <ul>
+         <ul>Fixed Firefox 3.5 issue: getCurrentPosition() may call
+         callback methods twice (<a
+         href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=10">Issue #10</a>).</ul>
+       </ul>
+      <a name="r0_9_4"></a>
+     <h2>Release Notes for 0.9.4</h2>
        <p>Android was still borked - whenever the Geolocation API was
        called after onModuleLoad() completed.
        </p>

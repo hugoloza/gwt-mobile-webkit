@@ -17,6 +17,7 @@
 
 <module>
   <inherits name="com.google.gwt.core.Core" />
+  <inherits name="com.google.gwt.user.UserAgent" />
 
   <!-- Define a property which identifies the Geolocation API to use -->
   <define-property name="geolocation.api" values="html5,gears" />
@@ -84,6 +85,14 @@
     
     return "gears";
   ]]></property-provider>
+
+  <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplHtml5AndFirefox">
+    <when-type-is class="com.google.code.gwt.geolocation.client.GeolocationImpl" />
+    <all>
+      <when-property-is name="geolocation.api" value="html5" />
+      <when-property-is name="user.agent" value="gecko1_8" />
+    </all>
+  </replace-with>
 
   <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplGears">
     <when-type-is class="com.google.code.gwt.geolocation.client.GeolocationImpl" />
