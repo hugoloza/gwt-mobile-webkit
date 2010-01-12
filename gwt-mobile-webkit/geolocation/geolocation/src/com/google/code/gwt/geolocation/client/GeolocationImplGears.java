@@ -32,9 +32,10 @@ public class GeolocationImplGears extends GeolocationImpl {
   private static final GearsFactory factory = GearsFactory.getInstance();
 
   @Override
-  public boolean isSupported() {
-    return true;
-  }
+  public native boolean isSupported() /*-{
+    return typeof google.gears.factory != undefined
+        && google.gears.factory.version != undefined
+  }-*/;
 
   @Override
   public Geolocation getGeolocation() {
