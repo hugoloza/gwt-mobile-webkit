@@ -14,26 +14,34 @@
  * the License.
  */
 
-package com.google.code.gwt.geolocation.client;
+package com.google.code.gwt.geolocation.client.impl;
 
+import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Represents the Google Gears Factory class.
  * 
+ * <p>
+ * The primary purpose is to create a {@link Geolocation} object.
+ * </p>
+ * 
  * @author bguijt
  * 
- * @see <a href="http://code.google.com/apis/gears/api_factory.html">Google Gears Factory</a>
+ * @see <a href="http://code.google.com/apis/gears/api_factory.html">Google
+ *      Gears Factory</a>
  */
 public final class GearsFactory extends JavaScriptObject {
 
   protected GearsFactory() {
   }
-  
+
   /**
    * Returns an instance of the Gears factory.
    * 
-   * <p>Most of this code is from <code>gears_init.js</code>.</p>
+   * <p>
+   * Most of this code is from <code>gears_init.js</code>.
+   * </p>
    */
   public native static GearsFactory getInstance() /*-{
     // We are already defined. Hooray!
@@ -41,9 +49,9 @@ public final class GearsFactory extends JavaScriptObject {
     if (window.google && google.gears) {
       return google.gears.factory;
     }
-  
+
     var factory = null;
-  
+
     // Firefox
     if (typeof GearsFactory != "undefined") {
       factory = new GearsFactory();
@@ -69,13 +77,13 @@ public final class GearsFactory extends JavaScriptObject {
         }
       }
     }
-  
+
     // *Do not* define any objects if Gears is not installed. This mimics the
     // behavior of Gears defining the objects in the future.
     if (!factory) {
       return null;
     }
-  
+
     // Now set up the objects, being careful not to overwrite anything.
     //
     // Note: In Internet Explorer for Windows Mobile, you can't add properties to
@@ -84,14 +92,14 @@ public final class GearsFactory extends JavaScriptObject {
     if (!window.google) {
       google = {};
     }
-  
+
     if (!google.gears) {
       google.gears = {factory: factory};
     }
-    
+
     return factory;
   }-*/;
-  
+
   public native Geolocation createGeolocation() /*-{
     return this.create("beta.geolocation");
   }-*/;
@@ -99,7 +107,7 @@ public final class GearsFactory extends JavaScriptObject {
   public native String getVersion() /*-{
     return this.version;
   }-*/;
-  
+
   public native String getBuildInfo() /*-{
     return this.getBuildInfo();
   }-*/;

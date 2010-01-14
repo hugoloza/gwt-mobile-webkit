@@ -14,8 +14,13 @@
  * the License.
  */
 
-package com.google.code.gwt.geolocation.client;
+package com.google.code.gwt.geolocation.client.impl;
 
+import com.google.code.gwt.geolocation.client.Geolocation;
+import com.google.code.gwt.geolocation.client.Position;
+import com.google.code.gwt.geolocation.client.PositionCallback;
+import com.google.code.gwt.geolocation.client.PositionError;
+import com.google.code.gwt.geolocation.client.PositionOptions;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
@@ -96,10 +101,10 @@ public class GeolocationImpl {
       PositionCallback callback, PositionOptions options) /*-{
     geo.getCurrentPosition(
       function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
+        @com.google.code.gwt.geolocation.client.impl.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
       },
       function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+        @com.google.code.gwt.geolocation.client.impl.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
       },
       options
     );
@@ -118,10 +123,10 @@ public class GeolocationImpl {
       PositionOptions options) /*-{
     return geo.watchPosition(
       function(position) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
+        @com.google.code.gwt.geolocation.client.impl.GeolocationImpl::handleSuccess(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/Position;) (callback, position);
       },
       function(error) {
-        @com.google.code.gwt.geolocation.client.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
+        @com.google.code.gwt.geolocation.client.impl.GeolocationImpl::handleError(Lcom/google/code/gwt/geolocation/client/PositionCallback;Lcom/google/code/gwt/geolocation/client/PositionError;) (callback, error);
       },
       options
     );
