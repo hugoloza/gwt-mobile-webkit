@@ -86,16 +86,16 @@
     return "gears";
   ]]></property-provider>
 
-  <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplHtml5AndFirefox">
-    <when-type-is class="com.google.code.gwt.geolocation.client.GeolocationImpl" />
+  <replace-with class="com.google.code.gwt.geolocation.client.impl.GeolocationImplHtml5AndFirefox">
+    <when-type-is class="com.google.code.gwt.geolocation.client.impl.GeolocationImpl" />
     <all>
       <when-property-is name="geolocation.api" value="html5" />
       <when-property-is name="user.agent" value="gecko1_8" />
     </all>
   </replace-with>
 
-  <replace-with class="com.google.code.gwt.geolocation.client.GeolocationImplGears">
-    <when-type-is class="com.google.code.gwt.geolocation.client.GeolocationImpl" />
+  <replace-with class="com.google.code.gwt.geolocation.client.impl.GeolocationImplGears">
+    <when-type-is class="com.google.code.gwt.geolocation.client.impl.GeolocationImpl" />
     <when-property-is name="geolocation.api" value="gears" />
   </replace-with>
 </module>

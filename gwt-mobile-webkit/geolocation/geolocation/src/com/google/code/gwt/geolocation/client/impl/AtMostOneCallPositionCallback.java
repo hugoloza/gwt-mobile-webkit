@@ -14,7 +14,11 @@
  * the License.
  */
 
-package com.google.code.gwt.geolocation.client;
+package com.google.code.gwt.geolocation.client.impl;
+
+import com.google.code.gwt.geolocation.client.Position;
+import com.google.code.gwt.geolocation.client.PositionCallback;
+import com.google.code.gwt.geolocation.client.PositionError;
 
 /**
  * {@link PositionCallback} wrapper which makes sure that a call to either
@@ -30,7 +34,7 @@ public class AtMostOneCallPositionCallback implements PositionCallback {
   private PositionCallback wrappedCallback;
   private int callCount = 0;
 
-  AtMostOneCallPositionCallback(PositionCallback wrappedCallback) {
+  public AtMostOneCallPositionCallback(PositionCallback wrappedCallback) {
     this.wrappedCallback = wrappedCallback;
   }
 

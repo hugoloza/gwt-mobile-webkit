@@ -14,7 +14,11 @@
  * the License.
  */
 
-package com.google.code.gwt.geolocation.client;
+package com.google.code.gwt.geolocation.client.impl;
+
+import com.google.code.gwt.geolocation.client.Geolocation;
+import com.google.code.gwt.geolocation.client.PositionCallback;
+import com.google.code.gwt.geolocation.client.PositionOptions;
 
 /**
  * Special GeolocationImpl for Firefox 3.5/HTML5.

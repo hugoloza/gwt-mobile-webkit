@@ -41,7 +41,7 @@ public class PositionError extends JavaScriptObject {
    * @param code any PositionError constant value (0-3)
    * @param message the error message
    */
-  static native PositionError create(int code, String message) /*-{
+  public static native PositionError create(int code, String message) /*-{
     return {code: code, message: message};
   }-*/;
   

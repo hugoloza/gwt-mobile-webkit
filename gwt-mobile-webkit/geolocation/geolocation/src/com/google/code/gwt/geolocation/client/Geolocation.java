@@ -16,6 +16,7 @@
 
 package com.google.code.gwt.geolocation.client;
 
+import com.google.code.gwt.geolocation.client.impl.GeolocationImpl;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 

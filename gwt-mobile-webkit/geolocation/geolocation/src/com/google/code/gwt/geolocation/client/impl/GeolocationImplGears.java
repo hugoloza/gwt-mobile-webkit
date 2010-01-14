@@ -14,8 +14,12 @@
  * the License.
  */
 
-package com.google.code.gwt.geolocation.client;
+package com.google.code.gwt.geolocation.client.impl;
 
+import com.google.code.gwt.geolocation.client.Geolocation;
+import com.google.code.gwt.geolocation.client.PositionCallback;
+import com.google.code.gwt.geolocation.client.PositionError;
+import com.google.code.gwt.geolocation.client.PositionOptions;
 import com.google.gwt.core.client.JavaScriptException;
 
 /**
