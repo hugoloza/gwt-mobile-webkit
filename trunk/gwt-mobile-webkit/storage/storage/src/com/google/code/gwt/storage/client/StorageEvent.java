@@ -16,6 +16,7 @@
 
 package com.google.code.gwt.storage.client;
 
+import com.google.code.gwt.storage.client.impl.StorageEventImpl;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 

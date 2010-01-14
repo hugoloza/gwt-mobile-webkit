@@ -14,8 +14,9 @@
  * the License.
  */
 
-package com.google.code.gwt.storage.client;
+package com.google.code.gwt.storage.client.impl;
 
+import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.GWT;
 
 /**
@@ -78,10 +79,10 @@ public class StorageImplIE8 extends StorageImpl {
 
   @Override
   protected native void addStorageEventHandler0() /*-{
-    @com.google.code.gwt.storage.client.StorageImpl::jsHandler = function(event) {
-      @com.google.code.gwt.storage.client.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
+    @com.google.code.gwt.storage.client.impl.StorageImpl::jsHandler = function(event) {
+      @com.google.code.gwt.storage.client.impl.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
     };
-    $doc.onstorage = @com.google.code.gwt.storage.client.StorageImpl::jsHandler;
+    $doc.onstorage = @com.google.code.gwt.storage.client.impl.StorageImpl::jsHandler;
   }-*/;
 
   @Override

@@ -14,8 +14,10 @@
  * the License.
  */
 
-package com.google.code.gwt.storage.client;
+package com.google.code.gwt.storage.client.impl;
 
+import com.google.code.gwt.storage.client.Storage;
+import com.google.code.gwt.storage.client.StorageEvent;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**

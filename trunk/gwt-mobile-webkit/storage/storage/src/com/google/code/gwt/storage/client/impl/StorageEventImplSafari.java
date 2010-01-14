@@ -14,7 +14,9 @@
  * the License.
  */
 
-package com.google.code.gwt.storage.client;
+package com.google.code.gwt.storage.client.impl;
+
+import com.google.code.gwt.storage.client.StorageEvent;
 
 /**
  * Safari-specific implementation of StorageEvent.
