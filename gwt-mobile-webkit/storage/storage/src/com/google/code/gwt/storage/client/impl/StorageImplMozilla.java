@@ -14,7 +14,11 @@
  * the License.
  */
 
-package com.google.code.gwt.storage.client;
+package com.google.code.gwt.storage.client.impl;
+
+import com.google.code.gwt.storage.client.Storage;
+import com.google.code.gwt.storage.client.StorageEvent;
+import com.google.code.gwt.storage.client.StorageEventHandler;
 
 /**
  * Mozilla-specific implementation of a Storage.
@@ -32,20 +36,20 @@ public class StorageImplMozilla extends StorageImpl {
   public native void setItem(Storage storage, String key, String data) /*-{
     var oldValue = storage[key];
     storage.setItem(key, data);
-    @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, data, storage);
+    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, data, storage);
   }-*/;
 
   @Override
   public native void removeItem(Storage storage, String key) /*-{
     var oldValue = storage[key];
     storage.removeItem(key);
-    @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, null, storage);
+    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, null, storage);
   }-*/;
 
   @Override
   public native void clear(Storage storage) /*-{
     storage.clear();
-    @com.google.code.gwt.storage.client.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) ("", null, null, storage);
+    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) ("", null, null, storage);
   }-*/;
 
   @SuppressWarnings("unused")

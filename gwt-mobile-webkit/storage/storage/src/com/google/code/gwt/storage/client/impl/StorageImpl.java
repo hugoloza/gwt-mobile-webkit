@@ -14,11 +14,14 @@
  * the License.
  */
 
-package com.google.code.gwt.storage.client;
+package com.google.code.gwt.storage.client.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.code.gwt.storage.client.Storage;
+import com.google.code.gwt.storage.client.StorageEvent;
+import com.google.code.gwt.storage.client.StorageEventHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
@@ -101,10 +104,10 @@ public class StorageImpl {
   }
 
   protected native void addStorageEventHandler0() /*-{
-    @com.google.code.gwt.storage.client.StorageImpl::jsHandler = function(event) {
-      @com.google.code.gwt.storage.client.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
+    @com.google.code.gwt.storage.client.impl.StorageImpl::jsHandler = function(event) {
+      @com.google.code.gwt.storage.client.impl.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
     };
-    $wnd.addEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
+    $wnd.addEventListener("storage", @com.google.code.gwt.storage.client.impl.StorageImpl::jsHandler, false);
   }-*/;
 
   protected static final void handleStorageEvent(StorageEvent event) {
@@ -131,7 +134,7 @@ public class StorageImpl {
   }
 
   protected native void removeStorageEventHandler0() /*-{
-    $wnd.removeEventListener("storage", @com.google.code.gwt.storage.client.StorageImpl::jsHandler, false);
+    $wnd.removeEventListener("storage", @com.google.code.gwt.storage.client.impl.StorageImpl::jsHandler, false);
   }-*/;
 
   /**
