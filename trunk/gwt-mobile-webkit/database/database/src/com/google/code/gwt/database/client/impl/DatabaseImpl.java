@@ -14,8 +14,13 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client;
+package com.google.code.gwt.database.client.impl;
 
+import com.google.code.gwt.database.client.Database;
+import com.google.code.gwt.database.client.DatabaseException;
+import com.google.code.gwt.database.client.SQLError;
+import com.google.code.gwt.database.client.SQLTransaction;
+import com.google.code.gwt.database.client.TransactionCallback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
@@ -109,13 +114,13 @@ public class DatabaseImpl {
   public native void transaction(Database db, TransactionCallback callback) /*-{
     db.transaction(
       function(transaction) {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleTransaction(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLTransaction;) (callback, transaction);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleTransaction(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLTransaction;) (callback, transaction);
       },
       function(error) {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleError(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLError;) (callback, error);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleError(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLError;) (callback, error);
       },
       function() {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleSuccess(Lcom/google/code/gwt/database/client/TransactionCallback;) (callback);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleSuccess(Lcom/google/code/gwt/database/client/TransactionCallback;) (callback);
       }
     );
   }-*/;
@@ -123,13 +128,13 @@ public class DatabaseImpl {
   public native void readTransaction(Database db, TransactionCallback callback) /*-{
     db.readTransaction(
       function(transaction) {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleTransaction(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLTransaction;) (callback, transaction);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleTransaction(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLTransaction;) (callback, transaction);
       },
       function(error) {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleError(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLError;) (callback, error);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleError(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLError;) (callback, error);
       },
       function() {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleSuccess(Lcom/google/code/gwt/database/client/TransactionCallback;) (callback);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleSuccess(Lcom/google/code/gwt/database/client/TransactionCallback;) (callback);
       }
     );
   }-*/;
@@ -140,13 +145,13 @@ public class DatabaseImpl {
       oldVersion,
       newVersion,
       function(transaction) {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleTransaction(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLTransaction;) (callback, transaction);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleTransaction(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLTransaction;) (callback, transaction);
       },
       function(error) {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleError(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLError;) (callback, error);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleError(Lcom/google/code/gwt/database/client/TransactionCallback;Lcom/google/code/gwt/database/client/SQLError;) (callback, error);
       },
       function() {
-        @com.google.code.gwt.database.client.DatabaseImpl::handleSuccess(Lcom/google/code/gwt/database/client/TransactionCallback;) (callback);
+        @com.google.code.gwt.database.client.impl.DatabaseImpl::handleSuccess(Lcom/google/code/gwt/database/client/TransactionCallback;) (callback);
       }
     );
   }-*/;

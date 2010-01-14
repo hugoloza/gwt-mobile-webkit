@@ -14,7 +14,10 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client;
+package com.google.code.gwt.database.client.impl;
+
+import com.google.code.gwt.database.client.Database;
+import com.google.code.gwt.database.client.TransactionCallback;
 
 /**
  * Safari-specific implementation for {@link Database}.

@@ -18,8 +18,8 @@
   <inherits name="com.google.gwt.core.Core" />
   <inherits name="com.google.gwt.user.UserAgent" />
   
-  <replace-with class="com.google.code.gwt.database.client.DatabaseImplSafari">
-    <when-type-is class="com.google.code.gwt.database.client.DatabaseImpl" />
+  <replace-with class="com.google.code.gwt.database.client.impl.DatabaseImplSafari">
+    <when-type-is class="com.google.code.gwt.database.client.impl.DatabaseImpl" />
     <when-property-is name="user.agent" value="safari" />
   </replace-with>
   

@@ -18,6 +18,7 @@ package com.google.code.gwt.database.client;
 
 import java.util.Iterator;
 
+import com.google.code.gwt.database.client.impl.SQLResultSetRowListJso;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
