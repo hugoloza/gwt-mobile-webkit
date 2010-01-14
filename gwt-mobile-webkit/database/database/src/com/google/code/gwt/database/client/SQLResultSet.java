@@ -16,6 +16,7 @@
 
 package com.google.code.gwt.database.client;
 
+import com.google.code.gwt.database.client.impl.SQLResultSetRowListJso;
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
 

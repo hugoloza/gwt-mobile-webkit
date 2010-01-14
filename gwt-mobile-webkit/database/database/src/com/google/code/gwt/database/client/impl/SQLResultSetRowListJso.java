@@ -14,8 +14,9 @@
  * the License.
  */
 
-package com.google.code.gwt.database.client;
+package com.google.code.gwt.database.client.impl;
 
+import com.google.code.gwt.database.client.SQLResultSetRowList;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
