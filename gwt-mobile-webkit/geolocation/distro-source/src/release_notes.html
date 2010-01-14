@@ -41,9 +41,11 @@
        <p>Bug fix release
        </p>
        <ul>
-         <ul>Fixed Firefox 3.5 issue: getCurrentPosition() may call
+         <li>Fixed Firefox 3.5 issue: getCurrentPosition() may call
          callback methods twice (<a
-         href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=10">Issue #10</a>).</ul>
+         href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=10">Issue #10</a>).</li>
+         <li>Separated public API from private (implementation) parts,
+         which were never supposed to be public anyway. Cleanup.</li>
        </ul>
       <a name="r0_9_4"></a>
      <h2>Release Notes for 0.9.4</h2>
@@ -51,9 +53,9 @@
        called after onModuleLoad() completed.
        </p>
        <ul>
-         <ul>Added Gears initialisation at two levels (parent + iframe).
+         <li>Added Gears initialisation at two levels (parent + iframe).
          Tested successfully on Android, Safari + Gears, Firefox 3.5
-         and iPhone.</ul>
+         and iPhone.</li>
        </ul>
       <a name="r0_9_3"></a>
      <h2>Release Notes for 0.9.3</h2>
@@ -61,54 +63,54 @@
          determine 'gears' API was borked.
        </p>
        <ul>
-         <ul>Fixed the 'geolocation.api' property provider. Tested
+         <li>Fixed the 'geolocation.api' property provider. Tested
          successfully on Android (1.5, 1.6 and 2.0.1), Safari + Gears,
-         Firefox 3.5 and iPhone.</ul>
+         Firefox 3.5 and iPhone.</li>
        </ul>
          <h3>Known Issues</h3>
        <ul>
-         <ul>API is (still) untested on Opera Mobile 9.7.</ul>
+         <li>API is (still) untested on Opera Mobile 9.7.</li>
        </ul>
       <a name="r0_9_2"></a>
      <h2>Release Notes for 0.9.2</h2>
        <p>Android fix release.
        </p>
        <ul>
-         <ul>Fixed the Geolocation API implementation so it works perfectly
+         <li>Fixed the Geolocation API implementation so it works perfectly
            with all versions of Android. Due to the iframe design of GWT's
            default linker the gears_init.js code is applied to the iframe
-           instead of the parent.</ul>
-         <ul>'Hardened' the Geolocation methods - added try/catch blocks, to
-           catch potential permission problems (Gears).</ul>
+           instead of the parent.</li>
+         <li>'Hardened' the Geolocation methods - added try/catch blocks, to
+           catch potential permission problems (Gears).</li>
        </ul>
          <h3>Known Issues</h3>
        <ul>
-         <ul>API is (still) untested on Opera Mobile 9.7.</ul>
+         <li>API is (still) untested on Opera Mobile 9.7.</li>
        </ul>
       <a name="r0_9_1"></a>
      <h2>Release Notes for 0.9.1</h2>
        <p>Incremental (pre)release of Geolocation API.
        </p>
        <ul>
-         <ul>Added general support for Google Gears' Geolocation API</ul>
-         <ul>Added support for GWT.getUncaughtExceptionHandler()</ul>
-         <ul>Fixed commandline scripts</ul>
+         <li>Added general support for Google Gears' Geolocation API</li>
+         <li>Added support for GWT.getUncaughtExceptionHandler()</li>
+         <li>Fixed commandline scripts</li>
        </ul>
          <h3>Known Issues</h3>
        <ul>
-         <ul>API is (still) untested on Opera Mobile 9.7.</ul>
+         <li>API is (still) untested on Opera Mobile 9.7.</li>
        </ul>
       <a name="r0_9_0"></a>
      <h2>Release Notes for 0.9.0</h2>
        <p>Initial (pre)release of Geolocation API.
        </p>
        <ul>
-         <ul>Works with Opera Mobile 9.7 (according to <a href="http://dev.opera.com/articles/view/opera-mobile-9-7-features-standards/">Opera Mobile 9.7 - features and standards support</a>),
-             iPhone Safari 3.0 and Firefox 3.5</ul>
+         <li>Works with Opera Mobile 9.7 (according to <a href="http://dev.opera.com/articles/view/opera-mobile-9-7-features-standards/">Opera Mobile 9.7 - features and standards support</a>),
+             iPhone Safari 3.0 and Firefox 3.5</li>
        </ul>
          <h3>Known Issues</h3>
 	   <ul>
-	     <ul>API is untested on Opera Mobile 9.7.</ul>
+	     <li>API is untested on Opera Mobile 9.7.</li>
 	   </ul>
    </body>
 </html>
