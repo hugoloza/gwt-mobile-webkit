@@ -10,6 +10,7 @@ With this API you are able to store data on the client using a Java Map-like int
 Not every browser supports this feature, and currently there are no fallback scenario's to rely on Flash, Java or Gears plugins. We built support for the following browsers:
 
   # iPhone Safari (OS3.0)
+  # Android (2.0)
   # Desktop Safari (4.0)
   # Firefox (3.5)
   # Internet Explorer (8)
