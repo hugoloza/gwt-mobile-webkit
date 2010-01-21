@@ -85,7 +85,13 @@
   <target name="scripts" description="Create launch scripts">
     <mkdir dir="${sample.build}/launch-scripts" />
     <copy todir="${sample.build}/launch-scripts">
-      <fileset dir="launch-scripts" />
+      <filterset id="scriptfilter">
+        <filter token="ENTRY_MODULE" value="com.google.code.gwt.${sample.api}.sample.${sample.lower}.${sample.module}" />
+        <filter token="JARNAME" value="gwt-${api.prefix}-${api.name}.jar" />
+        <filter token="INDEX_HTML" value="${sample.module}.html" />
+      </filterset>
+      <mapper type="regexp" from="(.*)HelloTemplate(.*)" to="\1${sample.module}\2" />
+      <fileset dir="${gwt.root}/../shared/templates/shell" />
     </copy>
   </target>
 
@@ -121,7 +127,6 @@
       </classpath>
       <jvmarg line="${hostedmode.platform.args}" />
       <jvmarg value="-Xmx256M" />
-      <!--jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8000" /-->
       <!--arg value="-logLevel" />
       <arg value="INFO" />
       <arg value="-style" />
