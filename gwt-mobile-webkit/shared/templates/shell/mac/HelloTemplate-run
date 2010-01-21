@@ -1,0 +1,8 @@
+#!/bin/sh
+APPDIR=../..;
+if [ "$GWT_HOME" == "" ]; then
+	echo "The environment variable GWT_HOME is not defined, it should point to a valid GWT installation."
+	exit
+fi
+
+java -Xmx128m -cp "$GWT_HOME/gwt-dev.jar:$GWT_HOME/gwt-dev-mac.jar:$GWT_HOME/gwt-servlet.jar:../../../../@JARNAME@" org.mortbay.jetty.Main 8080 -webapp "$APPDIR/war"
