@@ -32,6 +32,7 @@ public class StorageSuite {
     
     // $JUnit-BEGIN$
    suite.addTestSuite(StorageTest.class);
+   suite.addTestSuite(StorageMapTest.class);
     // $JUnit-END$
     
     return suite;
