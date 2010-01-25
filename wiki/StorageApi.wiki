@@ -4,10 +4,10 @@
 = Introduction =
 The Storage API ([http://code.google.com/p/gwt-mobile-webkit/downloads/list?q=label:API-Storage download]) leverages the [http://www.w3.org/TR/webstorage/#storage W3C Web Storage API]. See [http://www.nczonline.net/blog/2009/07/21/introduction-to-sessionstorage/ this article] for a nice introduction to the `sessionStorage`.
 
-With this API you are able to store data on the client using a Java Map-like interface (key/values).
+With this API you are able to store data on the client using a Java [http://java.sun.com/javase/6/docs/api/java/util/Map.html Map]-like interface (key/values).
 
 = Browser support =
-Not every browser supports this feature, and currently there are no fallback scenario's to rely on Flash, Java or Gears plugins. We built support for the following browsers:
+Not every browser supports this feature, and currently there are no fallback scenario's to rely on Flash, Java or Gears plugins. The following browsers are supported:
 
   # iPhone Safari (OS3.0)
   # Android (2.0)
@@ -70,7 +70,10 @@ for (int i=0; i<localStorage.getLength(); i++) {
 == Accessing the Storage using a Java Map ==
 For convenience sake we added a Java Map implementation over the Storage API. Using this Map you can read and write the Storage using familiar methods:
 {{{
+// Creating a Map instance using the localStorage:
 Map<String, String> map = new StorageMap(localStorage);
+
+// Invoke some Map method:
 map.putAll(otherMap);
 // ...
 }}}
