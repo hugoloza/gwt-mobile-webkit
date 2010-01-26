@@ -1,5 +1,5 @@
 #summary Quick getting started introduction to the Geolocation API
-#labels Featured,Phase-Implementation,API-Geolocation
+#labels Phase-Implementation,API-Geolocation
 
 = Introduction =
 The Geolocation API ([http://code.google.com/p/gwt-mobile-webkit/downloads/list?q=label:API-Geolocation download]) leverages the [http://www.w3.org/TR/geolocation-API/ W3C Geolocation API].
