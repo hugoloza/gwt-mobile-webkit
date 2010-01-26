@@ -2,7 +2,7 @@
 #labels Featured
 
   * General
-    * [BuildFromSource Build from source]
+    * [BuildingFromSource Build from source]
   * Database API
     * [DatabaseApi Quickstart]
     * [DataServiceUserGuide DataService guide]
