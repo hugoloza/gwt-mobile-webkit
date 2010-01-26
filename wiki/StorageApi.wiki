@@ -1,5 +1,5 @@
 #summary Quick getting started introduction to the Storage API
-#labels Featured,Phase-Implementation,API-Storage
+#labels Phase-Implementation,API-Storage
 
 = Introduction =
 The Storage API ([http://code.google.com/p/gwt-mobile-webkit/downloads/list?q=label:API-Storage download]) leverages the [http://www.w3.org/TR/webstorage/#storage W3C Web Storage API]. See [http://www.nczonline.net/blog/2009/07/21/introduction-to-sessionstorage/ this article] for a nice introduction to the `sessionStorage`.
