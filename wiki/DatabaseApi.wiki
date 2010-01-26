@@ -1,5 +1,5 @@
 #summary Quick getting started introduction to the Database API
-#labels Featured,Phase-Implementation,API-Database
+#labels Phase-Implementation,API-Database
 
 = Introduction =
 
