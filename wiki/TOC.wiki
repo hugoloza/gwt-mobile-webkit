@@ -6,10 +6,13 @@
   * Database API
     * [DatabaseApi Quickstart]
     * [DataServiceUserGuide DataService guide]
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Database%20(multi%20GWT%20SDKs)/ Hudson report]
   * Storage API
     * [StorageApi Quickstart]
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Storage/ Hudson report]
   * Geolocation API
     * [GeolocationApi Quickstart]
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Geolocation/ Hudson report]
   * !AppCache API
     * [AppCacheDesign design]
   * Widgets API
