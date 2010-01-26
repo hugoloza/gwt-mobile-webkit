@@ -23,13 +23,31 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import com.google.gwt.core.client.JavaScriptException;
+
 /**
- * Exposes the local/session {@link Storage} as a standard mutable {@link Map}.
+ * Exposes the local/session {@link Storage} as a standard {@link Map
+ * Map&lt;String, String&gt;}.
  * 
  * <p>
- * This Map implementation does not accept <code>null</code> values for keys
- * and/or values.
+ * The following characteristics are applicable to this Map:
  * </p>
+ * <ol>
+ * <li><em>Mutable</em> - All 'write' methods ({@link #put(String, String)},
+ * {@link #putAll(Map)}, {@link #remove(Object)}, {@link #clear()}) operate as
+ * intended;</li>
+ * <li><em>remove() on Iterators</em> - All remove() operations on available
+ * Iterators (from {@link #keySet()}, {@link #entrySet()} and {@link #values()})
+ * operate as intended;</li>
+ * <li><em>No <code>null</code> values and keys</em> - The Storage doesn't
+ * accept keys or values which are <code>null</code>;</li>
+ * <li><em>JavaScriptException instead of NPE's</em> - Some Map (or other Collection)
+ * methods mandate the use of a {@link NullPointerException} if some argument is
+ * <code>null</code> (e.g. {@link #remove(Object)}). this Map issues
+ * {@link JavaScriptException}s instead;</li>
+ * <li><em>String values and keys</em> - All keys and values in this Map are of
+ * the String type.</li>
+ * </ol>
  * 
  * @author bguijt
  */
@@ -60,26 +78,23 @@ public class StorageMap extends AbstractMap<String, String> {
 
   /**
    * Returns <code>true</code> if the Storage contains the specified key,
-   * <code>false</code> otherwise (or if the specified key is <code>null</code>).
+   * <code>false</code> otherwise (or if the specified key is <code>null</code>
+   * ).
    */
   public boolean containsKey(Object key) {
-    if (key == null) {
-      return false;
-    }
     return storage.getItem(key.toString()) != null;
   }
 
   /**
    * Returns <code>true</code> if the Storage contains the specified value,
-   * <code>false</code> otherwise (or if the specified key is <code>null</code>).
+   * <code>false</code> otherwise (or if the specified key is <code>null</code>
+   * ).
    */
   public boolean containsValue(Object value) {
-    if (value != null) {
-      int s = size();
-      for (int i = 0; i < s; i++) {
-        if (storage.getItem(storage.key(i)).equals(value)) {
-          return true;
-        }
+    int s = size();
+    for (int i = 0; i < s; i++) {
+      if (value.equals(storage.getItem(storage.key(i)))) {
+        return true;
       }
     }
     return false;
@@ -133,7 +148,7 @@ public class StorageMap extends AbstractMap<String, String> {
    * @see Storage#removeItem(String)
    */
   public String remove(Object key) {
-    String k = String.valueOf(key);
+    String k = key.toString();
     String old = storage.getItem(k);
     storage.removeItem(k);
     return old;
@@ -193,13 +208,9 @@ public class StorageMap extends AbstractMap<String, String> {
       if (!(obj instanceof Map.Entry))
         return false;
 
-      String value = getValue();
-
       Map.Entry e = (Map.Entry) obj;
-      Object oKey = e.getKey();
-      Object oValue = e.getValue();
 
-      return eq(key, oKey) && eq(value, oValue);
+      return eq(key, e.getKey()) && eq(getValue(), e.getValue());
     }
 
     @Override
@@ -262,7 +273,7 @@ public class StorageMap extends AbstractMap<String, String> {
       }
       Map.Entry e = (Map.Entry) o;
       Object key = e.getKey();
-      return containsKey(key) && eq(get(key), e.getValue());
+      return key != null && containsKey(key) && eq(get(key), e.getValue());
     }
 
     public Iterator<Map.Entry<String, String>> iterator() {
@@ -278,9 +289,10 @@ public class StorageMap extends AbstractMap<String, String> {
       if (e.getKey() == null) {
         return false;
       }
-      String value = storage.getItem(e.getKey().toString());
+      String key = e.getKey().toString();
+      String value = storage.getItem(key);
       if (eq(value, e.getValue())) {
-        return StorageMap.this.remove(e.getKey()) != null;
+        return StorageMap.this.remove(key) != null;
       }
       return false;
     }
