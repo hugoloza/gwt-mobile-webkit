@@ -26,6 +26,8 @@ import java.util.Map;
  */
 public class StorageMapTest extends MapInterfaceTest<String, String> {
 
+  private boolean createSessionStorageMap = false;
+  
   public StorageMapTest() {
     super(false, false, true, true, true);
   }
@@ -53,16 +55,15 @@ public class StorageMapTest extends MapInterfaceTest<String, String> {
   @Override
   protected Map<String, String> makeEmptyMap()
       throws UnsupportedOperationException {
-    Storage s = Storage.getSessionStorage();
+    Storage s = createStorage();
     s.clear();
     return new StorageMap(s);
-    //return new HashMap<String, String>();
   }
 
   @Override
   protected Map<String, String> makePopulatedMap()
       throws UnsupportedOperationException {
-    Storage s = Storage.getSessionStorage();
+    Storage s = createStorage();
     s.clear();
     s.setItem("one", "January");
     s.setItem("two", "February");
@@ -70,12 +71,15 @@ public class StorageMapTest extends MapInterfaceTest<String, String> {
     s.setItem("four", "April");
     s.setItem("five", "May");
     return new StorageMap(s);
-    /*Map<String, String> map = new HashMap<String, String>();
-    map.put("one", "January");
-    map.put("two", "February");
-    map.put("three", "March");
-    map.put("four", "April");
-    map.put("five", "May");
-    return map;*/
+  }
+
+  private Storage createStorage() {
+    // Weird huh?
+    // Needed to thwart some tests which need different Maps.
+    createSessionStorageMap = !createSessionStorageMap;
+    if (createSessionStorageMap) {
+      return Storage.getSessionStorage();
+    }
+    return Storage.getLocalStorage();
   }
 }
