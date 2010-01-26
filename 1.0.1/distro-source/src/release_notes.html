@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+      <title>Mobile Storage API Library for GWT Release Notes</title>
+      
+      <style>
+         body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            font-size: small;
+            margin: 20px;
+         }
+
+         li {
+            margin-bottom: 0.5em;
+         }
+
+         li div {
+            margin-top: 0.2em;
+         }
+
+         code {
+            font-size: medium;
+         }
+      </style></head>
+
+   <body>
+      <h1>Mobile Storage API Library for GWT Release Notes</h1>
+      <ul>
+	    <li><a href="#Release_Notes_Current">@API_VERSION@</a></li>
+        <li><a href="#Release_Notes_1_0_0">1.0.0</a></li>
+        <li><a href="#Release_Notes_0_9_1">0.9.1</a></li>
+      </ul>
+      <hr/>
+      <a name="Release_Notes_Current"></a>
+     <h2>Release Notes for @API_VERSION@</h2>
+       <p>Maintenance release</p>
+       <ul>
+         <li>Fixed StorageMap issue: The map failed numerous Map compatibility tests. See <a
+         href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=13">Issue #13</a>.</li>
+         <li>Added shell script to run sample in compiled mode. See <a
+         href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=12">Issue #12</a>.</li>
+         <li>Separated public API from private (implementation) parts,
+         which were never supposed to be public anyway. Cleanup.</li>
+       </ul>
+         <h3>Known Issues</h3>
+       <ul>
+       </ul>
+      <a name="Release_Notes_1_0_0"></a>
+     <h2>Release Notes for 1.0.0</h2>
+       <p>First stable release</p>
+       <ul>
+         <li>Stabilized GWT API to the <a href="http://www.w3.org/TR/webstorage/#storage">HTML5 Storage API</a>.</li>
+       </ul>
+         <h3>Known Issues</h3>
+       <ul>
+         <li>Tested on Safari-iPhoneOS3.0, Safari4, FF3.5 and IE8.</li>
+       </ul>
+      <a name="Release_Notes_0_9_1"></a>
+     <h2>Release Notes for 0.9.1</h2>
+       <p>Initial alpha release</p>
+       <ul>
+         <li>Created initial GWT API to the <a href="http://www.w3.org/TR/webstorage/#storage">HTML5 Storage API</a>.</li>
+       </ul>
+         <h3>Known Issues</h3>
+	   <ul>
+	     <li>The StorageEventHandler is *not* invoked - all else works just fine. See the sample to witness the results for yourself!</li>
+	   </ul>
+   </body>
+</html>
