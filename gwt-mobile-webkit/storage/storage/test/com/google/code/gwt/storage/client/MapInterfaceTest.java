@@ -304,7 +304,7 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
     } else {
       try {
         map.containsKey(null);
-      } catch (NullPointerException optional) {
+      } catch (JavaScriptException optional) {
       }
     }
     assertInvariants(map);
@@ -326,7 +326,7 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
     } else {
       try {
         map.containsKey(null);
-      } catch (NullPointerException optional) {
+      } catch (JavaScriptException optional) {
       }
     }
     assertInvariants(map);
@@ -628,19 +628,15 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
     if (supportsRemove) {
       try {
         entrySet.removeAll(null);
-        fail("Expected NullPointerException.");
-      } catch (NullPointerException e) {
-        // Expected.
+        fail("Expected JavaScriptException.");
       } catch (JavaScriptException e) {
         // Expected in GWT client.
       }
     } else {
       try {
         entrySet.removeAll(null);
-        fail("Expected UnsupportedOperationException or NullPointerException.");
+        fail("Expected UnsupportedOperationException or JavaScriptException.");
       } catch (UnsupportedOperationException e) {
-        // Expected.
-      } catch (NullPointerException e) {
         // Expected.
       } catch (JavaScriptException e) {
         // Expected in GWT client.
@@ -692,8 +688,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
       try {
         entrySet.retainAll(null);
         // Returning successfully is not ideal, but tolerated.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     } else {
       try {
@@ -701,8 +697,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         // We have to tolerate a successful return (Sun bug 4802647)
       } catch (UnsupportedOperationException e) {
         // Expected.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     }
     assertInvariants(map);
@@ -738,21 +734,21 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
     final Entry<K, V> entryToAdd = mapEntry(null, null);
     try {
       entrySet.add(entryToAdd);
-      fail("Expected UnsupportedOperationException or NullPointerException.");
+      fail("Expected UnsupportedOperationException or JavaScriptException.");
     } catch (UnsupportedOperationException e) {
       // Expected.
-    } catch (NullPointerException e) {
-      // Expected.
+    } catch (JavaScriptException e) {
+      // Expected in GWT client.
     }
     assertInvariants(map);
 
     try {
       entrySet.addAll(singleton(entryToAdd));
-      fail("Expected UnsupportedOperationException or NullPointerException.");
+      fail("Expected UnsupportedOperationException or JavaScriptException.");
     } catch (UnsupportedOperationException e) {
       // Expected.
-    } catch (NullPointerException e) {
-      // Expected.
+    } catch (JavaScriptException e) {
+      // Expected in GWT client.
     }
     assertInvariants(map);
   }
@@ -920,7 +916,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
     } else {
       try {
         map.get(null);
-      } catch (NullPointerException optional) {
+      } catch (JavaScriptException optional) {
+        // in GWT client.
       }
     }
     assertInvariants(map);
@@ -1245,19 +1242,15 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
     if (supportsRemove) {
       try {
         keySet.removeAll(null);
-        fail("Expected NullPointerException.");
-      } catch (NullPointerException e) {
-        // Expected.
+        fail("Expected JavaScriptException.");
       } catch (JavaScriptException e) {
         // Expected in GWT client.
       }
     } else {
       try {
         keySet.removeAll(null);
-        fail("Expected UnsupportedOperationException or NullPointerException.");
+        fail("Expected UnsupportedOperationException or JavaScriptException.");
       } catch (UnsupportedOperationException e) {
-        // Expected.
-      } catch (NullPointerException e) {
         // Expected.
       } catch (JavaScriptException e) {
         // Expected in GWT client.
@@ -1279,8 +1272,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
       try {
         keySet.retainAll(null);
         // Returning successfully is not ideal, but tolerated.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     } else {
       try {
@@ -1288,8 +1281,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         // We have to tolerate a successful return (Sun bug 4802647)
       } catch (UnsupportedOperationException e) {
         // Expected.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     }
     assertInvariants(map);
@@ -1448,8 +1441,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
       try {
         values.removeAll(null);
         // Returning successfully is not ideal, but tolerated.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     } else {
       try {
@@ -1457,8 +1450,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         // We have to tolerate a successful return (Sun bug 4802647)
       } catch (UnsupportedOperationException e) {
         // Expected.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     }
     assertInvariants(map);
@@ -1506,8 +1499,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
       try {
         values.retainAll(null);
         // Returning successfully is not ideal, but tolerated.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     } else {
       try {
@@ -1515,8 +1508,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         // We have to tolerate a successful return (Sun bug 4802647)
       } catch (UnsupportedOperationException e) {
         // Expected.
-      } catch (NullPointerException e) {
-        // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     }
     assertInvariants(map);
