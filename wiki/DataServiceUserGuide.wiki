@@ -1,5 +1,5 @@
 #summary User guide for the DataService API in the html5-database library
-#labels Phase-Implementation,API-Database,Featured
+#labels Phase-Implementation,API-Database
 
 = Introduction =
 
