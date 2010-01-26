@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**
@@ -630,6 +631,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         fail("Expected NullPointerException.");
       } catch (NullPointerException e) {
         // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     } else {
       try {
@@ -639,6 +642,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         // Expected.
       } catch (NullPointerException e) {
         // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     }
     assertInvariants(map);
@@ -1243,6 +1248,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         fail("Expected NullPointerException.");
       } catch (NullPointerException e) {
         // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     } else {
       try {
@@ -1252,6 +1259,8 @@ public abstract class MapInterfaceTest<K, V> extends GWTTestCase {
         // Expected.
       } catch (NullPointerException e) {
         // Expected.
+      } catch (JavaScriptException e) {
+        // Expected in GWT client.
       }
     }
     assertInvariants(map);
