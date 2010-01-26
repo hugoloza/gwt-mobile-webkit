@@ -26,6 +26,11 @@ import java.util.Set;
 /**
  * Exposes the local/session {@link Storage} as a standard mutable {@link Map}.
  * 
+ * <p>
+ * This Map implementation does not accept <code>null</code> values for keys
+ * and/or values.
+ * </p>
+ * 
  * @author bguijt
  */
 public class StorageMap extends AbstractMap<String, String> {
@@ -53,19 +58,36 @@ public class StorageMap extends AbstractMap<String, String> {
     storage.clear();
   }
 
+  /**
+   * Returns <code>true</code> if the Storage contains the specified key,
+   * <code>false</code> otherwise (or if the specified key is <code>null</code>).
+   */
   public boolean containsKey(Object key) {
-    return storage.getItem(String.valueOf(key)) != null;
+    if (key == null) {
+      return false;
+    }
+    return storage.getItem(key.toString()) != null;
   }
 
+  /**
+   * Returns <code>true</code> if the Storage contains the specified value,
+   * <code>false</code> otherwise (or if the specified key is <code>null</code>).
+   */
   public boolean containsValue(Object value) {
-    for (int i = 0; i < size(); i++) {
-      if (storage.getItem(storage.key(i)).equals(value)) {
-        return true;
+    if (value != null) {
+      int s = size();
+      for (int i = 0; i < s; i++) {
+        if (storage.getItem(storage.key(i)).equals(value)) {
+          return true;
+        }
       }
     }
     return false;
   }
 
+  /**
+   * Returns a Set containing all entries of the Storage.
+   */
   public Set<Map.Entry<String, String>> entrySet() {
     if (entrySet == null) {
       entrySet = new StorageEntrySet();
