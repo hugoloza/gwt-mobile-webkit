@@ -16,10 +16,8 @@
 
 package com.google.code.gwt.storage.client;
 
-import java.util.AbstractCollection;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -34,9 +32,6 @@ public class StorageMap extends AbstractMap<String, String> {
 
   private Storage storage;
   private StorageEntrySet entrySet;
-
-  private transient volatile Set<String> keySet = null;
-  private transient volatile Collection<String> values = null;
 
   /**
    * Creates the Map with the specified Storage as data provider.
@@ -76,80 +71,6 @@ public class StorageMap extends AbstractMap<String, String> {
       entrySet = new StorageEntrySet();
     }
     return entrySet;
-  }
-
-  public Set<String> keySet() {
-    if (keySet == null) {
-      keySet = new AbstractSet<String>() {
-        public Iterator<String> iterator() {
-          return new Iterator<String>() {
-            private Iterator<Entry<String, String>> i = entrySet().iterator();
-
-            public boolean hasNext() {
-              return i.hasNext();
-            }
-
-            public String next() {
-              return i.next().getKey();
-            }
-
-            public void remove() {
-              i.remove();
-            }
-          };
-        }
-
-        public int size() {
-          return StorageMap.this.size();
-        }
-
-        public boolean contains(Object k) {
-          return StorageMap.this.containsKey(k);
-        }
-
-        public void clear() {
-          StorageMap.this.clear();
-        }
-      };
-    }
-    return keySet;
-  }
-
-  public Collection<String> values() {
-    if (values == null) {
-      values = new AbstractCollection<String>() {
-        public Iterator<String> iterator() {
-          return new Iterator<String>() {
-            private Iterator<Entry<String, String>> i = entrySet().iterator();
-
-            public boolean hasNext() {
-              return i.hasNext();
-            }
-
-            public String next() {
-              return i.next().getValue();
-            }
-
-            public void remove() {
-              i.remove();
-            }
-          };
-        }
-
-        public int size() {
-          return StorageMap.this.size();
-        }
-
-        public boolean contains(Object v) {
-          return StorageMap.this.containsValue(v);
-        }
-
-        public void clear() {
-          StorageMap.this.clear();
-        }
-      };
-    }
-    return values;
   }
 
   /**
