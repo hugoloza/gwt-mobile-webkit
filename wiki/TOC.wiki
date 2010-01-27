@@ -6,16 +6,16 @@
   * Database API
     * [DatabaseApi Quickstart]
     * [DataServiceUserGuide DataService guide]
-    * [http://hudson.purpleware.org/job/GWT-HTML5-Database/javadoc/ Javadoc]
-    * [http://hudson.purpleware.org/job/GWT-HTML5-Database/ Hudson report]
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Database/javadoc/ Javadoc] (external)
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Database/ Hudson report] (external)
   * Storage API
     * [StorageApi Quickstart]
-    * [http://hudson.purpleware.org/job/GWT-HTML5-Storage/javadoc/ Javadoc]
-    * [http://hudson.purpleware.org/job/GWT-HTML5-Storage/ Hudson report]
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Storage/javadoc/ Javadoc] (external)
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Storage/ Hudson report] (external)
   * Geolocation API
     * [GeolocationApi Quickstart]
-    * [http://hudson.purpleware.org/job/GWT-HTML5-Geolocation/javadoc/ Javadoc]
-    * [http://hudson.purpleware.org/job/GWT-HTML5-Geolocation/ Hudson report]
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Geolocation/javadoc/ Javadoc] (external)
+    * [http://hudson.purpleware.org/job/GWT-HTML5-Geolocation/ Hudson report] (external)
   * !AppCache API
     * [AppCacheDesign design]
   * Widgets API
