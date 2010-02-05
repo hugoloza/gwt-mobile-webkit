@@ -18,6 +18,7 @@ package com.google.code.gwt.database.client.service.callback.list;
 
 import java.util.AbstractList;
 
+import com.google.code.gwt.database.client.DatabaseException;
 import com.google.code.gwt.database.client.SQLResultSet;
 import com.google.code.gwt.database.client.SQLResultSetRowList;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -25,6 +26,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * This List type is used to operate the database {@link SQLResultSet} as a
  * {@link java.util.List}.
+ * 
+ * <p>
+ * This List is <em>immutable</em> - any operation modifying the List throws an
+ * {@link UnsupportedOperationException}.
+ * </p>
  * 
  * @param <T> the type used to represent a row in the resultset
  * 
@@ -49,9 +55,18 @@ public final class ResultSetList<T extends JavaScriptObject> extends
 
   @Override
   public T get(int index) {
-    return resultSet.getItem(index);
+    try {
+      return resultSet.getItem(index);
+    } catch (DatabaseException e) {
+      // Make sure to satisfy the API contract:
+      throw new IndexOutOfBoundsException(e.getMessage());
+    }
   }
 
+  /**
+   * Returns the number of rows in the resultset, which is equal to the number
+   * of elements in this List.
+   */
   @Override
   public int size() {
     return resultSet.getLength();
