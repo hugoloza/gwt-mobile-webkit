@@ -12,9 +12,10 @@ Please also take a look at the [DataServiceUserGuide DataService API]: that API 
 = Browser support =
 Not every browser supports this feature, and currently there are no fallback scenario's to rely on Flash, Java or Gears plugins. We built support for the following browsers:
 
-  # iPhone Safari (OS2.0 and higher - maybe earlier versions are supported, but are untested)
-  # Desktop Safari (3.1 and higher)
-  # Google Android (2.0 and higher)
+  # iPhone Safari (OS2.0 and up - maybe earlier versions are supported, but are untested)
+  # Google Android (2.0 and up)
+  # Desktop Safari (3.1 and up)
+  # Google Chrome (4.0 and up)
 
 NOTE: The Database API as specified by W3C describes two API's: an Asynchronous and a Synchronous API. Currently we only built support for the Asynchronous API, the Synchronous API isn't supported by any browser yet.
 
