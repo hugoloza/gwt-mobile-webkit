@@ -15,7 +15,7 @@ Not every browser supports this feature, and currently there are no fallback sce
   # Chrome (4.0)
   # Firefox (3.5)
   # Internet Explorer (8)
-  # Opera (10.50 - localStorage only!)
+  # Opera (10.50)
 
 Other browsers might also support Web Storage, we just didn't test them nor found any feature support documentation.
 
