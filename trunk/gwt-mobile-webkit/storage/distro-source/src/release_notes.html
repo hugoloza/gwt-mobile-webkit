@@ -29,12 +29,25 @@
       <h1>Mobile Storage API Library for GWT Release Notes</h1>
       <ul>
 	    <li><a href="#Release_Notes_Current">@API_VERSION@</a></li>
+        <li><a href="#Release_Notes_1_0_1">1.0.1</a></li>
         <li><a href="#Release_Notes_1_0_0">1.0.0</a></li>
         <li><a href="#Release_Notes_0_9_1">0.9.1</a></li>
       </ul>
       <hr/>
       <a name="Release_Notes_Current"></a>
      <h2>Release Notes for @API_VERSION@</h2>
+       <p>Maintenance release</p>
+       <ul>
+         <li>Added two methods to check for Storage support: isLocalStorageSupported()
+         and isSessionStorageSupported(). These are added for some browsers which do not
+         fully support the Storage API (e.g. Chrome 4, Opera 10.50b1). See <a
+         href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=14">Issue #14</a>.</li>
+       </ul>
+         <h3>Known Issues</h3>
+       <ul>
+       </ul>
+      <a name="Release_Notes_1_0_1"></a>
+     <h2>Release Notes for 1.0.1</h2>
        <p>Maintenance release</p>
        <ul>
          <li>Fixed StorageMap issue: The map failed numerous Map compatibility tests. See <a
