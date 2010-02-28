@@ -89,7 +89,7 @@ public class HelloStorage implements EntryPoint {
     eventPanel.add(handlersLabel);
     eventPanel.setCellHorizontalAlignment(handlersLabel, HasHorizontalAlignment.ALIGN_RIGHT);
     
-    if (!Storage.isSupported()) {
+    if (!Storage.isLocalStorageSupported() && !Storage.isSessionStorageSupported()) {
       Window.alert("Web Storage NOT supported in this browser!");
       return;
     }
@@ -99,43 +99,47 @@ public class HelloStorage implements EntryPoint {
 
     TabPanel tabs = new TabPanel();
     main.add(tabs);
-    tabs.add(createStorageTab(local), "localStorage");
-    tabs.add(createStorageTab(session), "sessionStorage");
+    tabs.add(createStorageTab(local, Storage.isLocalStorageSupported()), "localStorage");
+    tabs.add(createStorageTab(session, Storage.isSessionStorageSupported()), "sessionStorage");
     tabs.selectTab(0);
   }
 
-  private Widget createStorageTab(final Storage storage) {
-    final Grid grid = new Grid();
-    grid.setCellPadding(5);
-    grid.setBorderWidth(1);
-    renderGrid(grid, storage);
-
+  private Widget createStorageTab(final Storage storage, final boolean isSupported) {
     VerticalPanel p = new VerticalPanel();
 
-    HorizontalPanel hp = new HorizontalPanel();
-    p.add(hp);
-    hp.add(new Label("key:"));
-    final TextBox keyInput = new TextBox();
-    hp.add(keyInput);
-    hp.add(new Label("data:"));
-    final TextBox dataInput = new TextBox();
-    hp.add(dataInput);
-
-    hp.add(new Button("Put in storage", new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        storage.setItem(keyInput.getText(), dataInput.getText());
-        renderGrid(grid, storage);
-      }
-    }));
-
-    p.add(new Button("Clear storage", new ClickHandler() {
-      public void onClick(ClickEvent event) {
-        storage.clear();
-        renderGrid(grid, storage);
-      }
-    }));
-
-    p.add(grid);
+    if (isSupported) {
+      HorizontalPanel hp = new HorizontalPanel();
+      p.add(hp);
+      hp.add(new Label("key:"));
+      final TextBox keyInput = new TextBox();
+      hp.add(keyInput);
+      hp.add(new Label("data:"));
+      final TextBox dataInput = new TextBox();
+      hp.add(dataInput);
+  
+      final Grid grid = new Grid();
+      grid.setCellPadding(5);
+      grid.setBorderWidth(1);
+      renderGrid(grid, storage);
+      
+      hp.add(new Button("Put in storage", new ClickHandler() {
+        public void onClick(ClickEvent event) {
+          storage.setItem(keyInput.getText(), dataInput.getText());
+          renderGrid(grid, storage);
+        }
+      }));
+  
+      p.add(new Button("Clear storage", new ClickHandler() {
+        public void onClick(ClickEvent event) {
+          storage.clear();
+          renderGrid(grid, storage);
+        }
+      }));
+  
+      p.add(grid);
+    } else {
+      p.add(new Label("This Storage is NOT supported in this browser."));
+    }
 
     return p;
   }

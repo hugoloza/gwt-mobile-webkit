@@ -51,8 +51,12 @@ public class StorageImpl {
   protected StorageImpl() {
   }
 
-  public native boolean isSupported() /*-{
+  public native boolean isLocalStorageSupported() /*-{
     return typeof $wnd.localStorage != "undefined";
+  }-*/;
+
+  public native boolean isSessionStorageSupported() /*-{
+    return typeof $wnd.sessionStorage != "undefined";
   }-*/;
 
   /**
