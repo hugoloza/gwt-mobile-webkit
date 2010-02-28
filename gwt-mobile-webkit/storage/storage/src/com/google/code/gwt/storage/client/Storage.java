@@ -42,8 +42,8 @@ import com.google.gwt.core.client.JavaScriptObject;
  * @see <a href="http://quirksmode.org/dom/html5.html#t00">Quirksmode.org -
  *      HTML5 Compatibility - Storage</a>
  * @see <a
- *      href="http://code.google.com/p/gwt-mobile-webkit/wiki/StorageApi">Wiki
- *      - Quickstart Guide</a>
+ *      href="http://code.google.com/p/gwt-mobile-webkit/wiki/StorageApi">Wiki -
+ *      Quickstart Guide</a>
  * @author bguijt
  */
 public final class Storage extends JavaScriptObject {
@@ -57,11 +57,27 @@ public final class Storage extends JavaScriptObject {
   }
 
   /**
-   * Returns <code>true</code> if the Storage API is supported on the running
-   * platform.
+   * Returns <code>true</code> if the Storage API (both local- and
+   * sessionStorage) is supported on the running platform.
    */
   public static boolean isSupported() {
-    return impl.isSupported();
+    return impl.isLocalStorageSupported() && impl.isSessionStorageSupported();
+  }
+
+  /**
+   * Returns <code>true</code> if the <code>localStorage</code> part of the
+   * Storage API is supported on the running platform.
+   */
+  public static boolean isLocalStorageSupported() {
+    return impl.isLocalStorageSupported();
+  }
+
+  /**
+   * Returns <code>true</code> if the <code>sessionStorage</code> part of the
+   * Storage API is supported on the running platform.
+   */
+  public static boolean isSessionStorageSupported() {
+    return impl.isSessionStorageSupported();
   }
 
   /**
