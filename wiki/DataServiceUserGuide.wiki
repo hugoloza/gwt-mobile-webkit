@@ -70,7 +70,7 @@ If you're used to the GWT RPC mechanism, you'll see a familiar structure here: a
 The !DataService API supports transactions. Each method in the !DataService starts (and ends) its own transaction. To make INSERT statements efficient, you can iterate over a collection and execute a SQL statement at each iteration in the `@Update` annotation, e.g.:
 
 {{{
-@Update(sql="INSERT INTO testtable (adate) VALUES ({_.getTime()})", foreach="dates")
+@Update(sql="INSERT INTO testtable (adate) VALUES ({_.getTime()})", foreach="clicks")
 void insertDate(Collection<Date> clicks, RowIdListCallback callback);
 }}}
 
