@@ -11,6 +11,7 @@ Not every browser supports this feature, and currently there are no fallback sce
 
   # iPhone Safari (OS3.0)
   # Android (2.0)
+  # webOS (1.4)
   # Desktop Safari (4.0)
   # Chrome (4.0)
   # Firefox (3.5)
