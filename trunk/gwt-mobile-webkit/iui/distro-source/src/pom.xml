@@ -1,0 +1,20 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.google.code.gwt-mobile-webkit</groupId>
+  <artifactId>mobile-webkit-iui</artifactId>
+  <packaging>jar</packaging>
+  <name>iUI API</name>
+  <version>@API_VERSION@</version>
+  <description>Mobile WebKit iUI API Library for GWT</description>
+  <url>http://code.google.com/p/gwt-mobile-webkit/</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://code.google.com/p/gwt-mobile-webkit/source/browse/#svn/trunk/gwt-mobile-webkit/iui</url>
+  </scm>
+</project>

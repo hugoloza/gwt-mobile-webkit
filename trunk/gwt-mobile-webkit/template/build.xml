@@ -49,4 +49,8 @@
 	<target name="clean" description="Cleans the entire library build">
 		<delete dir="${gwt.build}" />
 	</target>
+
+	<target name="maven-install" description="Installs the jar in the local maven repository">
+		<ant antfile="common.ant.xml" target="maven-install" />
+	</target>
 </project>

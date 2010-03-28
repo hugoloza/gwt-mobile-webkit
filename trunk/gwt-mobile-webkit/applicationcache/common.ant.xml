@@ -444,4 +444,26 @@
     <delete dir="${project.build}" />
   </target>
 
+  <target name="maven-install">
+    <available file="${mobile.webkit.api.jar}" property="mobile.webkit.api.jar.exists" />
+    <fail unless="mobile.webkit.api.jar.exists" message="Cannot find '${mobile.webkit.api.jar}'; perhaps you should run 'ant dist' first!" />
+    
+    <condition property="exec.cmd" value="cmd.exe"
+               else="/bin/sh">
+      <isset property="build.host.iswindows" />
+    </condition>
+    <condition property="exec.arg" value="/c"
+               else="-c">
+      <isset property="build.host.iswindows" />
+    </condition>
+    <property name="mvn.file" value="-Dfile=${mobile.webkit.api.jar}" />
+    <property name="mvn.groupId" value="-DgroupId=com.google.code.gwt-mobile-webkit" />
+    <property name="mvn.artifactId" value="-DartifactId=gwt-${api.prefix}-${api.name}" />
+    <property name="mvn.version" value="-Dversion=${api.version}" />
+    <property name="mvn.opts" value="-DupdateReleaseInfo=true -Dpackaging=jar -DgeneratePom=true -DcreateChecksum=true" />
+    <exec executable="${exec.cmd}">
+      <arg value="${exec.arg}" />
+      <arg value="mvn install:install-file ${mvn.file} ${mvn.groupId} ${mvn.artifactId} ${mvn.version} ${mvn.opts}" />
+    </exec>
+  </target>
 </project>
