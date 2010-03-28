@@ -15,8 +15,21 @@ Not every browser supports this feature. Fortunately, there is a fallback scenar
   # Any browser with the Google Gears plugin
 
 = Usage =
+== Get the Geolocation API using Maven ==
+[MavenUserGuide Add the repository] and the following to your `pom.xml` file:
+
+{{{
+<dependencies>
+  ...
+  <dependency>
+    <groupId>com.google.code.gwt-mobile-webkit</groupId>
+    <artifactId>gwt-html5-geolocation</artifactId>
+  </dependency>
+</dependencies>
+}}}
+
 == Add the Geolocation API to your project ==
-First, copy the `gwt-html5-geolocation-x.x.x.jar` file to your project classpath. This jar contains everything you need to use the Geolocation API.
+If you don't use Maven, copy the `gwt-html5-geolocation-x.x.x.jar` file to your project classpath. This jar contains everything you need to use the Geolocation API.
 
 Next, in your GWT module `gwt.xml` file (which uses the Geolocation API), add the following entry:
 {{{
