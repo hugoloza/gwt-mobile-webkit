@@ -1,9 +1,9 @@
-<project name="html5-appcache" default="build" basedir=".">
+<project name="mobile-webkit-iui" default="build" basedir=".">
 	<property name="gwt.root" location="." />
 	<property name="project.tail" value="" />
 	<import file="${gwt.root}/common.ant.xml" />
 
-	<!-- "build" is the default when subprojects are directly targetted -->
+	<!-- "build" is the default when subprojects are directly targeted -->
 	<property name="target" value="build" />
 
 	<target name="build-tools" description="Builds tools required to build the library">
@@ -48,5 +48,9 @@
 
 	<target name="clean" description="Cleans the entire library build">
 		<delete dir="${gwt.build}" />
+	</target>
+
+	<target name="maven-install" description="Installs the jar in the local maven repository">
+		<ant antfile="common.ant.xml" target="maven-install" />
 	</target>
 </project>

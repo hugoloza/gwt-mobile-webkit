@@ -444,4 +444,27 @@
     <delete dir="${project.build}" />
   </target>
 
+  <target name="maven-install">
+    <available file="${mobile.webkit.api.jar}" property="mobile.webkit.api.jar.exists" />
+    <fail unless="mobile.webkit.api.jar.exists" message="Cannot find '${mobile.webkit.api.jar}'; perhaps you should run 'ant dist' first!" />
+    
+    <property name="mobile.webkit.api.pom" value="${gwt.build.out}/distro-source/pom.xml" />
+    <available file="${mobile.webkit.api.pom}" property="mobile.webkit.api.pom.exists" />
+    <fail unless="mobile.webkit.api.pom.exists" message="Cannot find '${mobile.webkit.api.pom}'; perhaps you should run 'ant dist' first!" />
+    
+    <condition property="exec.cmd" value="cmd.exe"
+               else="/bin/sh">
+      <isset property="build.host.iswindows" />
+    </condition>
+    <condition property="exec.arg" value="/c"
+               else="-c">
+      <isset property="build.host.iswindows" />
+    </condition>
+    <property name="mvn.file" value="-Dfile=${mobile.webkit.api.jar}" />
+    <property name="mvn.pomFile" value="-DpomFile=${mobile.webkit.api.pom}" />
+    <exec executable="${exec.cmd}">
+      <arg value="${exec.arg}" />
+      <arg value="mvn install:install-file ${mvn.file} ${mvn.pomFile} -DcreateChecksum=true" />
+    </exec>
+  </target>
 </project>
