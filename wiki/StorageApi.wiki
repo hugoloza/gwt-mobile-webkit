@@ -22,7 +22,7 @@ Other browsers might also support Web Storage, we just didn't test them nor foun
 
 = Usage =
 == Get the Storage API using Maven ==
-Add the following to your `pom.xml` file:
+[MavenUserGuide Add the repository] and the following to your `pom.xml` file:
 
 {{{
 <dependencies>
