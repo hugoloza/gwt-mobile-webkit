@@ -3,6 +3,7 @@
 
   * General
     * [BuildingFromSource Build from source]
+    * [MavenUserGuide Maven User Guide]
   * Database API
     * [DatabaseApi Quickstart]
     * [DataServiceUserGuide DataService guide]
