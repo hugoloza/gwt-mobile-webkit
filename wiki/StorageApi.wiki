@@ -21,8 +21,21 @@ Not every browser supports this feature, and currently there are no fallback sce
 Other browsers might also support Web Storage, we just didn't test them nor found any feature support documentation.
 
 = Usage =
+== Get the Storage API using Maven ==
+Add the following to your `pom.xml` file:
+
+{{{
+<dependencies>
+  ...
+  <dependency>
+    <groupId>com.google.code.gwt-mobile-webkit</groupId>
+    <artifactId>gwt-html5-storage</artifactId>
+  </dependency>
+</dependencies>
+}}}
+
 == Add the Storage API to your project ==
-First, copy the `gwt-html5-storage-x.x.x.jar` file from the downloaded distribution to your project classpath. This jar contains everything you need to use the Storage API.
+If you don't use Maven, copy the `gwt-html5-storage-x.x.x.jar` file from the downloaded distribution to your project classpath. This jar contains everything you need to use the Storage API.
 
 Next, in your GWT module `gwt.xml` file (which uses the Storage API), add the following entry:
 {{{
