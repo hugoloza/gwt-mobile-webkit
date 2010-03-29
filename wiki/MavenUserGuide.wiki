@@ -17,7 +17,7 @@ The repository entry should look like this:
   ...
   <repository>
     <id>gwt-mobile-webkit</id>
-    <url>http://gwt-mobile-webkit.googlecode.com/svn/trunk/repo</url>
+    <url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
   </repository>
 </repositories>
 }}}
