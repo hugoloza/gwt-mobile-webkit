@@ -18,6 +18,7 @@ package com.google.code.gwt.database.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 /**
@@ -45,9 +46,8 @@ public class SQLTransaction extends JavaScriptObject {
    * {@link StatementCallback#onSuccess(SQLTransaction, SQLResultSet)} method.
    */
   @SuppressWarnings({"unused", "unchecked"})
-  private static final void handleStatement(
-      StatementCallback callback, SQLTransaction transaction,
-      SQLResultSet resultSet) {
+  private static final void handleStatement(StatementCallback callback,
+      SQLTransaction transaction, SQLResultSet resultSet) {
     UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
     if (ueh != null) {
       try {
@@ -106,7 +106,12 @@ public class SQLTransaction extends JavaScriptObject {
    * @param arguments the arguments to fit in the placeholders of the
    *          <code>sqlStatement</code> (could be <code>null</code>)
    */
-  public final native void executeSql(String sqlStatement, Object[] arguments) /*-{
+  public final void executeSql(String sqlStatement, Object[] arguments) {
+    executeSql(sqlStatement, toJsniArray(arguments));
+  }
+
+  private final native void executeSql(String sqlStatement,
+      JsArrayString arguments) /*-{
     this.executeSql(sqlStatement, arguments);
   }-*/;
 
@@ -132,18 +137,51 @@ public class SQLTransaction extends JavaScriptObject {
    * @param callback the callback for handling errors and the resultset of the
    *          SQL statement
    */
+  public final void executeSql(String sqlStatement, Object[] arguments,
+      StatementCallback<?> callback) {
+    executeSql(sqlStatement, toJsniArray(arguments), callback);
+  }
+
   @SuppressWarnings("unchecked")
-  public final native void executeSql(String sqlStatement, Object[] arguments,
-      StatementCallback callback) /*-{
+  private final native void executeSql(String sqlStatement,
+      JsArrayString arguments, StatementCallback callback) /*-{
     this.executeSql(
-    sqlStatement,
-    arguments,
-    function(transaction, resultSet) {
-      @com.google.code.gwt.database.client.SQLTransaction::handleStatement(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLResultSet;) (callback, transaction, resultSet);
-    },
-    function(transaction, error) {
-      return @com.google.code.gwt.database.client.SQLTransaction::handleError(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLError;) (callback, transaction, error);
-    }
+      sqlStatement,
+      arguments,
+      function(transaction, resultSet) {
+        @com.google.code.gwt.database.client.SQLTransaction::handleStatement(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLResultSet;) (callback, transaction, resultSet);
+      },
+      function(transaction, error) {
+        return @com.google.code.gwt.database.client.SQLTransaction::handleError(Lcom/google/code/gwt/database/client/StatementCallback;Lcom/google/code/gwt/database/client/SQLTransaction;Lcom/google/code/gwt/database/client/SQLError;) (callback, transaction, error);
+      }
     );
   }-*/;
+
+  /**
+   * Converts a java array to a JsArrayString.
+   * 
+   * <p>
+   * JSNI requires a JsArray of uniform type. All array values are converted to
+   * string using the toString() method before being added to the JsArrayString.
+   * </p>
+   * 
+   * <p>
+   * Note that the database takes care of converting the strings back to the
+   * datatype required by the table column.
+   * </p>
+   * 
+   * @param array to load into a JsArrayString
+   * @return a JsArrayString array that can be passed to JSNI
+   */
+  private JsArrayString toJsniArray(Object[] array) {
+    if (array == null) {
+      return null;
+    }
+    JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+    for (int i = 0; i < array.length; i++) {
+      Object value = array[i];
+      jsArray.set(i, value == null ? null : value.toString());
+    }
+    return jsArray;
+  }
 }
