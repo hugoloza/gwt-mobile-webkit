@@ -37,11 +37,13 @@
      <h2>Release Notes for @API_VERSION@</h2>
        <p>Maintenance release</p>
        <ul>
+         <li>Fixed development/hosted mode issue with query parameters,
+         thanks to a contribution from Mikeo. See <a
+         href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=16">Issue #16</a>.</li>
          <li>Fixed ResultSetList to throw IndexOutOfBoundsException
-         instead of DatabaseException at get(index).</li>
+         instead of DatabaseException at get(index) to comply with Collection API contract.</li>
          <li>Added shell script to run sample in compiled mode. See <a
          href="http://code.google.com/p/gwt-mobile-webkit/issues/detail?id=12">Issue #12</a>.</li>
-         <li>Improved 'isSupported()' function in the Gears implementation.</li>
          <li>Separated public API from private (implementation) parts,
          which were never supposed to be public anyway. Cleanup.</li>
        </ul>
