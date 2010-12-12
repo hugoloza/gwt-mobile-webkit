@@ -23,16 +23,23 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * @author bguijt
  */
-public class ClickRow extends JavaScriptObject {
+public final class ClickRow extends JavaScriptObject {
 
   protected ClickRow() {}
   
   /**
-   * @return the 'clicked' property (an integer) as a Java Date (SQLite does not support DATE types).
+   * @return the 'clicked' property (an integer) as a
+   * Java Date (SQLite does not support DATE types).
    */
-  public final native Date getClicked() /*-{
-    var dateClicked = new Date();
-    dateClicked.setTime(this.clicked);
-    return dateClicked;
+  public Date getClicked() {
+    return new Date((long) _getClicked());
+  }
+  
+  /*
+   * Creating a Java Date must be done in two phases due to
+   * JSNI restrictions (no long primitive support):
+   */
+  private native double _getClicked() /*-{
+    return this.clicked;
   }-*/;
 }
