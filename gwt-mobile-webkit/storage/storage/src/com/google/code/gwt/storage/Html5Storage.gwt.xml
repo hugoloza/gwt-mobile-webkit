@@ -26,9 +26,13 @@
   
   <replace-with class="com.google.code.gwt.storage.client.impl.StorageImplIE8">
     <when-type-is class="com.google.code.gwt.storage.client.impl.StorageImpl" />
+    <when-property-is name="user.agent" value="ie8" />
+  </replace-with>
+  
+  <replace-with class="com.google.code.gwt.storage.client.impl.StorageImplIE7">
+    <when-type-is class="com.google.code.gwt.storage.client.impl.StorageImpl" />
     <any>
-      <when-property-is name="user.agent" value="ie8" />
-      <!-- If you use GWT 1.6 or earlier: -->
+      <when-property-is name="user.agent" value="ie7" />
       <when-property-is name="user.agent" value="ie6" />
     </any>
   </replace-with>
