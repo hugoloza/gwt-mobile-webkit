@@ -16,6 +16,8 @@
 
 package com.google.code.gwt.geolocation.client;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -50,7 +52,11 @@ public class Position extends JavaScriptObject {
    * @see <a href="http://www.w3.org/TR/geolocation-API/#timestamp">W3C
    *      Geolocation API - Position.timestamp</a>
    */
-  public final native int getTimestamp() /*-{
+  public final Date getTimestamp() {
+    return new Date((long) _getTimstamp());
+  }
+  
+  private final native double _getTimstamp() /*-{
     return this.timestamp;
   }-*/;
 }
