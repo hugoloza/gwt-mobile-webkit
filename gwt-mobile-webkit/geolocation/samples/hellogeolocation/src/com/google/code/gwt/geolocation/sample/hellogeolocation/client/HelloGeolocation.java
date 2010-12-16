@@ -102,7 +102,7 @@ public class HelloGeolocation implements EntryPoint {
       }
 
       public void onSuccess(Position position) {
-        l2.setText("Obtaining position DONE:");
+        l2.setText("Obtaining position DONE - acquired at " + position.getTimestamp());
         Coordinates c = position.getCoords();
         main.add(new Label("lat, lon: " + c.getLatitude() + ", "
             + c.getLongitude()));
