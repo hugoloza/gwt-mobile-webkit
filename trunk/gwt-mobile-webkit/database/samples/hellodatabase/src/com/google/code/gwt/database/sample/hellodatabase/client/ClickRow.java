@@ -28,7 +28,7 @@ public final class ClickRow extends JavaScriptObject {
   protected ClickRow() {}
   
   /**
-   * @return the 'clicked' property (an integer) as a
+   * @return the 'clicked' property (a long) as a
    * Java Date (SQLite does not support DATE types).
    */
   public Date getClicked() {
