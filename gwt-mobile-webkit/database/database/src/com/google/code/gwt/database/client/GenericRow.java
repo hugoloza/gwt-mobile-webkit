@@ -54,9 +54,9 @@ public class GenericRow extends JavaScriptObject {
     return this[name];
   }-*/;
 
-  public final native Date getDate(String name) /*-{
-    return this[name];
-  }-*/;
+  public final Date getDate(String name) {
+    return new Date((long) getDouble(name));
+  }
 
   public final native boolean getBoolean(String name) /*-{
     return this[name] ? true : false;
