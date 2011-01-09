@@ -30,32 +30,15 @@ public class StorageTest extends GWTTestCase {
 
   public void testStorageSupported() {
     assertTrue("Storage API is NOT supported! User agent: " + getUserAgent(),
-        Storage.isSupported());
+        Storage.isLocalStorageSupported() || Storage.isSessionStorageSupported());
   }
 
-  public void testStorage() {
-    final Storage localStorage = Storage.getLocalStorage();
-    final Storage sessionStorage = Storage.getSessionStorage();
+  public void testLocalStorage() {
+    doStorage(Storage.getLocalStorage());
+  }
 
-    assertNotNull("No support for Web Storage: no localStorage found!",
-        localStorage);
-    assertNotNull("No support for Web Storage: no sessionStorage found!",
-        sessionStorage);
-
-    localStorage.clear();
-    sessionStorage.clear();
-
-    localStorage.setItem("name", "Bart");
-    localStorage.setItem("lastName", "Guijt");
-    localStorage.setItem("email", "bart@guijt.me");
-    localStorage.setItem("country", "The Netherlands");
-
-    sessionStorage.setItem("name", "Pepijn");
-
-    assertEquals("There must be a name key in localStorage!", "Bart",
-        localStorage.getItem("name"));
-    assertEquals("There must be a name key in sessionStorage!", "Pepijn",
-        sessionStorage.getItem("name"));
+  public void testSessionStorage() {
+    doStorage(Storage.getSessionStorage());
   }
 
   public void testStorageRetention() {
@@ -112,6 +95,22 @@ public class StorageTest extends GWTTestCase {
     sessionStorage.setItem("name", "Pepijn");
   }
 
+  public void doStorage(Storage s) {
+    assertNotNull("No support for Web Storage!", s);
+
+    s.clear();
+    assertEquals("There should be NO items in the Storage after clear()!", 0, s.getLength());
+    
+    s.setItem("name", "Bart");
+    s.setItem("lastName", "Guijt");
+    s.setItem("email", "bart@guijt.me");
+    s.setItem("country", "The Netherlands");
+
+    assertEquals("There should be 4 items in the Storage!", 4, s.getLength());
+    assertEquals("There must be a name key in localStorage!", "Bart",
+        s.getItem("name"));
+  }
+  
   private final static native String getUserAgent() /*-{
     return navigator.userAgent;
   }-*/;
