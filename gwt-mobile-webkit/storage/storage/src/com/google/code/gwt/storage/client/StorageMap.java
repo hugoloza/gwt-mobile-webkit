@@ -30,7 +30,7 @@ import com.google.gwt.core.client.JavaScriptException;
  * Map&lt;String, String&gt;}.
  * 
  * <p>
- * The following characteristics are applicable to this Map:
+ * The following characteristics are associated with this Map:
  * </p>
  * <ol>
  * <li><em>Mutable</em> - All 'write' methods ({@link #put(String, String)},
@@ -41,12 +41,13 @@ import com.google.gwt.core.client.JavaScriptException;
  * operate as intended;</li>
  * <li><em>No <code>null</code> values and keys</em> - The Storage doesn't
  * accept keys or values which are <code>null</code>;</li>
- * <li><em>JavaScriptException instead of NPE's</em> - Some Map (or other Collection)
- * methods mandate the use of a {@link NullPointerException} if some argument is
- * <code>null</code> (e.g. {@link #remove(Object)}). this Map issues
+ * <li><em>JavaScriptException instead of NullPointerException</em> - Some Map
+ * (or other Collection) methods mandate the use of a
+ * {@link NullPointerException} if some argument is <code>null</code> (e.g.
+ * {@link #remove(Object)} remove(null)). this Map emits
  * {@link JavaScriptException}s instead;</li>
- * <li><em>String values and keys</em> - All keys and values in this Map are of
- * the String type.</li>
+ * <li><em>String values and keys</em> - All keys and values in this Map are
+ * String types.</li>
  * </ol>
  * 
  * @author bguijt
@@ -78,8 +79,7 @@ public class StorageMap extends AbstractMap<String, String> {
 
   /**
    * Returns <code>true</code> if the Storage contains the specified key,
-   * <code>false</code> otherwise (or if the specified key is <code>null</code>
-   * ).
+   * <code>false</code> otherwise.
    */
   public boolean containsKey(Object key) {
     return storage.getItem(key.toString()) != null;
