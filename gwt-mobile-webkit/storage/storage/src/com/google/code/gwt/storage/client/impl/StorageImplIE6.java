@@ -16,12 +16,11 @@
 
 package com.google.code.gwt.storage.client.impl;
 
-import com.google.code.gwt.storage.client.Storage;
 import com.google.code.gwt.storage.client.StorageEventHandler;
-import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.user.client.DOM;
 
 /**
- * IE7-specific implementation of the Web Storage using the userData Behavior
+ * IE6-specific implementation of the Web Storage using the userData Behavior.
  * 
  * @author coneill
  * 
@@ -29,31 +28,20 @@ import com.google.gwt.core.client.JavaScriptObject;
  *      href="http://msdn.microsoft.com/en-us/library/ms531424%28VS.85%29.aspx">userData
  *      Behavior</a>
  */
-public class StorageImplIE7 extends StorageImpl {
+public class StorageImplIE6 extends StorageImpl {
 
-  protected JavaScriptObject userData;
-  protected final String NAME = "ieUserDataObject";
-
+  protected static String id;
+  
   /**
    * Constructor
    */
-  public StorageImplIE7() {
+  public StorageImplIE6() {
     initJSON();
 
-    userData = init(NAME);
-    userData.getClass();
-  }
-
-  /**
-   * Constructor that allows the user to define a namespace for the storage
-   * 
-   * @param nameSpace The namespace of the storage
-   */
-  public StorageImplIE7(String nameSpace) {
-    initJSON();
-
-    userData = init(nameSpace);
-    userData.getClass();
+    if (id == null) {
+      id = DOM.createUniqueId();
+      init(id);
+    }
   }
 
   /**
@@ -61,7 +49,7 @@ public class StorageImplIE7 extends StorageImpl {
    * 
    * @return
    */
-  private native JavaScriptObject init(String id) /*-{
+  private native void init(String id) /*-{
     var el = $wnd.document.createElement('div');
 
     // set element properties
@@ -73,7 +61,7 @@ public class StorageImplIE7 extends StorageImpl {
     $wnd.document.body.appendChild(el);
     $wnd.ieLocalStorageEl = el;
 
-    this.@com.google.code.gwt.storage.client.impl.StorageImplIE7::load()();
+    this.@com.google.code.gwt.storage.client.impl.StorageImplIE6::load()();
 
     // Since userData does not have clear() and getKey(index) methods, we have to 
     // store a cached index of stored keys that we can reference if needed.
@@ -83,12 +71,9 @@ public class StorageImplIE7 extends StorageImpl {
     if (index == null || index == "") {
       $wnd.ieLocalStorageEl.index = {}; // create new copy
     } else {
-      // get the existing index as a string and decode to a javavascript object
+      // get the existing index as a string and decode to a javascript object
       $wnd.ieLocalStorageEl.index = json_decode(index);
     }
-
-    // return element
-    return el;
   }-*/;
 
   /**
@@ -100,7 +85,7 @@ public class StorageImplIE7 extends StorageImpl {
   }-*/;
 
   /**
-   * Session storage is not supported in IE7
+   * Session storage is not supported in IE6/IE7
    */
   @Override
   public boolean isSessionStorageSupported() {
@@ -108,24 +93,16 @@ public class StorageImplIE7 extends StorageImpl {
   }
 
   /**
-   * Return the IE7 userData object.
-   */
-  @Override
-  public native Storage getLocalStorage() /*-{
-    return $wnd.ieLocalStorageEl;
-  }-*/;
-
-  /**
    * In userData getItem(key) is re-mapped to <a
    * href="http://msdn.microsoft.com/en-us/library/ms531348%28v=VS.85%29.aspx"
    * >getAttribute(key)</a>
    */
   @Override
-  public native String getItem(Storage storage, String key) /*-{
-    //clean key
-    key = $wnd.Storage.esc(key);
-    this.@com.google.code.gwt.storage.client.impl.StorageImplIE7::load()();
-    return storage.getAttribute(key);
+  public native String getItem(String storage, String key) /*-{
+    // clean key
+    var cleanKey = $wnd.Storage.esc(key);
+    this.@com.google.code.gwt.storage.client.impl.StorageImplIE6::load()();
+    return storage.getAttribute(cleanKey);
   }-*/;
 
   /**
@@ -135,8 +112,9 @@ public class StorageImplIE7 extends StorageImpl {
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-l">W3C Web
    *      Storage - Storage.length()</a>
    */
-  public native int getLength(Storage storage) /*-{
-    this.@com.google.code.gwt.storage.client.impl.StorageImplIE7::load()();
+  @Override
+  public native int getLength(String storage) /*-{
+    this.@com.google.code.gwt.storage.client.impl.StorageImplIE6::load()();
 
     if ($wnd.ieLocalStorageEl.index == null)
       return 0;
@@ -150,13 +128,13 @@ public class StorageImplIE7 extends StorageImpl {
    * >removeAttribute(key)</a>
    */
   @Override
-  public native void removeItem(Storage storage, String key) /*-{
+  public native void removeItem(String storage, String key) /*-{
     // clean key
-    key = $wnd.Storage.esc(key);
+    var cleanKey = $wnd.Storage.esc(key);
 
-    $wnd.ieLocalStorageEl.removeAttribute(key);
-    delete $wnd.ieLocalStorageEl.index[key];
-    this.@com.google.code.gwt.storage.client.impl.StorageImplIE7::save()();
+    $wnd.ieLocalStorageEl.removeAttribute(cleanKey);
+    delete $wnd.ieLocalStorageEl.index[cleanKey];
+    this.@com.google.code.gwt.storage.client.impl.StorageImplIE6::save()();
   }-*/;
 
   /**
@@ -164,9 +142,8 @@ public class StorageImplIE7 extends StorageImpl {
    * from our cached index
    */
   @Override
-  public native String key(Storage storage, int index) /*-{
-    var keys = $wnd.Storage.getObjectKeys($wnd.ieLocalStorageEl.index);
-    return keys[index];
+  public native String key(String storage, int index) /*-{
+    return $wnd.Storage.getObjectKeys($wnd.ieLocalStorageEl.index)[index];
   }-*/;
 
   /**
@@ -175,27 +152,20 @@ public class StorageImplIE7 extends StorageImpl {
    * >setAttribute(key, value)</a>
    */
   @Override
-  public native void setItem(Storage storage, String key, String data) /*-{
+  public native void setItem(String storage, String key, String data) /*-{
     // clean key
-    key = $wnd.Storage.esc(key);
+    var cleanKey = $wnd.Storage.esc(key);
 
-    $wnd.ieLocalStorageEl.setAttribute(key, data);
-    $wnd.ieLocalStorageEl.index[key] = data;
-    this.@com.google.code.gwt.storage.client.impl.StorageImplIE7::save()();
+    $wnd.ieLocalStorageEl.setAttribute(cleanKey, data);
+    $wnd.ieLocalStorageEl.index[cleanKey] = data;
+    this.@com.google.code.gwt.storage.client.impl.StorageImplIE6::save()();
   }-*/;
 
   /**
-   * Do nothing. IE7 does not support storage events
+   * TODO: IE6 does not support storage events
    */
   @Override
   public void addStorageEventHandler(StorageEventHandler handler) {
-  }
-
-  /**
-   * Do nothing. IE7 does not support storage events
-   */
-  @Override
-  protected void addStorageEventHandler0() {
   }
 
   /**
@@ -224,7 +194,7 @@ public class StorageImplIE7 extends StorageImpl {
    * a native method for this.
    */
   @Override
-  public native void clear(Storage storage) /*-{
+  public native void clear(String storage) /*-{
     var keys = $wnd.Storage.getObjectKeys($wnd.ieLocalStorageEl.index);
     for (var i = 0; i < keys.length; i++) {
       var key = keys[i];
@@ -239,7 +209,7 @@ public class StorageImplIE7 extends StorageImpl {
     }
 
     // persist the changes
-    this.@com.google.code.gwt.storage.client.impl.StorageImplIE7::save()();
+    this.@com.google.code.gwt.storage.client.impl.StorageImplIE6::save()();
   }-*/;
 
   /**
@@ -257,7 +227,7 @@ public class StorageImplIE7 extends StorageImpl {
 
     Date.prototype.toJSON = function(date) {
       // Yes, it polutes the Date namespace, but we'll allow it here, as
-      // it's damned usefull.
+      // it's damned useful.
       return date.getUTCFullYear()   + '-' +
            toIntegersAtLease(date.getUTCMonth() + 1) + '-' +
            toIntegersAtLease(date.getUTCDate());
@@ -274,11 +244,11 @@ public class StorageImplIE7 extends StorageImpl {
             '\\': '\\\\'
         }
 
-    if($wnd.Storage == undefined)
+    if ($wnd.Storage == undefined)
       $wnd.Storage = {};
 
     $wnd.Storage.quoteString = function(string) {
-      // Places quotes around a string, inteligently.
+      // Places quotes around a string, intelligently.
       // If the string contains no control characters, no quote characters, and no
       // backslash characters, then we can safely slap some quotes around it.
       // Otherwise we must also replace the offending characters with safe escape
@@ -404,11 +374,11 @@ public class StorageImplIE7 extends StorageImpl {
 
     //function to return the object methods as an array
     $wnd.Storage.getObjectKeys = function(el) {
-      if(el == null)
+      if (el == null)
         return [];
  
       var keys = [];
-      for(var key in el){
+      for (var key in el) {
         keys.push(key);
       }
       return keys;

@@ -16,7 +16,6 @@
 
 package com.google.code.gwt.storage.client.impl;
 
-import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.GWT;
 
 /**
@@ -34,42 +33,42 @@ public class StorageImplIE8 extends StorageImpl {
   static String eventOldValue;
   static String eventNewValue;
   static String eventUrl;
-  static Storage eventSource;
+  static String eventSource;
 
   @Override
-  public void setItem(Storage storage, String key, String data) {
+  public void setItem(String storage, String key, String data) {
     String oldValue = null;
-    if (storageEventHandlers.size() > 0) {
+    if (hasStorageEventHandlers()) {
       oldValue = getItem(storage, key);
     }
     super.setItem(storage, key, data);
-    if (storageEventHandlers.size() > 0) {
+    if (hasStorageEventHandlers()) {
       prepareStorageEventData(key, oldValue, data, storage);
     }
   }
 
   @Override
-  public void removeItem(Storage storage, String key) {
+  public void removeItem(String storage, String key) {
     String oldValue = null;
-    if (storageEventHandlers.size() > 0) {
+    if (hasStorageEventHandlers()) {
       oldValue = getItem(storage, key);
     }
     super.removeItem(storage, key);
-    if (storageEventHandlers.size() > 0) {
+    if (hasStorageEventHandlers()) {
       prepareStorageEventData(key, oldValue, null, storage);
     }
   }
 
   @Override
-  public void clear(Storage storage) {
+  public void clear(String storage) {
     super.clear(storage);
-    if (storageEventHandlers.size() > 0) {
+    if (hasStorageEventHandlers()) {
       prepareStorageEventData("", null, null, storage);
     }
   }
 
   private void prepareStorageEventData(String key, String oldValue,
-      String newValue, Storage storage) {
+      String newValue, String storage) {
     eventKey = key;
     eventOldValue = oldValue;
     eventNewValue = newValue;

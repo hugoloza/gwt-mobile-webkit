@@ -42,7 +42,10 @@ import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
  */
 public class StorageImpl {
 
-  protected static final List<StorageEventHandler> storageEventHandlers = new ArrayList<StorageEventHandler>();
+  public static final String LOCAL_STORAGE = "localStorage";
+  public static final String SESSION_STORAGE = "sessionStorage";
+  
+  protected static List<StorageEventHandler> storageEventHandlers;
   protected static JavaScriptObject jsHandler;
 
   /**
@@ -51,46 +54,18 @@ public class StorageImpl {
   protected StorageImpl() {
   }
 
+  /**
+   * Returns <code>true</code> if localStorage is supported
+   */
   public native boolean isLocalStorageSupported() /*-{
     return typeof $wnd.localStorage != "undefined";
   }-*/;
 
+  /**
+   * Returns <code>true</code> if sessionStorage is supported
+   */
   public native boolean isSessionStorageSupported() /*-{
     return typeof $wnd.sessionStorage != "undefined";
-  }-*/;
-
-  /**
-   * Returns a Local Storage.
-   * 
-   * <p>
-   * The returned storage is associated with the <a
-   * href="http://www.w3.org/TR/html5/browsers.html#origin">origin</a> of the
-   * Document.
-   * </p>
-   * 
-   * @see <a href="http://www.w3.org/TR/webstorage/#dom-localstorage">W3C Web
-   *      Storage - localStorage</a>
-   * @return the localStorage instance.
-   */
-  public native Storage getLocalStorage() /*-{
-    return $wnd.localStorage;
-  }-*/;
-
-  /**
-   * Returns a Session Storage.
-   * 
-   * <p>
-   * The returned storage is associated with the current <a href=
-   * "http://www.w3.org/TR/html5/browsers.html#top-level-browsing-context"
-   * >top-level browsing context</a>.
-   * </p>
-   * 
-   * @see <a href="http://www.w3.org/TR/webstorage/#dom-sessionstorage">W3C Web
-   *      Storage - sessionStorage</a>
-   * @return the sessionStorage instance.
-   */
-  public native Storage getSessionStorage() /*-{
-    return $wnd.sessionStorage;
   }-*/;
 
   /**
@@ -101,23 +76,44 @@ public class StorageImpl {
    * @param handler
    */
   public void addStorageEventHandler(StorageEventHandler handler) {
-    storageEventHandlers.add(handler);
+    getStorageEventHandlers().add(handler);
     if (storageEventHandlers.size() == 1) {
       addStorageEventHandler0();
     }
   }
+  
+  /**
+   * Returns <code>true</code> if at least one StorageEvent handler is registered,
+   * <code>false</code> otherwise.
+   */
+  protected static boolean hasStorageEventHandlers() {
+    return storageEventHandlers != null && !storageEventHandlers.isEmpty();
+  }
+  
+  /**
+   * Returns the {@link List} of {@link StorageEventHandler}s registered,
+   * which is never <code>null</code>.
+   */
+  protected List<StorageEventHandler> getStorageEventHandlers() {
+    if (storageEventHandlers == null) {
+      storageEventHandlers = new ArrayList<StorageEventHandler>();
+    }
+    return storageEventHandlers;
+  }
 
   protected native void addStorageEventHandler0() /*-{
     @com.google.code.gwt.storage.client.impl.StorageImpl::jsHandler = function(event) {
-      @com.google.code.gwt.storage.client.impl.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;) (event);
+      @com.google.code.gwt.storage.client.impl.StorageImpl::handleStorageEvent(Lcom/google/code/gwt/storage/client/StorageEvent;)(event);
     };
     $wnd.addEventListener("storage", @com.google.code.gwt.storage.client.impl.StorageImpl::jsHandler, false);
   }-*/;
 
   protected static final void handleStorageEvent(StorageEvent event) {
+    if (!hasStorageEventHandlers()) {
+      return;
+    }
     UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
-    for (int i = 0; i < storageEventHandlers.size(); i++) {
-      StorageEventHandler handler = storageEventHandlers.get(i);
+    for (StorageEventHandler handler : storageEventHandlers) {
       if (ueh != null) {
         try {
           handler.onStorageChange(event);
@@ -131,8 +127,8 @@ public class StorageImpl {
   }
 
   public void removeStorageEventHandler(StorageEventHandler handler) {
-    storageEventHandlers.remove(handler);
-    if (storageEventHandlers.size() == 0) {
+    getStorageEventHandlers().remove(handler);
+    if (storageEventHandlers.isEmpty()) {
       removeStorageEventHandler0();
     }
   }
@@ -143,70 +139,75 @@ public class StorageImpl {
 
   /**
    * Returns the number of items in this Storage.
-   * 
+   * @param storage either {@link #LOCAL_STORAGE} or {@link #SESSION_STORAGE}
    * @return number of items in this Storage
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-l">W3C Web
    *      Storage - Storage.length()</a>
    */
-  public native int getLength(Storage storage) /*-{
-    return storage.length;
+  public native int getLength(String storage) /*-{
+    return $wnd[storage].length;
   }-*/;
 
   /**
    * Returns the key at the specified index.
    * 
+   * @param storage either {@link #LOCAL_STORAGE} or {@link #SESSION_STORAGE}
    * @param index the index of the key
    * @return the key at the specified index in this Storage
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-key">W3C Web
    *      Storage - Storage.key(n)</a>
    */
-  public native String key(Storage storage, int index) /*-{
-    return storage.key(index);
+  public native String key(String storage, int index) /*-{
+    return $wnd[storage].key(index);
   }-*/;
 
   /**
    * Returns the item in the Storage associated with the specified key.
    * 
+   * @param storage either {@link #LOCAL_STORAGE} or {@link #SESSION_STORAGE}
    * @param key the key to a value in the Storage
    * @return the value associated with the given key
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-getitem">W3C Web
    *      Storage - Storage.getItem(k)</a>
    */
-  public native String getItem(Storage storage, String key) /*-{
-    return storage.getItem(key);
+  public native String getItem(String storage, String key) /*-{
+    return $wnd[storage].getItem(key);
   }-*/;
 
   /**
    * Sets the value in the Storage associated with the specified key to the
    * specified data.
    * 
+   * @param storage either {@link #LOCAL_STORAGE} or {@link #SESSION_STORAGE}
    * @param key the key to a value in the Storage
    * @param data the value associated with the key
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-setitem">W3C Web
    *      Storage - Storage.setItem(k,v)</a>
    */
-  public native void setItem(Storage storage, String key, String data) /*-{
-    storage.setItem(key, data);
+  public native void setItem(String storage, String key, String data) /*-{
+    $wnd[storage].setItem(key, data);
   }-*/;
 
   /**
    * Removes the item in the Storage associated with the specified key.
    * 
+   * @param storage either {@link #LOCAL_STORAGE} or {@link #SESSION_STORAGE}
    * @param key the key to a value in the Storage
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-removeitem">W3C
    *      Web Storage - Storage.removeItem(k)</a>
    */
-  public native void removeItem(Storage storage, String key) /*-{
-    storage.removeItem(key);
+  public native void removeItem(String storage, String key) /*-{
+    $wnd[storage].removeItem(key);
   }-*/;
 
   /**
    * Removes all items in the Storage.
    * 
+   * @param storage either {@link #LOCAL_STORAGE} or {@link #SESSION_STORAGE}
    * @see <a href="http://www.w3.org/TR/webstorage/#dom-storage-clear">W3C Web
    *      Storage - Storage.clear()</a>
    */
-  public native void clear(Storage storage) /*-{
-    storage.clear();
+  public native void clear(String storage) /*-{
+    $wnd[storage].clear();
   }-*/;
 }
