@@ -16,9 +16,9 @@
 
 package com.google.code.gwt.storage.client.impl;
 
-import com.google.code.gwt.storage.client.Storage;
 import com.google.code.gwt.storage.client.StorageEvent;
 import com.google.code.gwt.storage.client.StorageEventHandler;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Mozilla-specific implementation of a Storage.
@@ -33,39 +33,53 @@ import com.google.code.gwt.storage.client.StorageEventHandler;
 public class StorageImplMozilla extends StorageImpl {
 
   @Override
-  public native void setItem(Storage storage, String key, String data) /*-{
+  public native void setItem(String storage, String key, String data) /*-{
     var oldValue = storage[key];
-    storage.setItem(key, data);
-    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, data, storage);
+    $wnd[storage].setItem(key, data);
+    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;) (key, oldValue, data, storage);
   }-*/;
 
   @Override
-  public native void removeItem(Storage storage, String key) /*-{
+  public native void removeItem(String storage, String key) /*-{
     var oldValue = storage[key];
-    storage.removeItem(key);
-    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) (key, oldValue, null, storage);
+    $wnd[storage].removeItem(key);
+    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;) (key, oldValue, null, storage);
   }-*/;
 
   @Override
-  public native void clear(Storage storage) /*-{
-    storage.clear();
-    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/google/code/gwt/storage/client/Storage;) ("", null, null, storage);
+  public native void clear(String storage) /*-{
+    $wnd[storage].clear();
+    @com.google.code.gwt.storage.client.impl.StorageImplMozilla::fireStorageEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;) ("", null, null, storage);
   }-*/;
 
   @SuppressWarnings("unused")
   private static final void fireStorageEvent(String key, String oldValue,
-      String newValue, Storage storage) {
-    StorageEvent se = createStorageEvent(key, oldValue, newValue, storage);
-    handleStorageEvent(se);
+      String newValue, String storage) {
+    if (hasStorageEventHandlers()) {
+      StorageEvent se = createStorageEvent(key, oldValue, newValue, storage);
+      handleStorageEvent(se);
+    }
   }
 
   private static final native StorageEvent createStorageEvent(String key,
-      String oldValue, String newValue, Storage storage) /*-{
-    return {key: key, oldValue:oldValue, newValue:newValue, storageArea: storage, source: $wnd, url: $wnd.location.href};
+      String oldValue, String newValue, String storage) /*-{
+    return {
+        key: key,
+        oldValue: oldValue,
+        newValue: newValue,
+        storageArea: $wnd[storage],
+        source: $wnd,
+        url: $wnd.location.href
+      };
   }-*/;
 
   @Override
   public void addStorageEventHandler(StorageEventHandler handler) {
-    storageEventHandlers.add(handler);
+    getStorageEventHandlers().add(handler);
+  }
+  
+  @Override
+  public void removeStorageEventHandler(StorageEventHandler handler) {
+    getStorageEventHandlers().remove(handler);
   }
 }

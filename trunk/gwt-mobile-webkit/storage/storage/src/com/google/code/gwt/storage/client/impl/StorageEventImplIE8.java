@@ -16,7 +16,6 @@
 
 package com.google.code.gwt.storage.client.impl;
 
-import com.google.code.gwt.storage.client.Storage;
 import com.google.code.gwt.storage.client.StorageEvent;
 
 /**
@@ -42,12 +41,12 @@ public class StorageEventImplIE8 extends StorageEventImpl {
   }
 
   @Override
-  public Storage getStorageArea(StorageEvent se) {
-    return StorageImplIE8.eventSource;
+  public String getUrl(StorageEvent se) {
+    return StorageImplIE8.eventUrl;
   }
 
   @Override
-  public String getUrl(StorageEvent se) {
-    return StorageImplIE8.eventUrl;
+  protected boolean isLocalStorageArea(StorageEvent se) {
+    return StorageImpl.LOCAL_STORAGE.equals(StorageImplIE8.eventSource);
   }
 }

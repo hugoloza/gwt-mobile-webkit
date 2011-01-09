@@ -76,7 +76,7 @@ public class StorageEventImpl {
    *      Web Storage - StorageEvent.url</a>
    */
   public native String getUrl(StorageEvent se) /*-{
-    return se.url;
+    return se.url || se.uri;  // Older Safari browsers have 'uri' instead of 'url'
   }-*/;
 
   /**
@@ -100,7 +100,11 @@ public class StorageEventImpl {
    *      href="http://www.w3.org/TR/webstorage/#dom-storageevent-storagearea">W3C
    *      Web Storage - StorageEvent.storageArea</a>
    */
-  public native Storage getStorageArea(StorageEvent se) /*-{
-    return se.storageArea;
+  public Storage getStorageArea(StorageEvent se) {
+    return isLocalStorageArea(se) ? Storage.getLocalStorage() : Storage.getSessionStorage();
+  }
+
+  protected native boolean isLocalStorageArea(StorageEvent se) /*-{
+    return se.storageArea === $wnd.localStorage;
   }-*/;
 }

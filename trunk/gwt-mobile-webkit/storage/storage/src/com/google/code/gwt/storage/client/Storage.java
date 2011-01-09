@@ -18,7 +18,6 @@ package com.google.code.gwt.storage.client;
 
 import com.google.code.gwt.storage.client.impl.StorageImpl;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Implements the HTML5 Storage interface.
@@ -46,22 +45,30 @@ import com.google.gwt.core.client.JavaScriptObject;
  *      Quickstart Guide</a>
  * @author bguijt
  */
-public final class Storage extends JavaScriptObject {
+public final class Storage {
 
   private static final StorageImpl impl = GWT.create(StorageImpl.class);
+  
+  private static Storage localStorage;
+  private static Storage sessionStorage;
 
+  // Contains either "localStorage" or "sessionStorage":
+  private final String storage;
+  
   /**
-   * This class can never be instantiated by itself.
+   * This class can never be instantiated externally. Use
+   * {@link #getLocalStorage()} or {@link #getSessionStorage()} instead.
    */
-  protected Storage() {
+  private Storage(String storage) {
+    this.storage = storage;
   }
 
   /**
-   * Returns <code>true</code> if the Storage API (both local- and
+   * Returns <code>true</code> if the Storage API (both localStorage and
    * sessionStorage) is supported on the running platform.
    */
   public static boolean isSupported() {
-    return impl.isLocalStorageSupported() && impl.isSessionStorageSupported();
+    return isLocalStorageSupported() && isSessionStorageSupported();
   }
 
   /**
@@ -95,9 +102,15 @@ public final class Storage extends JavaScriptObject {
    *         NOT supported.
    */
   public static Storage getLocalStorage() {
-    return impl.getLocalStorage();
-  };
-
+    if (isLocalStorageSupported()) {
+      if (localStorage == null) {
+        localStorage = new Storage(StorageImpl.LOCAL_STORAGE);
+      }
+      return localStorage;
+    }
+    return null;
+  }
+  
   /**
    * Returns a Session Storage.
    * 
@@ -113,7 +126,13 @@ public final class Storage extends JavaScriptObject {
    *         NOT supported.
    */
   public static Storage getSessionStorage() {
-    return impl.getSessionStorage();
+    if (isSessionStorageSupported()) {
+      if (sessionStorage == null) {
+        sessionStorage = new Storage(StorageImpl.SESSION_STORAGE);
+      }
+      return sessionStorage;
+    }
+    return null;
   }
 
   /**
@@ -146,7 +165,7 @@ public final class Storage extends JavaScriptObject {
    *      Storage - Storage.length()</a>
    */
   public int getLength() {
-    return impl.getLength(this);
+    return impl.getLength(storage);
   }
 
   /**
@@ -158,7 +177,7 @@ public final class Storage extends JavaScriptObject {
    *      Storage - Storage.key(n)</a>
    */
   public String key(int index) {
-    return impl.key(this, index);
+    return impl.key(storage, index);
   }
 
   /**
@@ -170,7 +189,7 @@ public final class Storage extends JavaScriptObject {
    *      Storage - Storage.getItem(k)</a>
    */
   public String getItem(String key) {
-    return impl.getItem(this, key);
+    return impl.getItem(storage, key);
   }
 
   /**
@@ -183,7 +202,7 @@ public final class Storage extends JavaScriptObject {
    *      Storage - Storage.setItem(k,v)</a>
    */
   public void setItem(String key, String data) {
-    impl.setItem(this, key, data);
+    impl.setItem(storage, key, data);
   }
 
   /**
@@ -194,7 +213,7 @@ public final class Storage extends JavaScriptObject {
    *      Web Storage - Storage.removeItem(k)</a>
    */
   public void removeItem(String key) {
-    impl.removeItem(this, key);
+    impl.removeItem(storage, key);
   };
 
   /**
@@ -204,6 +223,6 @@ public final class Storage extends JavaScriptObject {
    *      Storage - Storage.clear()</a>
    */
   public void clear() {
-    impl.clear(this);
+    impl.clear(storage);
   }
 }
