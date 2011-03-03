@@ -90,7 +90,7 @@ public class Coordinates extends JavaScriptObject {
    * {@link #getAltitudeAccuracy()}.
    */
   public final native boolean hasAltitudeAccuracy() /*-{
-    return this.altitideAccuracy != null;
+    return this.altitudeAccuracy != null;
   }-*/;
 
   /**
