@@ -37,6 +37,7 @@
         <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
+        <pathelement location="${gwt.validation.jar}" />
       </classpath>
     </gwt.javac>
   </target>
@@ -52,12 +53,14 @@
         <fileset file="${mobile.webkit.api.jar}" />
         <fileset file="${gwt.user.jar}" />
         <fileset file="${gwt.dev.jar}" />
+        <fileset file="${gwt.validation.jar}" />
+        <fileset file="${gwt.validation.sources.jar}" />
       </sourcefiles>
       <targetfiles path="${sample.build}/war/${sample.lower}/${sample.lower}.nocache.js" />
       <sequential>
         <mkdir dir="${sample.build}/war" />
         <gwt.timer name="${sample.upper} with ${gwt.samples.localworkers} localWorkers">
-          <java dir="${sample.build}" classname="com.google.gwt.dev.Compiler" classpath="src:${sample.build}/war/WEB-INF/classes:${mobile.webkit.api.jar}:${gwt.user.jar}:${gwt.dev.jar}" fork="yes" failonerror="true">
+          <java dir="${sample.build}" classname="com.google.gwt.dev.Compiler" classpath="src:${sample.build}/war/WEB-INF/classes:${mobile.webkit.api.jar}:${gwt.user.jar}:${gwt.dev.jar}:${gwt.validation.jar}:${gwt.validation.sources.jar}" fork="yes" failonerror="true">
             <jvmarg value="-Xmx256M" />
             <!--jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=8000" /-->
             <arg value="-localWorkers" />
@@ -124,6 +127,8 @@
         <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.user.jar}" />
         <pathelement location="${gwt.dev.jar}" />
+        <pathelement location="${gwt.validation.jar}" />
+        <pathelement location="${gwt.validation.sources.jar}" />
       </classpath>
       <jvmarg line="${hostedmode.platform.args}" />
       <jvmarg value="-Xmx256M" />
@@ -145,6 +150,7 @@
         <pathelement location="${mobile.webkit.api.jar}" />
         <pathelement location="${gwt.dev.jar}" />
         <pathelement location="${gwt.servlet.jar}" />
+        <pathelement location="${gwt.validation.jar}" />
       </classpath>
       <jvmarg value="-Xmx256M" />
       <arg value="8080" />
@@ -152,5 +158,4 @@
       <arg value="${sample.build}/war" />
     </java>
   </target>
-
 </project>
